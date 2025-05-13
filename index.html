@@ -13,14 +13,14 @@
 
     body {
       font-family: Arial, sans-serif;
-      padding: 16px;
+      padding: 0 16px;     /* remove padding-top para subir tudo */
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 0;
+      padding: 0;          /* sem padding vertical */
     }
 
     .menu-icon, .bag-icon {
@@ -29,23 +29,24 @@
     }
 
     .logo img {
-      max-height: 80px; /* logo maior */
+      max-height: 80px;
     }
 
     .search-container {
-      margin-top: 12px; /* mais próximo do header */
+      margin-top: -4px;    /* sobe o input um pouco */
+      margin-bottom: 16px;
       display: flex;
-      max-width: 100%;
+      width: 100%;
     }
 
     .search-input {
       flex: 1;
       padding: 12px;
-      border: 2px solid #888;
+      border: 1px solid #ccc;
       border-radius: 8px 0 0 8px;
       outline: none;
       font-size: 16px;
-      background-color: #f7f7f7;
+      background-color: #f2f2f2;
     }
 
     .search-button {
@@ -60,8 +61,40 @@
     }
 
     .search-button img {
-      height: 32px;      /* lupinha maior */
-      width: auto;       /* mantém proporção */
+      height: 36px;
+      width: auto;
+    }
+
+    .categories-container {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .categories-container::-webkit-scrollbar {
+      height: 0;
+    }
+    .categories-container.scrolling::-webkit-scrollbar {
+      height: 6px;
+    }
+    .categories-container.scrolling::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 3px;
+    }
+    .categories-container.scrolling::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .categories-container.scrolling {
+      scrollbar-width: thin;
+    }
+
+    .category {
+      flex: 0 0 auto;
+      font-size: 14px;
+      white-space: nowrap;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -81,6 +114,31 @@
       <img src="lupa.webp" alt="Buscar">
     </button>
   </div>
+
+  <div id="cats" class="categories-container">
+    <div class="category">BRINCOS</div>
+    <div class="category">ANÉIS</div>
+    <div class="category">BLACELETES</div>
+    <div class="category">COLARES</div>
+    <div class="category">CONJUNTOS</div>
+    <div class="category">PULSEIRAS</div>
+    <div class="category">PERFUMES</div>
+    <div class="category">BOLSAS</div>
+    <div class="category">CINTOS</div>
+    <div class="category">ÓCULOS</div>
+  </div>
+
+  <script>
+    const cats = document.getElementById('cats');
+    let scrollTimeout;
+    cats.addEventListener('scroll', () => {
+      cats.classList.add('scrolling');
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        cats.classList.remove('scrolling');
+      }, 800);
+    });
+  </script>
 
 </body>
 </html>
