@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html><html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,35 +9,35 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: Arial, sans-serif;
-      padding: 0 16px;     /* remove padding-top para subir tudo */
+      padding: 0 16px;
     }
-
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1000;
+    }
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0;          /* sem padding vertical */
+      padding: 8px 0;
     }
-
     .menu-icon, .bag-icon {
       font-size: 28px;
       cursor: pointer;
     }
-
     .logo img {
       max-height: 80px;
+      width: auto;
     }
-
     .search-container {
-      margin-top: -4px;    /* sobe o input um pouco */
-      margin-bottom: 16px;
       display: flex;
       width: 100%;
+      margin-bottom: 16px;
     }
-
     .search-input {
       flex: 1;
       padding: 12px;
@@ -48,7 +47,6 @@
       font-size: 16px;
       background-color: #f2f2f2;
     }
-
     .search-button {
       background-color: #ff69b4;
       border: none;
@@ -59,86 +57,162 @@
       align-items: center;
       justify-content: center;
     }
-
     .search-button img {
       height: 36px;
       width: auto;
-    }
+    }.categories-container {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+  transition: scrollbar-color 3s ease;
+  scrollbar-color: rgba(204,204,204,1) transparent;
+}
+.categories-container::-webkit-scrollbar {
+  height: 6px;
+}
+.categories-container::-webkit-scrollbar-thumb {
+  background-color: rgba(204,204,204,1);
+  border-radius: 3px;
+  transition: background-color 3s ease;
+}
+.categories-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.categories-container.hidden {
+  scrollbar-color: rgba(204,204,204,0) transparent;
+}
+.categories-container.hidden::-webkit-scrollbar-thumb {
+  background-color: rgba(204,204,204,0);
+}
 
-    .categories-container {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    .categories-container::-webkit-scrollbar {
-      height: 0;
-    }
-    .categories-container.scrolling::-webkit-scrollbar {
-      height: 6px;
-    }
-    .categories-container.scrolling::-webkit-scrollbar-thumb {
-      background-color: #ccc;
-      border-radius: 3px;
-    }
-    .categories-container.scrolling::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .categories-container.scrolling {
-      scrollbar-width: thin;
-    }
+.image-scroll-wrapper {
+  margin: 0 -16px;
+  background-color: #f2f2f2;
+  padding: 16px 16px 24px;
+}
+.image-scroll {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.image-scroll::-webkit-scrollbar {
+  display: none;
+}
+.item {
+  flex: 0 0 auto;
+  text-align: center;
+}
+.item img {
+  display: block;
+  max-width: 120px;
+  height: auto;
+  margin-bottom: 8px;
+}
+.item .label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
 
-    .category {
-      flex: 0 0 auto;
-      font-size: 14px;
-      white-space: nowrap;
-      cursor: pointer;
-    }
+@media (max-width: 480px) {
+  .menu-icon, .bag-icon { font-size: 24px; }
+  .logo img { max-height: 60px; }
+  .search-input { font-size: 14px; }
+  .category { font-size: 12px; }
+  .item img { max-width: 100px; }
+  .item .label { font-size: 14px; }
+}
+
+main {
+  padding-top: 16px;
+}
+
   </style>
 </head>
 <body>
-
-  <header class="header">
-    <div class="menu-icon">&#9776;</div>
-    <div class="logo">
-      <img src="logo.webp" alt="Logo">
+  <div class="nav-wrapper">
+    <header class="header">
+      <div class="menu-icon">&#9776;</div>
+      <div class="logo"><img src="logo.webp" alt="Logo"></div>
+      <div class="bag-icon">&#128717;</div>
+    </header>
+    <div class="search-container">
+      <input class="search-input" type="text" placeholder="O que você está procurando?">
+      <button class="search-button"><img src="lupa.webp" alt="Buscar"></button>
     </div>
-    <div class="bag-icon">&#128717;</div>
-  </header>
-
-  <div class="search-container">
-    <input class="search-input" type="text" placeholder="O que você está procurando?" />
-    <button class="search-button">
-      <img src="lupa.webp" alt="Buscar">
-    </button>
-  </div>
-
-  <div id="cats" class="categories-container">
-    <div class="category">BRINCOS</div>
-    <div class="category">ANÉIS</div>
-    <div class="category">BLACELETES</div>
-    <div class="category">COLARES</div>
-    <div class="category">CONJUNTOS</div>
-    <div class="category">PULSEIRAS</div>
-    <div class="category">PERFUMES</div>
-    <div class="category">BOLSAS</div>
-    <div class="category">CINTOS</div>
-    <div class="category">ÓCULOS</div>
-  </div>
-
-  <script>
+    <div id="cats" class="categories-container">
+      <div class="category">BRINCOS</div>
+      <div class="category">ANÉIS</div>
+      <div class="category">BRACELETES</div>
+      <div class="category">COLARES</div>
+      <div class="category">CONJUNTOS</div>
+      <div class="category">PULSEIRAS</div>
+      <div class="category">PERFUMES</div>
+      <div class="category">BOLSAS</div>
+      <div class="category">CINTOS</div>
+      <div class="category">ÓCULOS</div>
+    </div>
+    <div class="image-scroll-wrapper">
+      <div class="image-scroll">
+        <div class="item">
+          <img src="colares.webp" alt="Colares">
+          <div class="label">Colares</div>
+        </div>
+        <div class="item">
+          <img src="brincos.webp" alt="Brincos">
+          <div class="label">Brincos</div>
+        </div>
+        <div class="item">
+          <img src="aneis.webp" alt="Aneis">
+          <div class="label">Aneis</div>
+        </div>
+        <div class="item">
+          <img src="pulseiras.webp" alt="Pulseiras">
+          <div class="label">Pulseiras</div>
+        </div>
+        <div class="item">
+          <img src="conjuntos.webp" alt="Conjuntos">
+          <div class="label">Conjuntos</div>
+        </div>
+        <div class="item">
+          <img src="braceletes.webp" alt="Braceletes">
+          <div class="label">Braceletes</div>
+        </div>
+        <div class="item">
+          <img src="perfumes.webp" alt="Perfumes">
+          <div class="label">Perfumes</div>
+        </div>
+        <div class="item">
+          <img src="bolsas.webp" alt="Bolsas">
+          <div class="label">Bolsas</div>
+        </div>
+        <div class="item">
+          <img src="oculos.webp" alt="Óculos">
+          <div class="label">Óculos</div>
+        </div>
+      </div>
+    </div>
+  </div>  <main>
+    <!-- Conteúdo da página vai aqui -->
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+    <p>Mais conteúdo de exemplo para testar o scroll e o sticky.</p>
+    <!-- Repita conforme necessário -->
+  </main>  <script>
     const cats = document.getElementById('cats');
     let scrollTimeout;
     cats.addEventListener('scroll', () => {
-      cats.classList.add('scrolling');
+      cats.classList.remove('hidden');
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
-        cats.classList.remove('scrolling');
-      }, 800);
+        cats.classList.add('hidden');
+      }, 500);
     });
-  </script>
-
-</body>
+  </script></body>
 </html>
