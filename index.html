@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      padding: 16px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .menu-icon, .bag-icon {
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .logo img {
+      max-height: 80px; /* logo maior */
+    }
+
+    .search-container {
+      margin-top: 12px; /* mais próximo do header */
+      display: flex;
+      max-width: 100%;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #888;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+      font-size: 16px;
+      background-color: #f7f7f7;
+    }
+
+    .search-button {
+      background-color: #ff69b4;
+      border: none;
+      padding: 0 16px;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-button img {
+      height: 32px;      /* lupinha maior */
+      width: auto;       /* mantém proporção */
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="menu-icon">&#9776;</div>
+    <div class="logo">
+      <img src="logo.webp" alt="Logo">
+    </div>
+    <div class="bag-icon">&#128717;</div>
+  </header>
+
+  <div class="search-container">
+    <input class="search-input" type="text" placeholder="O que você está procurando?" />
+    <button class="search-button">
+      <img src="lupa.webp" alt="Buscar">
+    </button>
+  </div>
+
+</body>
+</html>
