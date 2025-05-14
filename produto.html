@@ -1,144 +1,85 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html><html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Produto</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-    }
-    .nav-wrapper {
-      position: sticky;
-      top: 0;
-      background: #fff;
-      z-index: 1000;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 16px;
-    }
-    .menu-icon, .bag-icon {
-      font-size: 28px;
-      cursor: pointer;
-    }
-    .logo img {
-      max-height: 80px;
-      width: auto;
-    }
-    .search-container {
-      display: flex;
-      width: 100%;
-      padding: 0 16px 16px;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background-color: #fff; }
+    .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
+    .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; }
+    .logo img { max-height: 80px; width: auto; }
+    .search-container { display: flex; width: 100%; padding: 0 16px 16px; }
     .search-input {
-      flex: 1;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px 0 0 8px;
-      outline: none;
-      font-size: 16px;
-      background-color: #f2f2f2;
+      flex: 1; padding: 12px;
+      border: 1px solid #ccc; border-radius: 8px 0 0 8px;
+      outline: none; font-size: 16px; background-color: #f2f2f2;
     }
     .search-button {
-      background-color: #ff69b4;
-      border: none;
-      padding: 0 16px;
-      border-radius: 0 8px 8px 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background-color: #ff69b4; border: none;
+      padding: 0 16px; border-radius: 0 8px 8px 0;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
-    .search-button img {
-      height: 36px;
-      width: auto;
-    }
+    .search-button img { height: 36px; width: auto; }
     .categories-container {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      padding: 8px 16px 16px;
-      scrollbar-width: thin;
-      -ms-overflow-style: auto;
+      display: flex; gap: 16px; overflow-x: auto;
+      scroll-behavior: smooth; padding: 8px 16px 16px;
+      scrollbar-width: thin; -ms-overflow-style: auto;
       transition: scrollbar-color 3s ease;
       scrollbar-color: rgba(204,204,204,1) transparent;
     }
-    .categories-container::-webkit-scrollbar {
-      height: 6px;
-    }
+    .categories-container::-webkit-scrollbar { height: 6px; }
     .categories-container::-webkit-scrollbar-thumb {
-      background-color: rgba(204,204,204,1);
-      border-radius: 3px;
+      background-color: rgba(204,204,204,1); border-radius: 3px;
     }
-    .categories-container::-webkit-scrollbar-track {
-      background: transparent;
-    }
+    .categories-container::-webkit-scrollbar-track { background: transparent; }
     .categories-container.hidden {
       scrollbar-color: rgba(204,204,204,0) transparent;
     }
     .categories-container.hidden::-webkit-scrollbar-thumb {
       background-color: rgba(204,204,204,0);
     }
-    .produto-container {
-      padding: 24px 16px;
+    .category {
+      cursor: pointer; white-space: nowrap; padding: 8px 0;
     }
-    .produto-container img {
-      width: 100%;
-      max-height: 360px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 16px;
+    .category.active { font-weight: bold; color: #ff69b4; }
+    .produto-container { padding: 16px; }
+    .breadcrumb { font-size: 14px; color: #666; margin-bottom: 16px; }
+    .produto-img {
+      width: 100%; max-height: 360px;
+      object-fit: cover; border-radius: 8px; margin-bottom: 16px;
     }
-    .produto-container .nome {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 12px;
-      color: #333;
+    .produto-nome { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 8px; }
+    .produto-preco { font-size: 24px; font-weight: bold; color: #000; margin-bottom: 8px; }
+    .produto-parcelamento { font-size: 15px; color: #666; margin-bottom: 8px; }
+    .produto-extra { font-size: 14px; color: #007bff; margin-bottom: 16px; }
+    .purchase-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .qty-controls {
+      display: flex; align-items: center;
+      border: 1px solid #ccc; border-radius: 8px;
     }
-    .produto-container .preco {
-      font-size: 24px;
-      font-weight: bold;
-      color: #000;
-      margin-bottom: 8px;
+    .qty-controls button {
+      background: none; border: none; font-size: 18px; padding: 8px 12px; cursor: pointer;
     }
-    .produto-container .parcelamento {
-      font-size: 15px;
-      color: #666;
-      margin-bottom: 8px;
+    .qty-controls .qty {
+      padding: 0 12px; font-size: 18px; min-width: 24px; text-align: center;
     }
-    .produto-container .extra {
-      font-size: 14px;
-      color: #007bff;
-      margin-bottom: 16px;
-    }
-    .produto-container .voltar {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #ff69b4;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
+    .buy-btn {
+      flex: 1;
+      background-color: #ff69b4; color: #fff; border: none;
+      padding: 12px; border-radius: 8px; font-size: 16px;
       cursor: pointer;
-      text-decoration: none;
     }
+    .info-section { font-size: 14px; color: #555; margin-bottom: 4px; }
+    .descricao { font-size: 14px; color: #333; margin-top: 8px; line-height: 1.5; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 16px 0; }
   </style>
 </head>
-<body>
-  <div class="nav-wrapper">
+<body>  <div class="nav-wrapper">
     <header class="header">
       <div class="menu-icon">&#9776;</div>
-      <div class="logo"><img src="logo.webp" alt="Logo"></div>
+      <div class="logo"><img src="logo.webp" alt="Logo" /></div>
       <div class="bag-icon">&#128717;</div>
     </header>
     <div class="search-container">
@@ -157,11 +98,16 @@
       <div class="category">CINTOS</div>
       <div class="category">ÓCULOS</div>
     </div>
-  </div>
+  </div>  <div class="produto-container" id="produto"></div>  <script>
+    // scroll-hide for categories
+    const catsEl = document.getElementById('cats');
+    let hideTimeout;
+    catsEl.addEventListener('scroll', () => {
+      catsEl.classList.remove('hidden');
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => catsEl.classList.add('hidden'), 500);
+    });
 
-  <div class="produto-container" id="produto"></div>
-
-  <script>
     const params = new URLSearchParams(window.location.search);
     const nomeProduto = params.get('produto');
 
@@ -172,24 +118,47 @@
         for (const line of lines) {
           const cells = line.split(',');
           const nome = cells[2]?.trim() || '';
+          if (nome !== decodeURIComponent(nomeProduto)) continue;
           const imagem = cells[3]?.trim();
-          const preco = cells[5]?.trim();
+          const descricao = cells[4]?.trim();
+          let preco = (cells[5]||'').replace(/[^\d.,]/g,'').replace('.', ',');
           const extra = cells[6]?.trim();
           const parcela = cells[7]?.trim();
+          const categoria = cells[4] ? cells[4].trim().split(' ')[0] : '';
 
-          if (nome === decodeURIComponent(nomeProduto)) {
-            document.getElementById('produto').innerHTML = `
-              <img src="${imagem}" alt="${nome}">
-              <div class="nome">${nome}</div>
-              <div class="preco">${preco}</div>
-              <div class="parcelamento">${parcela}</div>
-              <div class="extra">${extra}</div>
-              <a href="index.html" class="voltar">Voltar</a>
-            `;
-            break;
-          }
+          document.getElementById('produto').innerHTML = `
+            <div class="breadcrumb">Início > ${categoria} > ${nome}</div>
+            <img src="${imagem}" alt="${nome}" class="produto-img" />
+            <div class="produto-nome">${nome}</div>
+            <div class="produto-preco">R$ ${preco}</div>
+            <div class="produto-parcelamento">${parcela}</div>
+            <div class="produto-extra">${extra}</div>
+            <div class="purchase-controls">
+              <div class="qty-controls">
+                <button id="decrease">-</button>
+                <div class="qty" id="quantity">1</div>
+                <button id="increase">+</button>
+              </div>
+              <button class="buy-btn">COMPRAR</button>
+            </div>
+            <strong>Compra protegida</strong>
+            <div class="info-section">Seus dados cuidados durante toda a compra.</div>
+            <hr>
+            <strong>Trocas e devoluções</strong>
+            <div class="info-section">Se não gostar, você pode trocar ou devolver.</div>
+            <hr>
+            <strong>Descrição</strong>
+            <div class="descricao">${descricao}</div>
+          `;
+          let qty = 1;
+          document.getElementById('decrease').onclick = () => {
+            if (qty > 1) qty--; document.getElementById('quantity').textContent = qty;
+          };
+          document.getElementById('increase').onclick = () => {
+            qty++; document.getElementById('quantity').textContent = qty;
+          };
+          break;
         }
       });
-  </script>
-</body>
+  </script></body>
 </html>
