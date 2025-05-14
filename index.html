@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
+<!DOCTYPE html><html lang="pt-br"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Web App</title>
@@ -153,6 +151,7 @@
       border-radius: 0;
       padding: 0;
       text-align: left;
+      cursor: pointer;
     }
     .produto img {
       width: 100%;
@@ -215,9 +214,7 @@
       <div class="category">CINTOS</div>
       <div class="category">ÓCULOS</div>
     </div>
-  </div>
-
-  <div class="image-scroll-wrapper">
+  </div>  <div class="image-scroll-wrapper">
     <div class="image-scroll">
       <div class="item"><img src="colares.webp" alt=""><div class="label">Colares</div></div>
       <div class="item"><img src="brincos.webp" alt=""><div class="label">Brincos</div></div>
@@ -229,17 +226,11 @@
       <div class="item"><img src="bolsas.webp" alt=""><div class="label">Bolsas</div></div>
       <div class="item"><img src="oculos.webp" alt=""><div class="label">Óculos</div></div>
     </div>
-  </div>
-
-  <div class="banner-scroll-wrapper">
+  </div>  <div class="banner-scroll-wrapper">
     <div id="banner-scroll" class="banner-scroll"></div>
-  </div>
-
-  <div class="produtos-wrapper">
+  </div>  <div class="produtos-wrapper">
     <div id="produtos" class="produtos-grid"></div>
-  </div>
-
-  <script>
+  </div>  <script>
     const cats = document.getElementById('cats');
     let scrollTimeout;
     cats.addEventListener('scroll', () => {
@@ -248,57 +239,60 @@
       scrollTimeout = setTimeout(() => {
         cats.classList.add('hidden');
       }, 500);
+    });fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
+  .then(response => response.text())
+  .then(csv => {
+    const lines = csv.split('\n').slice(1);
+    const banners = [];
+    const produtos = [];
+
+    lines.forEach(line => {
+      const cells = line.split(',');
+      if (cells[0]) banners.push(cells[0].trim());
+      if (cells[1]) banners.push(cells[1].trim());
+
+      if (cells[3]) {
+        produtos.push({
+          imagem: cells[3].trim(),
+          nome: cells[2]?.trim() || '',
+          preco: cells[5]?.trim() || '',
+          parcelamento: cells[7]?.trim() || '',
+          extra: cells[6]?.trim() || ''
+        });
+      }
     });
 
-    fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
-      .then(response => response.text())
-      .then(csv => {
-        const lines = csv.split('\n').slice(1);
-        const banners = [];
-        const produtos = [];
+    const bannerContainer = document.getElementById('banner-scroll');
+    banners.forEach(url => {
+      const img = document.createElement('img');
+      img.src = url;
+      bannerContainer.appendChild(img);
+    });
+    banners.forEach(url => {
+      const img = document.createElement('img');
+      img.src = url;
+      bannerContainer.appendChild(img);
+    });
 
-        lines.forEach(line => {
-          const cells = line.split(',');
-          if (cells[0]) banners.push(cells[0].trim());
-          if (cells[1]) banners.push(cells[1].trim());
-
-          if (cells[3]) {
-            produtos.push({
-              imagem: cells[3].trim(),
-              nome: cells[2]?.trim() || '',
-              preco: cells[5]?.trim() || '',
-              parcelamento: cells[7]?.trim() || '',
-              extra: cells[6]?.trim() || ''
-            });
-          }
-        });
-
-        const bannerContainer = document.getElementById('banner-scroll');
-        banners.forEach(url => {
-          const img = document.createElement('img');
-          img.src = url;
-          bannerContainer.appendChild(img);
-        });
-        banners.forEach(url => {
-          const img = document.createElement('img');
-          img.src = url;
-          bannerContainer.appendChild(img);
-        });
-
-        const produtosContainer = document.getElementById('produtos');
-        produtos.forEach(p => {
-          const div = document.createElement('div');
-          div.className = 'produto';
-          div.innerHTML = `
-            <img src="${p.imagem}" alt="${p.nome}">
-            <div class="nome">${p.nome}</div>
-            <div class="preco">${p.preco}</div>
-            <div class="parcelamento">${p.parcelamento}</div>
-            <div class="extra">${p.extra}</div>
-          `;
-          produtosContainer.appendChild(div);
-        });
+    const produtosContainer = document.getElementById('produtos');
+    produtos.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'produto';
+      div.addEventListener('click', () => {
+        const nomeCodificado = encodeURIComponent(p.nome);
+        window.location.href = `produto.html?produto=${nomeCodificado}`;
       });
-  </script>
-</body>
+      div.innerHTML = `
+        <img src="${p.imagem}" alt="${p.nome}">
+        <div class="nome">${p.nome}</div>
+        <div class="preco">${p.preco}</div>
+        <div class="parcelamento">${p.parcelamento}</div>
+        <div class="extra">${p.extra}</div>
+      `;
+      produtosContainer.appendChild(div);
+    });
+  });
+
+</script></body>
+
 </html>
