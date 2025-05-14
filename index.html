@@ -4,63 +4,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Web App</title>
   <style>
-    /* ===== seu CSS existente ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background-color: #fff; }
-    .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
-    .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; }
-    .logo img { max-height: 80px; width: auto; cursor: pointer; }
-    .search-container { display: flex; width: 100%; padding: 0 16px 16px; }
-    .search-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px 0 0 8px; outline: none; font-size: 16px; background-color: #f2f2f2; }
-    .search-button { background-color: #ff69b4; border: none; padding: 0 16px; border-radius: 0 8px 8px 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .search-button img { height: 36px; width: auto; }
-    .categories-container { display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 16px 16px; }
-    .categories-container.hidden::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,0); }
-    #breadcrumb { display: none; background: #fff; border-bottom: 1px solid #eee; padding: 8px 16px; }
-    #breadcrumb .path { font-size: 14px; color: #007bff; cursor: pointer; text-decoration: underline; }
-    #breadcrumb .separator { font-size: 14px; color: #555; margin: 0 8px; }
-    #breadcrumb .crumbName { font-size: 14px; text-transform: capitalize; }
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-    .header-row .title { font-weight: bold; font-size: 20px; text-transform: uppercase; }
-    .header-row .count { font-size: 14px; color: #555; }
-    .image-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
-    .image-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
-    .image-scroll::-webkit-scrollbar { display: none; }
-    .item { flex: 0 0 auto; text-align: center; cursor: pointer; }
-    .item img { max-width: 100px; border-radius: 8px; margin-bottom: 8px; }
-    .item .label { font-size: 16px; font-weight: bold; }
-    .banner-scroll-wrapper { background-color: #f2f2f2; padding: 8px 0 24px; overflow: hidden; }
-    .banner-scroll { display: flex; gap: 16px; animation: scrollBanners 20s linear infinite; padding: 0 16px; }
-    .banner-scroll img { max-height: 160px; border-radius: 12px; }
-    @keyframes scrollBanners { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-    .produtos-wrapper { background-color: #f2f2f2; padding: 16px; }
-    .launch-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; cursor: pointer; }
-    .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-    .produto { cursor: pointer; }
-    .produto img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; }
-    .produto .nome { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
-    .produto .preco { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-    .produto .parcelamento, .produto .extra { font-size: 13px; margin-bottom: 8px; }
-    @media (max-width: 480px) {
-      .produtos-grid { grid-template-columns: 1fr 1fr; }
-      .produto img { height: 220px; }
-    }/* ===== overlay de menu lateral com slide ===== */
+    body { font-family: Arial, sans-serif; background-color: #fff; }.nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
+.menu-icon, .bag-icon { font-size: 28px; cursor: pointer; }
+.logo img { max-height: 80px; width: auto; cursor: pointer; }
+.search-container { display: flex; width: 100%; padding: 0 16px 16px; }
+.search-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px 0 0 8px; outline: none; font-size: 16px; background-color: #f2f2f2; }
+.search-button { background-color: #ff69b4; border: none; padding: 0 16px; border-radius: 0 8px 8px 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.search-button img { height: 36px; width: auto; }
+
+.categories-container { display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 16px 16px; }
+.categories-container.hidden::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,0); }
+
+#breadcrumb { display: none; background: #fff; border-bottom: 1px solid #eee; padding: 8px 16px; }
+#breadcrumb .path { font-size: 14px; color: #007bff; cursor: pointer; text-decoration: underline; }
+#breadcrumb .separator { font-size: 14px; color: #555; margin: 0 8px; }
+#breadcrumb .crumbName { font-size: 14px; text-transform: capitalize; }
+.header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.header-row .title { font-weight: bold; font-size: 20px; text-transform: uppercase; }
+.header-row .count { font-size: 14px; color: #555; }
+
+/* fotos em quadrados com fundo #f2f2f2 */
+.photo-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
+.photo-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
+.photo-scroll::-webkit-scrollbar { display: none; }
+.photo-item { flex: 0 0 auto; text-align: center; cursor: pointer; }
+.photo-img {
+  width: 100px;
+  height: 100px;
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* sem borda, sem raio */
+}
+.photo-img img { max-width: 100%; max-height: 100%; }
+.photo-item .label { font-size: 16px; font-weight: bold; text-transform: capitalize; margin-top: 8px; }
+
+.image-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
+.image-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
+.image-scroll::-webkit-scrollbar { display: none; }
+
+.banner-scroll-wrapper { background-color: #f2f2f2; padding: 8px 0 24px; overflow: hidden; }
+.banner-scroll { display: flex; gap: 16px; animation: scrollBanners 20s linear infinite; padding: 0 16px; }
+.banner-scroll img { max-height: 160px; border-radius: 12px; }
+@keyframes scrollBanners { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.produtos-wrapper { background-color: #f2f2f2; padding: 16px; }
+.launch-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; cursor: pointer; }
+.produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.produto { cursor: pointer; }
+.produto img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; }
+.produto .nome { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+.produto .preco { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+.produto .parcelamento, .produto .extra { font-size: 13px; margin-bottom: 8px; }
+@media (max-width: 480px) {
+  .produtos-grid { grid-template-columns: 1fr 1fr; }
+  .produto img { height: 220px; }
+}
+
 #overlayMenu {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: #fff; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000;
   padding: 60px 20px; display: flex; flex-direction: column;
 }
 #overlayMenu.open { transform: translateX(0); }
-#overlayMenu .close-btn {
-  position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer;
-}
+#overlayMenu .close-btn { position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer; }
 #overlayMenu nav { display: flex; flex-direction: column; gap: 24px; margin-top: 20px; }
 #overlayMenu nav a { font-size: 24px; text-transform: uppercase; font-weight: bold; }
 
   </style>
 </head>
-<body>  <div id="overlayMenu">
+<body>
+  <div id="overlayMenu">
     <div class="close-btn">&times;</div>
     <nav>
       <a href="#">Início</a>
@@ -89,6 +107,45 @@
       <div class="category">CINTOS</div>
       <div class="category">ÓCULOS</div>
     </div>
+  </div>  <div class="photo-scroll-wrapper">
+    <div class="photo-scroll">
+      <div class="photo-item">
+        <div class="photo-img"><img src="colares.webp" alt="Colares"></div>
+        <div class="label">Colares</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="brincos.webp" alt="Brincos"></div>
+        <div class="label">Brincos</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="aneis.webp" alt="Anéis"></div>
+        <div class="label">Anéis</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="pulseiras.webp" alt="Pulseiras"></div>
+        <div class="label">Pulseiras</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="conjuntos.webp" alt="Conjuntos"></div>
+        <div class="label">Conjuntos</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="braceletes.webp" alt="Braceletes"></div>
+        <div class="label">Braceletes</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="perfumes.webp" alt="Perfumes"></div>
+        <div class="label">Perfumes</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="bolsas.webp" alt="Bolsas"></div>
+        <div class="label">Bolsas</div>
+      </div>
+      <div class="photo-item">
+        <div class="photo-img"><img src="oculos.webp" alt="Óculos"></div>
+        <div class="label">Óculos</div>
+      </div>
+    </div>
   </div>  <div id="breadcrumb">
     <span class="path">Início</span>
     <span class="separator">&gt;</span>
@@ -107,12 +164,10 @@
     <div class="launch-title">Lançamentos</div>
     <div id="produtos" class="produtos-grid"></div>
   </div>  <script>
-    // overlay menu
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
     overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
 
-    // variáveis globais
     const logoImg       = document.querySelector('.logo img');
     const catsEl        = document.getElementById('cats');
     const breadcrumbEl  = document.getElementById('breadcrumb');
@@ -125,14 +180,12 @@
     const searchButton  = document.querySelector('.search-button');
     let allBanners = [], allProdutos = [];
 
-    // scroll categories
     catsEl.addEventListener('scroll', () => {
       catsEl.classList.remove('hidden');
       clearTimeout(window._scrollTimeout);
       window._scrollTimeout = setTimeout(() => catsEl.classList.add('hidden'), 500);
     });
 
-    // fetch planilha
     fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
       .then(res => res.text())
       .then(csv => {
@@ -152,7 +205,6 @@
             });
           }
         });
-        // render banners
         allBanners.concat(allBanners).forEach(url => {
           const img = document.createElement('img');
           img.src = url;
@@ -167,7 +219,7 @@
       list.forEach(p => {
         const div = document.createElement('div');
         div.className = 'produto';
-        div.addEventListener('click', () => location.href=`produto.html?produto=${encodeURIComponent(p.nome)}`);
+        div.addEventListener('click', () => location.href = `produto.html?produto=${encodeURIComponent(p.nome)}`);
         div.innerHTML = `
           <img src="${p.imagem}" alt="${p.nome}">
           <div class="nome">${p.nome}</div>
@@ -181,16 +233,15 @@
 
     function showBreadcrumb(name, list) {
       pathEl.textContent = 'Início';
-      crumbNameEl.textContent = name.charAt(0).toUpperCase()+name.slice(1).toLowerCase();
+      crumbNameEl.textContent = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
       headerTitleEl.textContent = name.toUpperCase();
-      headerCountEl.textContent = `${list.length} produto${list.length!==1?'s':''}`;
+      headerCountEl.textContent = `${list.length} produto${list.length !== 1 ? 's' : ''}`;
       breadcrumbEl.style.display = 'block';
     }
 
-    // singulariza plurais regulares e -es
     function singularize(term) {
-      if (term.endsWith('es')) return term.slice(0,-2);
-      if (term.endsWith('s')) return term.slice(0,-1);
+      if (term.endsWith('es')) return term.slice(0, -2);
+      if (term.endsWith('s')) return term.slice(0, -1);
       return term;
     }
 
@@ -203,11 +254,11 @@
       });
     }
 
-    // categorias
     document.querySelectorAll('.category').forEach(el => {
       el.addEventListener('click', () => {
         const name = el.textContent.trim();
         const filtered = filterByTerm(name);
+        document.querySelector('.photo-scroll-wrapper').style.display = 'none';
         document.querySelector('.image-scroll-wrapper').style.display = 'none';
         document.querySelector('.banner-scroll-wrapper').style.display = 'none';
         launchTitleEl.style.display = 'none';
@@ -216,8 +267,8 @@
       });
     });
 
-    // lançamentos
     launchTitleEl.addEventListener('click', () => {
+      document.querySelector('.photo-scroll-wrapper').style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = 'none';
       document.querySelector('.banner-scroll-wrapper').style.display = 'none';
       launchTitleEl.style.display = 'none';
@@ -225,45 +276,48 @@
       showBreadcrumb('Lançamentos', allProdutos);
     });
 
-    // voltar home
     pathEl.addEventListener('click', () => {
       breadcrumbEl.style.display = 'none';
+      document.querySelector('.photo-scroll-wrapper').style.display = '';
       document.querySelector('.image-scroll-wrapper').style.display = '';
       document.querySelector('.banner-scroll-wrapper').style.display = '';
       launchTitleEl.style.display = '';
       renderProdutos(allProdutos);
     });
 
-    // logo volta home
     logoImg.addEventListener('click', () => {
       breadcrumbEl.style.display = 'none';
+      document.querySelector('.photo-scroll-wrapper').style.display = '';
       document.querySelector('.image-scroll-wrapper').style.display = '';
       document.querySelector('.banner-scroll-wrapper').style.display = '';
       launchTitleEl.style.display = '';
       renderProdutos(allProdutos);
     });
 
-    // pesquisa
     searchInput.addEventListener('input', () => {
       const term = searchInput.value.trim();
       if (!term) {
         renderProdutos(allProdutos);
         breadcrumbEl.style.display = 'none';
         launchTitleEl.style.display = '';
+        document.querySelector('.photo-scroll-wrapper').style.display = '';
         return;
       }
       const filtered = filterByTerm(term);
+      document.querySelector('.photo-scroll-wrapper').style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = 'none';
       document.querySelector('.banner-scroll-wrapper').style.display = 'none';
       launchTitleEl.style.display = 'none';
       renderProdutos(filtered);
       showBreadcrumb(term, filtered);
     });
+
     searchButton.addEventListener('click', () => {
       const term = searchInput.value.trim();
       const filtered = term ? filterByTerm(term) : allProdutos;
-      document.querySelector('.image-scroll-wrapper').style.display = 'none';
-      document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+      document.querySelector('.photo-scroll-wrapper').style.display = term ? 'none' : '';
+      document.querySelector('.image-scroll-wrapper').style.display = term ? 'none' : '';
+      document.querySelector('.banner-scroll-wrapper').style.display = term ? 'none' : '';
       launchTitleEl.style.display = 'none';
       renderProdutos(filtered);
       showBreadcrumb(term || 'Resultados', filtered);
