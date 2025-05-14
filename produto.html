@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Produto</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+    }
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1000;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+    }
+    .menu-icon, .bag-icon {
+      font-size: 28px;
+      cursor: pointer;
+    }
+    .logo img {
+      max-height: 80px;
+      width: auto;
+    }
+    .search-container {
+      display: flex;
+      width: 100%;
+      padding: 0 16px 16px;
+    }
+    .search-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+      font-size: 16px;
+      background-color: #f2f2f2;
+    }
+    .search-button {
+      background-color: #ff69b4;
+      border: none;
+      padding: 0 16px;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-button img {
+      height: 36px;
+      width: auto;
+    }
+    .categories-container {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding: 8px 16px 16px;
+      scrollbar-width: thin;
+      -ms-overflow-style: auto;
+      transition: scrollbar-color 3s ease;
+      scrollbar-color: rgba(204,204,204,1) transparent;
+    }
+    .categories-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .categories-container::-webkit-scrollbar-thumb {
+      background-color: rgba(204,204,204,1);
+      border-radius: 3px;
+    }
+    .categories-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .categories-container.hidden {
+      scrollbar-color: rgba(204,204,204,0) transparent;
+    }
+    .categories-container.hidden::-webkit-scrollbar-thumb {
+      background-color: rgba(204,204,204,0);
+    }
+    .produto-container {
+      padding: 24px 16px;
+    }
+    .produto-container img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .produto-container .nome {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #333;
+    }
+    .produto-container .preco {
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 8px;
+    }
+    .produto-container .parcelamento {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .produto-container .extra {
+      font-size: 14px;
+      color: #007bff;
+      margin-bottom: 16px;
+    }
+    .produto-container .voltar {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #ff69b4;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrapper">
+    <header class="header">
+      <div class="menu-icon">&#9776;</div>
+      <div class="logo"><img src="logo.webp" alt="Logo"></div>
+      <div class="bag-icon">&#128717;</div>
+    </header>
+    <div class="search-container">
+      <input class="search-input" type="text" placeholder="O que você está procurando?" />
+      <button class="search-button"><img src="lupa.webp" alt="Buscar" /></button>
+    </div>
+    <div id="cats" class="categories-container">
+      <div class="category">BRINCOS</div>
+      <div class="category">ANÉIS</div>
+      <div class="category">BRACELETES</div>
+      <div class="category">COLARES</div>
+      <div class="category">CONJUNTOS</div>
+      <div class="category">PULSEIRAS</div>
+      <div class="category">PERFUMES</div>
+      <div class="category">BOLSAS</div>
+      <div class="category">CINTOS</div>
+      <div class="category">ÓCULOS</div>
+    </div>
+  </div>
+
+  <div class="produto-container" id="produto"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const nomeProduto = params.get('produto');
+
+    fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
+      .then(res => res.text())
+      .then(csv => {
+        const lines = csv.split('\n').slice(1);
+        for (const line of lines) {
+          const cells = line.split(',');
+          const nome = cells[2]?.trim() || '';
+          const imagem = cells[3]?.trim();
+          const preco = cells[5]?.trim();
+          const extra = cells[6]?.trim();
+          const parcela = cells[7]?.trim();
+
+          if (nome === decodeURIComponent(nomeProduto)) {
+            document.getElementById('produto').innerHTML = `
+              <img src="${imagem}" alt="${nome}">
+              <div class="nome">${nome}</div>
+              <div class="preco">${preco}</div>
+              <div class="parcelamento">${parcela}</div>
+              <div class="extra">${extra}</div>
+              <a href="index.html" class="voltar">Voltar</a>
+            `;
+            break;
+          }
+        }
+      });
+  </script>
+</body>
+</html>
