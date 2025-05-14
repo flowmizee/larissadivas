@@ -25,7 +25,7 @@
 .header-row .title { font-weight: bold; font-size: 20px; text-transform: uppercase; }
 .header-row .count { font-size: 14px; color: #555; }
 
-/* fotos em quadrados com fundo #f2f2f2 */
+/* fotos em quadrados com fundo igual ao input e produtos (#f2f2f2) */
 .photo-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
 .photo-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
 .photo-scroll::-webkit-scrollbar { display: none; }
@@ -38,7 +38,6 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  /* sem borda, sem raio */
 }
 .photo-img img { max-width: 100%; max-height: 100%; }
 .photo-item .label { font-size: 16px; font-weight: bold; text-transform: capitalize; margin-top: 8px; }
@@ -60,6 +59,9 @@
 .produto .nome { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
 .produto .preco { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
 .produto .parcelamento, .produto .extra { font-size: 13px; margin-bottom: 8px; }
+/* extra sempre azul */
+.produto .extra { color: #007bff; }
+
 @media (max-width: 480px) {
   .produtos-grid { grid-template-columns: 1fr 1fr; }
   .produto img { height: 220px; }
