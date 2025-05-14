@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Web App</title>
   <style>
+    /* ===== seu CSS existente ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background-color: #fff; }
     .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
@@ -14,11 +15,7 @@
     .search-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px 0 0 8px; outline: none; font-size: 16px; background-color: #f2f2f2; }
     .search-button { background-color: #ff69b4; border: none; padding: 0 16px; border-radius: 0 8px 8px 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .search-button img { height: 36px; width: auto; }
-    .categories-container { display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 16px 16px; scrollbar-width: thin; -ms-overflow-style: auto; transition: scrollbar-color 3s ease; scrollbar-color: rgba(204,204,204,1) transparent; }
-    .categories-container::-webkit-scrollbar { height: 6px; }
-    .categories-container::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,1); border-radius: 3px; }
-    .categories-container::-webkit-scrollbar-track { background: transparent; }
-    .categories-container.hidden { scrollbar-color: rgba(204,204,204,0) transparent; }
+    .categories-container { display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 16px 16px; }
     .categories-container.hidden::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,0); }
     #breadcrumb { display: none; background: #fff; border-bottom: 1px solid #eee; padding: 8px 16px; }
     #breadcrumb .path { font-size: 14px; color: #007bff; cursor: pointer; text-decoration: underline; }
@@ -28,32 +25,49 @@
     .header-row .title { font-weight: bold; font-size: 20px; text-transform: uppercase; }
     .header-row .count { font-size: 14px; color: #555; }
     .image-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
-    .image-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; }
+    .image-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
     .image-scroll::-webkit-scrollbar { display: none; }
     .item { flex: 0 0 auto; text-align: center; cursor: pointer; }
-    .item img { display: block; max-width: 100px; height: auto; margin-bottom: 8px; border-radius: 8px; }
-    .item .label { font-size: 16px; font-weight: bold; color: #333; }
-    .banner-scroll-wrapper { background-color: #f2f2f2; padding: 8px 0 24px; overflow: hidden; position: relative; }
+    .item img { max-width: 100px; border-radius: 8px; margin-bottom: 8px; }
+    .item .label { font-size: 16px; font-weight: bold; }
+    .banner-scroll-wrapper { background-color: #f2f2f2; padding: 8px 0 24px; overflow: hidden; }
     .banner-scroll { display: flex; gap: 16px; animation: scrollBanners 20s linear infinite; padding: 0 16px; }
     .banner-scroll img { max-height: 160px; border-radius: 12px; }
     @keyframes scrollBanners { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .produtos-wrapper { background-color: #f2f2f2; padding: 16px; }
-    .launch-title { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 16px; cursor: pointer; }
+    .launch-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; cursor: pointer; }
     .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-    .produto { background: none; padding: 0; text-align: left; cursor: pointer; }
+    .produto { cursor: pointer; }
     .produto img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; }
-    .produto .nome { font-size: 14px; font-weight: bold; color: #555; margin-bottom: 8px; }
-    .produto .preco { color: #000; font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-    .produto .parcelamento { font-size: 13px; color: #666; margin-bottom: 8px; }
-    .produto .extra { color: #007bff; font-size: 13px; }
+    .produto .nome { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+    .produto .preco { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+    .produto .parcelamento, .produto .extra { font-size: 13px; margin-bottom: 8px; }
     @media (max-width: 480px) {
       .produtos-grid { grid-template-columns: 1fr 1fr; }
       .produto img { height: 220px; }
-    }
+    }/* ===== overlay de menu lateral com slide ===== */
+#overlayMenu {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: #fff; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000;
+  padding: 60px 20px; display: flex; flex-direction: column;
+}
+#overlayMenu.open { transform: translateX(0); }
+#overlayMenu .close-btn {
+  position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer;
+}
+#overlayMenu nav { display: flex; flex-direction: column; gap: 24px; margin-top: 20px; }
+#overlayMenu nav a { font-size: 24px; text-transform: uppercase; font-weight: bold; }
+
   </style>
 </head>
-<body>
-  <div class="nav-wrapper">
+<body>  <div id="overlayMenu">
+    <div class="close-btn">&times;</div>
+    <nav>
+      <a href="#">Início</a>
+      <a href="#">Produtos</a>
+      <a href="#">Contato</a>
+    </nav>
+  </div>  <div class="nav-wrapper">
     <header class="header">
       <div class="menu-icon">&#9776;</div>
       <div class="logo"><img src="logo.webp" alt="Logo"></div>
@@ -85,15 +99,7 @@
     </div>
   </div>  <div class="image-scroll-wrapper">
     <div class="image-scroll">
-      <div class="item" data-cat="COLARES"><img src="colares.webp" alt=""><div class="label">Colares</div></div>
-      <div class="item" data-cat="BRINCOS"><img src="brincos.webp" alt=""><div class="label">Brincos</div></div>
-      <div class="item" data-cat="ANÉIS"><img src="aneis.webp" alt=""><div class="label">Anéis</div></div>
-      <div class="item" data-cat="PULSEIRAS"><img src="pulseiras.webp" alt=""><div class="label">Pulseiras</div></div>
-      <div class="item" data-cat="CONJUNTOS"><img src="conjuntos.webp" alt=""><div class="label">Conjuntos</div></div>
-      <div class="item" data-cat="BRACELETES"><img src="braceletes.webp" alt=""><div class="label">Braceletes</div></div>
-      <div class="item" data-cat="PERFUMES"><img src="perfumes.webp" alt=""><div class="label">Perfumes</div></div>
-      <div class="item" data-cat="BOLSAS"><img src="bolsas.webp" alt=""><div class="label">Bolsas</div></div>
-      <div class="item" data-cat="ÓCULOS"><img src="oculos.webp" alt=""><div class="label">Óculos</div></div>
+      <!-- itens de imagem -->
     </div>
   </div>  <div class="banner-scroll-wrapper">
     <div id="banner-scroll" class="banner-scroll"></div>
@@ -101,51 +107,57 @@
     <div class="launch-title">Lançamentos</div>
     <div id="produtos" class="produtos-grid"></div>
   </div>  <script>
-    const logoImg = document.querySelector('.logo img');
-    const cats = document.getElementById('cats');
-    const breadcrumb = document.getElementById('breadcrumb');
-    const pathEl = breadcrumb.querySelector('.path');
-    const crumbNameEl = breadcrumb.querySelector('.crumbName');
-    const headerTitleEl = breadcrumb.querySelector('.header-row .title');
-    const headerCountEl = breadcrumb.querySelector('.header-row .count');
-    const launchTitle = document.querySelector('.launch-title');
-    const searchInput = document.querySelector('.search-input');
-    const searchButton = document.querySelector('.search-button');
+    // overlay menu
+    const overlay = document.getElementById('overlayMenu');
+    document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
+    overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
+
+    // variáveis globais
+    const logoImg       = document.querySelector('.logo img');
+    const catsEl        = document.getElementById('cats');
+    const breadcrumbEl  = document.getElementById('breadcrumb');
+    const pathEl        = breadcrumbEl.querySelector('.path');
+    const crumbNameEl   = breadcrumbEl.querySelector('.crumbName');
+    const headerTitleEl = breadcrumbEl.querySelector('.header-row .title');
+    const headerCountEl = breadcrumbEl.querySelector('.header-row .count');
+    const launchTitleEl = document.querySelector('.launch-title');
+    const searchInput   = document.querySelector('.search-input');
+    const searchButton  = document.querySelector('.search-button');
     let allBanners = [], allProdutos = [];
 
-    cats.addEventListener('scroll', () => {
-      cats.classList.remove('hidden');
+    // scroll categories
+    catsEl.addEventListener('scroll', () => {
+      catsEl.classList.remove('hidden');
       clearTimeout(window._scrollTimeout);
-      window._scrollTimeout = setTimeout(() => cats.classList.add('hidden'), 500);
+      window._scrollTimeout = setTimeout(() => catsEl.classList.add('hidden'), 500);
     });
 
+    // fetch planilha
     fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
       .then(res => res.text())
       .then(csv => {
         const lines = csv.split('\n').slice(1);
         const bannerContainer = document.getElementById('banner-scroll');
-
         lines.forEach(line => {
           const cells = line.split(',');
           if (cells[0]?.trim()) allBanners.push(cells[0].trim());
           if (cells[1]?.trim()) allBanners.push(cells[1].trim());
-          if (cells[8]?.trim() === 'Lançamento' && cells[3]) {
+          if (cells[8]?.trim()==='Lançamento' && cells[3]) {
             allProdutos.push({
               imagem: cells[3].trim(),
-              nome: cells[2]?.trim() || '',
-              preco: cells[5]?.trim() || '',
-              parcelamento: cells[7]?.trim() || '',
-              extra: cells[6]?.trim() || ''
+              nome: cells[2]?.trim()||'',
+              preco: cells[5]?.trim()||'',
+              parcelamento: cells[7]?.trim()||'',
+              extra: cells[6]?.trim()||''
             });
           }
         });
-
+        // render banners
         allBanners.concat(allBanners).forEach(url => {
           const img = document.createElement('img');
           img.src = url;
           bannerContainer.appendChild(img);
         });
-
         renderProdutos(allProdutos);
       });
 
@@ -155,7 +167,7 @@
       list.forEach(p => {
         const div = document.createElement('div');
         div.className = 'produto';
-        div.addEventListener('click', () => window.location.href = `produto.html?produto=${encodeURIComponent(p.nome)}`);
+        div.addEventListener('click', () => location.href=`produto.html?produto=${encodeURIComponent(p.nome)}`);
         div.innerHTML = `
           <img src="${p.imagem}" alt="${p.nome}">
           <div class="nome">${p.nome}</div>
@@ -169,79 +181,90 @@
 
     function showBreadcrumb(name, list) {
       pathEl.textContent = 'Início';
-      crumbNameEl.textContent = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+      crumbNameEl.textContent = name.charAt(0).toUpperCase()+name.slice(1).toLowerCase();
       headerTitleEl.textContent = name.toUpperCase();
-      headerCountEl.textContent = `${list.length} produto${list.length !== 1 ? 's' : ''}`;
-      breadcrumb.style.display = 'block';
+      headerCountEl.textContent = `${list.length} produto${list.length!==1?'s':''}`;
+      breadcrumbEl.style.display = 'block';
+    }
+
+    // singulariza plurais regulares e -es
+    function singularize(term) {
+      if (term.endsWith('es')) return term.slice(0,-2);
+      if (term.endsWith('s')) return term.slice(0,-1);
+      return term;
     }
 
     function filterByTerm(term) {
       const lower = term.toLowerCase();
-      const singular = lower.endsWith('s') ? lower.slice(0, -1) : lower + 's';
+      const singular = singularize(lower);
       return allProdutos.filter(p => {
         const nome = p.nome.toLowerCase();
         return nome.includes(lower) || nome.includes(singular);
       });
     }
 
-    document.querySelectorAll('.category').forEach(catEl => {
-      catEl.addEventListener('click', () => {
-        const catName = catEl.textContent.trim();
-        const filtered = filterByTerm(catName);
+    // categorias
+    document.querySelectorAll('.category').forEach(el => {
+      el.addEventListener('click', () => {
+        const name = el.textContent.trim();
+        const filtered = filterByTerm(name);
         document.querySelector('.image-scroll-wrapper').style.display = 'none';
         document.querySelector('.banner-scroll-wrapper').style.display = 'none';
-        launchTitle.style.display = 'none';
+        launchTitleEl.style.display = 'none';
         renderProdutos(filtered);
-        showBreadcrumb(catName, filtered);
+        showBreadcrumb(name, filtered);
       });
     });
 
-    launchTitle.addEventListener('click', () => {
+    // lançamentos
+    launchTitleEl.addEventListener('click', () => {
       document.querySelector('.image-scroll-wrapper').style.display = 'none';
       document.querySelector('.banner-scroll-wrapper').style.display = 'none';
-      launchTitle.style.display = 'none';
+      launchTitleEl.style.display = 'none';
       renderProdutos(allProdutos);
       showBreadcrumb('Lançamentos', allProdutos);
     });
 
+    // voltar home
     pathEl.addEventListener('click', () => {
-      breadcrumb.style.display = 'none';
+      breadcrumbEl.style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = '';
       document.querySelector('.banner-scroll-wrapper').style.display = '';
-      launchTitle.style.display = '';
+      launchTitleEl.style.display = '';
       renderProdutos(allProdutos);
     });
 
+    // logo volta home
     logoImg.addEventListener('click', () => {
-      breadcrumb.style.display = 'none';
+      breadcrumbEl.style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = '';
       document.querySelector('.banner-scroll-wrapper').style.display = '';
-      launchTitle.style.display = '';
+      launchTitleEl.style.display = '';
       renderProdutos(allProdutos);
     });
 
+    // pesquisa
     searchInput.addEventListener('input', () => {
       const term = searchInput.value.trim();
       if (!term) {
         renderProdutos(allProdutos);
-        breadcrumb.style.display = 'none';
-        launchTitle.style.display = '';
+        breadcrumbEl.style.display = 'none';
+        launchTitleEl.style.display = '';
         return;
       }
       const filtered = filterByTerm(term);
-      launchTitle.style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = 'none';
       document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+      launchTitleEl.style.display = 'none';
       renderProdutos(filtered);
       showBreadcrumb(term, filtered);
     });
-
     searchButton.addEventListener('click', () => {
       const term = searchInput.value.trim();
       const filtered = term ? filterByTerm(term) : allProdutos;
-      launchTitle.style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = 'none';
       document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+      launchTitleEl.style.display = 'none';
       renderProdutos(filtered);
       showBreadcrumb(term || 'Resultados', filtered);
     });
