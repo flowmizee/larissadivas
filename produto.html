@@ -46,6 +46,7 @@
     .category.active { font-weight: bold; color: #ff69b4; }
     .produto-container { padding: 16px; }
     .breadcrumb { font-size: 14px; color: #666; margin-bottom: 16px; }
+    .breadcrumb a { color: #007bff; text-decoration: none; }
     .produto-img {
       width: 100%; max-height: 360px;
       object-fit: cover; border-radius: 8px; margin-bottom: 16px;
@@ -124,10 +125,9 @@
           let preco = (cells[5]||'').replace(/[^\d.,]/g,'').replace('.', ',');
           const extra = cells[6]?.trim();
           const parcela = cells[7]?.trim();
-          const categoria = cells[4] ? cells[4].trim().split(' ')[0] : '';
 
           document.getElementById('produto').innerHTML = `
-            <div class="breadcrumb">Início > ${categoria} > ${nome}</div>
+            <div class="breadcrumb"><a href="index.html">Início</a> &gt; ${nome}</div>
             <img src="${imagem}" alt="${nome}" class="produto-img" />
             <div class="produto-nome">${nome}</div>
             <div class="produto-preco">R$ ${preco}</div>
