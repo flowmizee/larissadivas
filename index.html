@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Web App</title>
   <style>
     * {
@@ -78,7 +79,6 @@
     .categories-container::-webkit-scrollbar-thumb {
       background-color: rgba(204,204,204,1);
       border-radius: 3px;
-      transition: background-color 3s ease;
     }
     .categories-container::-webkit-scrollbar-track {
       background: transparent;
@@ -100,7 +100,6 @@
       overflow-x: auto;
       scroll-behavior: smooth;
       scrollbar-width: none;
-      -ms-overflow-style: none;
     }
     .image-scroll::-webkit-scrollbar {
       display: none;
@@ -111,7 +110,7 @@
     }
     .item img {
       display: block;
-      max-width: 120px;
+      max-width: 100px;
       height: auto;
       margin-bottom: 8px;
     }
@@ -140,13 +139,56 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    .produtos-wrapper {
+      background-color: #f2f2f2;
+      padding: 16px;
+    }
+    .produtos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .produto {
+      background: none;
+      border-radius: 0;
+      padding: 0;
+      text-align: left;
+    }
+    .produto img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .produto .nome {
+      font-size: 14px;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 4px;
+    }
+    .produto .preco {
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .produto .parcelamento {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .produto .extra {
+      color: #007bff;
+      font-size: 13px;
+    }
     @media (max-width: 480px) {
-      .menu-icon, .bag-icon { font-size: 24px; }
-      .logo img { max-height: 60px; }
-      .search-input { font-size: 14px; }
-      .category { font-size: 12px; }
-      .item img { max-width: 100px; }
-      .item .label { font-size: 14px; }
+      .produtos-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .produto img {
+        height: 200px;
+      }
     }
   </style>
 </head>
@@ -177,42 +219,15 @@
 
   <div class="image-scroll-wrapper">
     <div class="image-scroll">
-      <div class="item">
-        <img src="colares.webp" alt="Colares">
-        <div class="label">Colares</div>
-      </div>
-      <div class="item">
-        <img src="brincos.webp" alt="Brincos">
-        <div class="label">Brincos</div>
-      </div>
-      <div class="item">
-        <img src="aneis.webp" alt="Aneis">
-        <div class="label">Aneis</div>
-      </div>
-      <div class="item">
-        <img src="pulseiras.webp" alt="Pulseiras">
-        <div class="label">Pulseiras</div>
-      </div>
-      <div class="item">
-        <img src="conjuntos.webp" alt="Conjuntos">
-        <div class="label">Conjuntos</div>
-      </div>
-      <div class="item">
-        <img src="braceletes.webp" alt="Braceletes">
-        <div class="label">Braceletes</div>
-      </div>
-      <div class="item">
-        <img src="perfumes.webp" alt="Perfumes">
-        <div class="label">Perfumes</div>
-      </div>
-      <div class="item">
-        <img src="bolsas.webp" alt="Bolsas">
-        <div class="label">Bolsas</div>
-      </div>
-      <div class="item">
-        <img src="oculos.webp" alt="Óculos">
-        <div class="label">Óculos</div>
-      </div>
+      <div class="item"><img src="colares.webp" alt=""><div class="label">Colares</div></div>
+      <div class="item"><img src="brincos.webp" alt=""><div class="label">Brincos</div></div>
+      <div class="item"><img src="aneis.webp" alt=""><div class="label">Anéis</div></div>
+      <div class="item"><img src="pulseiras.webp" alt=""><div class="label">Pulseiras</div></div>
+      <div class="item"><img src="conjuntos.webp" alt=""><div class="label">Conjuntos</div></div>
+      <div class="item"><img src="braceletes.webp" alt=""><div class="label">Braceletes</div></div>
+      <div class="item"><img src="perfumes.webp" alt=""><div class="label">Perfumes</div></div>
+      <div class="item"><img src="bolsas.webp" alt=""><div class="label">Bolsas</div></div>
+      <div class="item"><img src="oculos.webp" alt=""><div class="label">Óculos</div></div>
     </div>
   </div>
 
@@ -220,9 +235,9 @@
     <div id="banner-scroll" class="banner-scroll"></div>
   </div>
 
-  <main>
-    <!-- Conteúdo da página -->
-  </main>
+  <div class="produtos-wrapper">
+    <div id="produtos" class="produtos-grid"></div>
+  </div>
 
   <script>
     const cats = document.getElementById('cats');
@@ -240,23 +255,50 @@
       .then(csv => {
         const lines = csv.split('\n').slice(1);
         const banners = [];
+        const produtos = [];
+
         lines.forEach(line => {
           const cells = line.split(',');
           if (cells[0]) banners.push(cells[0].trim());
           if (cells[1]) banners.push(cells[1].trim());
+
+          if (cells[3]) {
+            produtos.push({
+              imagem: cells[3].trim(),
+              nome: cells[2]?.trim() || '',
+              preco: cells[5]?.trim() || '',
+              parcelamento: cells[7]?.trim() || '',
+              extra: cells[6]?.trim() || ''
+            });
+          }
         });
-        const container = document.getElementById('banner-scroll');
+
+        const bannerContainer = document.getElementById('banner-scroll');
         banners.forEach(url => {
           const img = document.createElement('img');
           img.src = url;
-          container.appendChild(img);
+          bannerContainer.appendChild(img);
         });
         banners.forEach(url => {
           const img = document.createElement('img');
           img.src = url;
-          container.appendChild(img);
+          bannerContainer.appendChild(img);
+        });
+
+        const produtosContainer = document.getElementById('produtos');
+        produtos.forEach(p => {
+          const div = document.createElement('div');
+          div.className = 'produto';
+          div.innerHTML = `
+            <img src="${p.imagem}" alt="${p.nome}">
+            <div class="nome">${p.nome}</div>
+            <div class="preco">${p.preco}</div>
+            <div class="parcelamento">${p.parcelamento}</div>
+            <div class="extra">${p.extra}</div>
+          `;
+          produtosContainer.appendChild(div);
         });
       });
   </script>
 </body>
-</html>
+  </html>
