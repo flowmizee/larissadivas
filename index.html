@@ -1,72 +1,70 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html><html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Web App</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background-color: #fff; }
+    body { font-family: Arial, sans-serif; background-color: #fff; }.nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
+.menu-icon, .bag-icon { font-size: 28px; cursor: pointer; }
+.logo img { max-height: 80px; width: auto; cursor: pointer; }
 
-    .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
-    .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; }
-    .logo img { max-height: 80px; width: auto; cursor: pointer; }
+.search-container { display: flex; width: 100%; padding: 0 16px 16px; }
+.search-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px 0 0 8px; outline: none; font-size: 16px; background-color: #f2f2f2; }
+.search-button { background-color: #ff69b4; border: none; padding: 0 16px; border-radius: 0 8px 8px 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.search-button img { height: 36px; width: auto; }
 
-    .search-container { display: flex; width: 100%; padding: 0 16px 16px; }
-    .search-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px 0 0 8px; outline: none; font-size: 16px; background-color: #f2f2f2; }
-    .search-button { background-color: #ff69b4; border: none; padding: 0 16px; border-radius: 0 8px 8px 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .search-button img { height: 36px; width: auto; }
+.categories-container { display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 16px 16px; }
+.categories-container.hidden::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,0); }
+.category { cursor: pointer; white-space: nowrap; padding: 8px 0; }
 
-    .categories-container { display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 16px 16px; }
-    .categories-container.hidden::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,0); }
-    .category { cursor: pointer; white-space: nowrap; padding: 8px 0; }
+#breadcrumb { display: none; background: #fff; border-bottom: 1px solid #eee; padding: 8px 16px; }
+#breadcrumb .path { font-size: 14px; color: #007bff; cursor: pointer; text-decoration: underline; }
+#breadcrumb .separator { font-size: 14px; color: #555; margin: 0 8px; }
+#breadcrumb .crumbName { font-size: 14px; text-transform: capitalize; }
+.header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.header-row .title { font-weight: bold; font-size: 20px; text-transform: uppercase; }
+.header-row .count { font-size: 14px; color: #555; }
 
-    #breadcrumb { display: none; background: #fff; border-bottom: 1px solid #eee; padding: 8px 16px; }
-    #breadcrumb .path { font-size: 14px; color: #007bff; cursor: pointer; text-decoration: underline; }
-    #breadcrumb .separator { font-size: 14px; color: #555; margin: 0 8px; }
-    #breadcrumb .crumbName { font-size: 14px; text-transform: capitalize; }
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-    .header-row .title { font-weight: bold; font-size: 20px; text-transform: uppercase; }
-    .header-row .count { font-size: 14px; color: #555; }
+.photo-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
+.photo-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
+.photo-scroll::-webkit-scrollbar { display: none; }
+.photo-item { flex: 0 0 auto; text-align: center; cursor: pointer; }
+.photo-img { width: 100px; height: 100px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.photo-img img { max-width: 100%; max-height: 100%; }
+.photo-item .label { font-size: 16px; font-weight: bold; text-transform: capitalize; margin-top: 8px; }
 
-    .photo-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
-    .photo-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
-    .photo-scroll::-webkit-scrollbar { display: none; }
-    .photo-item { flex: 0 0 auto; text-align: center; cursor: pointer; }
-    .photo-img { width: 100px; height: 100px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .photo-img img { max-width: 100%; max-height: 100%; }
-    .photo-item .label { font-size: 16px; font-weight: bold; text-transform: capitalize; margin-top: 8px; }
+.image-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
+.image-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
+.image-scroll::-webkit-scrollbar { display: none; }
 
-    .image-scroll-wrapper { background-color: #f2f2f2; padding: 16px; }
-    .image-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
-    .image-scroll::-webkit-scrollbar { display: none; }
+.banner-scroll-wrapper { background-color: #f2f2f2; padding: 8px 0 24px; overflow: hidden; }
+.banner-scroll { display: flex; gap: 16px; animation: scrollBanners 20s linear infinite; padding: 0 16px; }
+.banner-scroll img { height: 500px; object-fit: cover; border-radius: 12px; }
+@keyframes scrollBanners { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-    .banner-scroll-wrapper { background-color: #f2f2f2; padding: 8px 0 24px; overflow: hidden; }
-    .banner-scroll { display: flex; gap: 16px; animation: scrollBanners 20s linear infinite; padding: 0 16px; }
-    .banner-scroll img { max-height: 160px; border-radius: 12px; }
-    @keyframes scrollBanners { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.produtos-wrapper { background-color: #f2f2f2; padding: 16px; }
+.launch-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; cursor: pointer; }
+.produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.produto { cursor: pointer; }
+.produto img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; }
+.produto .nome { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+.produto .preco { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+.produto .parcelamento, .produto .extra { font-size: 13px; margin-bottom: 8px; }
+.produto .extra { color: #007bff; }
 
-    .produtos-wrapper { background-color: #f2f2f2; padding: 16px; }
-    .launch-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; cursor: pointer; }
-    .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-    .produto { cursor: pointer; }
-    .produto img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; }
-    .produto .nome { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
-    .produto .preco { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-    .produto .parcelamento, .produto .extra { font-size: 13px; margin-bottom: 8px; }
-    .produto .extra { color: #007bff; }
+@media (max-width: 480px) {
+  .produtos-grid { grid-template-columns: 1fr 1fr; }
+  .produto img { height: 220px; }
+}
 
-    @media (max-width: 480px) {
-      .produtos-grid { grid-template-columns: 1fr 1fr; }
-      .produto img { height: 220px; }
-    }
+#overlayMenu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 60px 20px; display: flex; flex-direction: column; }
+#overlayMenu.open { transform: translateX(0); }
+#overlayMenu .close-btn { position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer; }
+#overlayMenu nav { display: flex; flex-direction: column; gap: 24px; margin-top: 20px; }
+#overlayMenu nav a { font-size: 24px; text-transform: uppercase; font-weight: bold; }
 
-    #overlayMenu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 60px 20px; display: flex; flex-direction: column; }
-    #overlayMenu.open { transform: translateX(0); }
-    #overlayMenu .close-btn { position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer; }
-    #overlayMenu nav { display: flex; flex-direction: column; gap: 24px; margin-top: 20px; }
-    #overlayMenu nav a { font-size: 24px; text-transform: uppercase; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -77,9 +75,7 @@
       <a href="#">Produtos</a>
       <a href="#">Contato</a>
     </nav>
-  </div>
-
-  <div class="nav-wrapper">
+  </div>  <div class="nav-wrapper">
     <header class="header">
       <div class="menu-icon">&#9776;</div>
       <div class="logo"><img src="logo.webp" alt="Logo"></div>
@@ -101,50 +97,19 @@
       <div class="category">CINTOS</div>
       <div class="category">ÓCULOS</div>
     </div>
-  </div>
-
-  <div class="photo-scroll-wrapper">
+  </div>  <div class="photo-scroll-wrapper">
     <div class="photo-scroll">
-      <div class="photo-item">
-        <div class="photo-img"><img src="colares.webp" alt="Colares"></div>
-        <div class="label">Colares</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="brincos.webp" alt="Brincos"></div>
-        <div class="label">Brincos</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="aneis.webp" alt="Anéis"></div>
-        <div class="label">Anéis</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="pulseiras.webp" alt="Pulseiras"></div>
-        <div class="label">Pulseiras</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="conjuntos.webp" alt="Conjuntos"></div>
-        <div class="label">Conjuntos</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="braceletes.webp" alt="Braceletes"></div>
-        <div class="label">Braceletes</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="perfumes.webp" alt="Perfumes"></div>
-        <div class="label">Perfumes</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="bolsas.webp" alt="Bolsas"></div>
-        <div class="label">Bolsas</div>
-      </div>
-      <div class="photo-item">
-        <div class="photo-img"><img src="oculos.webp" alt="Óculos"></div>
-        <div class="label">Óculos</div>
-      </div>
+      <div class="photo-item"><div class="photo-img"><img src="colares.webp" alt="Colares"></div><div class="label">Colares</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="brincos.webp" alt="Brincos"></div><div class="label">Brincos</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="aneis.webp" alt="Anéis"></div><div class="label">Anéis</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="pulseiras.webp" alt="Pulseiras"></div><div class="label">Pulseiras</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="conjuntos.webp" alt="Conjuntos"></div><div class="label">Conjuntos</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="braceletes.webp" alt="Braceletes"></div><div class="label">Braceletes</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="perfumes.webp" alt="Perfumes"></div><div class="label">Perfumes</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="bolsas.webp" alt="Bolsas"></div><div class="label">Bolsas</div></div>
+      <div class="photo-item"><div class="photo-img"><img src="oculos.webp" alt="Óculos"></div><div class="label">Óculos</div></div>
     </div>
-  </div>
-
-  <div id="breadcrumb">
+  </div>  <div id="breadcrumb">
     <span class="path">Início</span>
     <span class="separator">&gt;</span>
     <span class="crumbName"></span>
@@ -152,22 +117,14 @@
       <span class="title"></span>
       <span class="count"></span>
     </div>
-  </div>
-
-  <div class="image-scroll-wrapper">
+  </div>  <div class="image-scroll-wrapper">
     <div class="image-scroll"><!-- ... --></div>
-  </div>
-
-  <div class="banner-scroll-wrapper">
+  </div>  <div class="banner-scroll-wrapper">
     <div id="banner-scroll" class="banner-scroll"></div>
-  </div>
-
-  <div class="produtos-wrapper">
+  </div>  <div class="produtos-wrapper">
     <div class="launch-title">Lançamentos</div>
     <div id="produtos" class="produtos-grid"></div>
-  </div>
-
-  <script>
+  </div>  <script>
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
     overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
@@ -199,12 +156,9 @@
 
         lines.forEach(line => {
           const cells = line.split(',');
-
-          // banners
           if (cells[0]?.trim()) allBanners.push(cells[0].trim());
           if (cells[1]?.trim()) allBanners.push(cells[1].trim());
 
-          // produtos Tag="Lançamento"
           if (cells[14]?.trim() === 'Lançamento') {
             allProdutos.push({
               nome:         cells[2]?.trim()  || '',
@@ -219,11 +173,23 @@
           }
         });
 
-        // duplica banners
-        allBanners.concat(allBanners).forEach(url => {
+        if (allBanners.length === 1) {
+          bannerContainer.classList.remove('banner-scroll');
+          bannerContainer.innerHTML = '';
           const img = document.createElement('img');
-          img.src = url; bannerContainer.appendChild(img);
-        });
+          img.src = allBanners[0];
+          img.style.width = '100%';
+          img.style.height = '500px';
+          img.style.objectFit = 'cover';
+          bannerContainer.appendChild(img);
+        } else {
+          bannerContainer.classList.add('banner-scroll');
+          allBanners.concat(allBanners).forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            bannerContainer.appendChild(img);
+          });
+        }
 
         renderProdutos(allProdutos);
       });
@@ -348,6 +314,5 @@
       renderProdutos(filtered);
       showBreadcrumb(term || 'Resultados', filtered);
     });
-  </script>
-</body>
+  </script></body>
 </html>
