@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -9,7 +10,7 @@
     .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
     .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; }
-    .logo img { max-height: 80px; width: auto; }
+    .logo img { max-height: 80px; width: auto; cursor: pointer; }
     .search-container { display: flex; width: 100%; padding: 0 16px 16px; }
     .search-input {
       flex: 1; padding: 12px;
@@ -25,36 +26,53 @@
     .categories-container {
       display: flex; gap: 16px; overflow-x: auto;
       scroll-behavior: smooth; padding: 8px 16px 16px;
-      scrollbar-width: thin; -ms-overflow-style: auto;
-      transition: scrollbar-color 3s ease;
-      scrollbar-color: rgba(204,204,204,1) transparent;
     }
-    .categories-container::-webkit-scrollbar { height: 6px; }
-    .categories-container::-webkit-scrollbar-thumb {
-      background-color: rgba(204,204,204,1); border-radius: 3px;
-    }
-    .categories-container::-webkit-scrollbar-track { background: transparent; }
-    .categories-container.hidden {
-      scrollbar-color: rgba(204,204,204,0) transparent;
-    }
-    .categories-container.hidden::-webkit-scrollbar-thumb {
-      background-color: rgba(204,204,204,0);
-    }
-    .category {
-      cursor: pointer; white-space: nowrap; padding: 8px 0;
-    }
-    .category.active { font-weight: bold; color: #ff69b4; }
+    .categories-container.hidden::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,0); }
+    .category { cursor: pointer; white-space: nowrap; padding: 8px 0; }
     .produto-container { padding: 16px; }
     .breadcrumb { font-size: 14px; color: #666; margin-bottom: 16px; }
     .breadcrumb a { color: #007bff; text-decoration: none; }
-    .produto-img {
-      width: 100%; max-height: 360px;
-      object-fit: cover; border-radius: 8px; margin-bottom: 16px;
+
+    /* CARROSSEL */
+    .carousel { position: relative; width: 100%; max-width: 480px; margin: 0 auto 16px; }
+    .carousel img { width: 100%; border-radius: 8px; }
+    .badge {
+      position: absolute; top: 8px; left: 8px;
+      background: rgba(255,0,0,0.8); color: #fff;
+      padding: 4px 8px; border-radius: 4px; font-size: 14px;
     }
+    .counter {
+      position: absolute; bottom: 8px; right: 8px;
+      background: rgba(0,0,0,0.6); color: #fff;
+      padding: 4px 8px; border-radius: 12px; font-size: 14px;
+    }
+    .thumbnails { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+    .thumbnails img {
+      width: 60px; height: 60px; object-fit: cover;
+      border: 2px solid #ddd; border-radius: 4px; cursor: pointer;
+    }
+    .thumbnails img.active { border-color: #007bff; }
+
+    /* DADOS DO PRODUTO */
     .produto-nome { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 8px; }
     .produto-preco { font-size: 24px; font-weight: bold; color: #000; margin-bottom: 8px; }
     .produto-parcelamento { font-size: 15px; color: #666; margin-bottom: 8px; }
     .produto-extra { font-size: 14px; color: #007bff; margin-bottom: 16px; }
+
+    /* OPÇÕES (cores ou variantes) */
+    .options { margin-bottom: 16px; }
+    .options-label { font-size: 14px; margin-bottom: 4px; }
+    .option-swatch {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 8px;
+    }
+    .option-swatch.selected { border-color: #000; }
+
     .purchase-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
     .qty-controls {
       display: flex; align-items: center;
@@ -63,21 +81,35 @@
     .qty-controls button {
       background: none; border: none; font-size: 18px; padding: 8px 12px; cursor: pointer;
     }
-    .qty-controls .qty {
-      padding: 0 12px; font-size: 18px; min-width: 24px; text-align: center;
-    }
+    .qty-controls .qty { padding: 0 12px; font-size: 18px; min-width: 24px; text-align: center; }
     .buy-btn {
-      flex: 1;
-      background-color: #ff69b4; color: #fff; border: none;
-      padding: 12px; border-radius: 8px; font-size: 16px;
-      cursor: pointer;
+      flex: 1; background-color: #ff69b4; color: #fff; border: none;
+      padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer;
     }
+
     .info-section { font-size: 14px; color: #555; margin-bottom: 4px; }
     .descricao { font-size: 14px; color: #333; margin-top: 8px; line-height: 1.5; }
     hr { border: none; border-top: 1px solid #ddd; margin: 16px 0; }
+
+    /* overlayMenu */
+    #overlayMenu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 60px 20px; display: flex; flex-direction: column; }
+    #overlayMenu.open { transform: translateX(0); }
+    #overlayMenu .close-btn { position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer; }
+    #overlayMenu nav { display: flex; flex-direction: column; gap: 0; margin-top: 20px; }
+    #overlayMenu nav a { font-size: 20px; color: #000; text-decoration: none; text-transform: uppercase; padding: 8px 0; }
   </style>
 </head>
-<body>  <div class="nav-wrapper">
+<body>
+  <div id="overlayMenu">
+    <div class="close-btn">&times;</div>
+    <nav>
+      <a href="#">Início</a>
+      <a href="#">Produtos</a>
+      <a href="#">Contato</a>
+    </nav>
+  </div>
+
+  <div class="nav-wrapper">
     <header class="header">
       <div class="menu-icon">&#9776;</div>
       <div class="logo"><img src="logo.webp" alt="Logo" /></div>
@@ -99,18 +131,17 @@
       <div class="category">CINTOS</div>
       <div class="category">ÓCULOS</div>
     </div>
-  </div>  <div class="produto-container" id="produto"></div>  <script>
-    // scroll-hide for categories
-    const catsEl = document.getElementById('cats');
-    let hideTimeout;
-    catsEl.addEventListener('scroll', () => {
-      catsEl.classList.remove('hidden');
-      clearTimeout(hideTimeout);
-      hideTimeout = setTimeout(() => catsEl.classList.add('hidden'), 500);
-    });
+  </div>
+
+  <div class="produto-container" id="produto"></div>
+
+  <script>
+    const overlay = document.getElementById('overlayMenu');
+    document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
+    overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
 
     const params = new URLSearchParams(window.location.search);
-    const nomeProduto = params.get('produto');
+    const nomeProduto = decodeURIComponent(params.get('produto') || '');
 
     fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
       .then(res => res.text())
@@ -118,21 +149,40 @@
         const lines = csv.split('\n').slice(1);
         for (const line of lines) {
           const cells = line.split(',');
-          const nome = cells[2]?.trim() || '';
-          if (nome !== decodeURIComponent(nomeProduto)) continue;
-          const imagem = cells[3]?.trim();
-          const descricao = cells[4]?.trim();
-          let preco = (cells[5]||'').replace(/[^\d.,]/g,'').replace('.', ',');
-          const extra = cells[6]?.trim();
-          const parcela = cells[7]?.trim();
+          if ((cells[2]||'').trim() !== nomeProduto) continue;
 
-          document.getElementById('produto').innerHTML = `
-            <div class="breadcrumb"><a href="index.html">Início</a> &gt; ${nome}</div>
-            <img src="${imagem}" alt="${nome}" class="produto-img" />
-            <div class="produto-nome">${nome}</div>
+          const images     = [cells[3]?.trim(), cells[4]?.trim(), cells[5]?.trim()].filter(u => u);
+          const options    = [cells[6]?.trim(), cells[7]?.trim(), cells[8]?.trim()].filter(o => o);
+          const status     = cells[9]?.trim() || '';
+          const descricao  = cells[10]?.trim();
+          const preco      = (cells[11]||'').replace(/[^\d.,]/g,'').replace('.', ',');
+          const extra      = cells[12]?.trim();
+          const parcela    = cells[13]?.trim();
+
+          let html = `
+            <div class="breadcrumb"><a href="index.html">Início</a> &gt; ${nomeProduto}</div>
+            <div class="carousel">
+              ${status ? `<div class="badge">${status}</div>` : ''}
+              <img src="" id="carousel-image" class="produto-img">
+              <div class="counter" id="image-counter"></div>
+            </div>
+            <div class="thumbnails" id="thumbnails"></div>
+            <div class="produto-nome">${nomeProduto}</div>
             <div class="produto-preco">R$ ${preco}</div>
             <div class="produto-parcelamento">${parcela}</div>
             <div class="produto-extra">${extra}</div>
+          `;
+
+          if (options.length) {
+            html += `
+              <div class="options">
+                <div class="options-label">Opções:</div>
+                <div id="option-list"></div>
+              </div>
+            `;
+          }
+
+          html += `
             <div class="purchase-controls">
               <div class="qty-controls">
                 <button id="decrease">-</button>
@@ -150,15 +200,59 @@
             <strong>Descrição</strong>
             <div class="descricao">${descricao}</div>
           `;
+          document.getElementById('produto').innerHTML = html;
+
+          // carousel setup
+          let idx = 0;
+          const imgEl    = document.getElementById('carousel-image');
+          const countEl  = document.getElementById('image-counter');
+          const thumbsEl = document.getElementById('thumbnails');
+          function showImage(i) {
+            idx = i;
+            imgEl.src = images[i];
+            countEl.textContent = `${i+1}/${images.length}`;
+          }
+          images.forEach((url,i) => {
+            const t = document.createElement('img');
+            t.src = url;
+            t.addEventListener('click', () => {
+              showImage(i);
+              thumbsEl.querySelectorAll('img').forEach(x=>x.classList.remove('active'));
+              t.classList.add('active');
+            });
+            thumbsEl.appendChild(t);
+          });
+          showImage(0);
+          thumbsEl.querySelector('img').classList.add('active');
+
+          // options setup
+          if (options.length) {
+            const list = document.getElementById('option-list');
+            options.forEach((opt,i) => {
+              const sw = document.createElement('div');
+              sw.className = 'option-swatch';
+              sw.textContent = opt;
+              sw.addEventListener('click', () => {
+                document.querySelectorAll('.option-swatch').forEach(x=>x.classList.remove('selected'));
+                sw.classList.add('selected');
+                showImage(i);
+              });
+              list.appendChild(sw);
+            });
+          }
+
+          // quantity controls
           let qty = 1;
           document.getElementById('decrease').onclick = () => {
-            if (qty > 1) qty--; document.getElementById('quantity').textContent = qty;
+            if (qty>1) { qty--; document.getElementById('quantity').textContent = qty; }
           };
           document.getElementById('increase').onclick = () => {
             qty++; document.getElementById('quantity').textContent = qty;
           };
+
           break;
         }
       });
-  </script></body>
+  </script>
+</body>
 </html>
