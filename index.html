@@ -121,7 +121,7 @@
   <div id="overlayMenu">
     <div class="close-btn">&times;</div>
     <nav>
-      <a href="#">Início</a>
+      <a href="#" id="home-link">Início</a>
       <a href="#">Produtos</a>
       <a href="#">Contato</a>
     </nav>
@@ -156,15 +156,15 @@
 
   <div class="photo-scroll-wrapper">
     <div class="photo-scroll">
-      <div class="photo-item"><div class="photo-img"><img src="colares.webp" alt="Colares"></div><div class="label">Colares</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="brincos.webp" alt="Brincos"></div><div class="label">Brincos</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="aneis.webp" alt="Anéis"></div><div class="label">Anéis</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="pulseiras.webp" alt="Pulseiras"></div><div class="label">Pulseiras</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="conjuntos.webp" alt="Conjuntos"></div><div class="label">Conjuntos</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="braceletes.webp" alt="Braceletes"></div><div class="label">Braceletes</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="perfumes.webp" alt="Perfumes"></div><div class="label">Perfumes</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="bolsas.webp" alt="Bolsas"></div><div class="label">Bolsas</div></div>
-      <div class="photo-item"><div class="photo-img"><img src="oculos.webp" alt="Óculos"></div><div class="label">Óculos</div></div>
+      <div class="photo-item" data-category="COLARES"><div class="photo-img"><img src="colares.webp" alt="Colares"></div><div class="label">Colares</div></div>
+      <div class="photo-item" data-category="BRINCOS"><div class="photo-img"><img src="brincos.webp" alt="Brincos"></div><div class="label">Brincos</div></div>
+      <div class="photo-item" data-category="ANÉIS"><div class="photo-img"><img src="aneis.webp" alt="Anéis"></div><div class="label">Anéis</div></div>
+      <div class="photo-item" data-category="PULSEIRAS"><div class="photo-img"><img src="pulseiras.webp" alt="Pulseiras"></div><div class="label">Pulseiras</div></div>
+      <div class="photo-item" data-category="CONJUNTOS"><div class="photo-img"><img src="conjuntos.webp" alt="Conjuntos"></div><div class="label">Conjuntos</div></div>
+      <div class="photo-item" data-category="BRACELETES"><div class="photo-img"><img src="braceletes.webp" alt="Braceletes"></div><div class="label">Braceletes</div></div>
+      <div class="photo-item" data-category="PERFUMES"><div class="photo-img"><img src="perfumes.webp" alt="Perfumes"></div><div class="label">Perfumes</div></div>
+      <div class="photo-item" data-category="BOLSAS"><div class="photo-img"><img src="bolsas.webp" alt="Bolsas"></div><div class="label">Bolsas</div></div>
+      <div class="photo-item" data-category="ÓCULOS"><div class="photo-img"><img src="oculos.webp" alt="Óculos"></div><div class="label">Óculos</div></div>
     </div>
   </div>
 
@@ -223,6 +223,13 @@
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
     overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
+
+    // Adiciona o link para a página inicial no menu hamburguer
+    document.getElementById('home-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      resetToHomePage();
+      overlay.classList.remove('open');
+    });
 
     const logoImg       = document.querySelector('.logo img');
     const catsEl        = document.getElementById('cats');
@@ -341,6 +348,16 @@
       });
     }
 
+    function resetToHomePage() {
+      breadcrumbEl.style.display = 'none';
+      document.querySelector('.photo-scroll-wrapper').style.display = '';
+      document.querySelector('.image-scroll-wrapper').style.display = '';
+      document.querySelector('.banner-scroll-wrapper').style.display = '';
+      launchTitleEl.style.display = '';
+      renderProdutos(allProdutos);
+    }
+
+    // Adiciona eventos de clique para as categorias na barra de rolagem
     document.querySelectorAll('.category').forEach(el => {
       el.addEventListener('click', () => {
         const name = el.textContent.trim();
@@ -354,6 +371,20 @@
       });
     });
 
+    // Adiciona eventos de clique para as fotos abaixo das categorias
+    document.querySelectorAll('.photo-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const category = el.getAttribute('data-category');
+        const filtered = filterByTerm(category);
+        document.querySelector('.photo-scroll-wrapper').style.display = 'none';
+        document.querySelector('.image-scroll-wrapper').style.display = 'none';
+        document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+        launchTitleEl.style.display = 'none';
+        renderProdutos(filtered);
+        showBreadcrumb(category, filtered);
+      });
+    });
+
     launchTitleEl.addEventListener('click', () => {
       document.querySelector('.photo-scroll-wrapper').style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = 'none';
@@ -363,23 +394,9 @@
       showBreadcrumb('Lançamentos', allProdutos);
     });
 
-    pathEl.addEventListener('click', () => {
-      breadcrumbEl.style.display = 'none';
-      document.querySelector('.photo-scroll-wrapper').style.display = '';
-      document.querySelector('.image-scroll-wrapper').style.display = '';
-      document.querySelector('.banner-scroll-wrapper').style.display = '';
-      launchTitleEl.style.display = '';
-      renderProdutos(allProdutos);
-    });
+    pathEl.addEventListener('click', resetToHomePage);
 
-    logoImg.addEventListener('click', () => {
-      breadcrumbEl.style.display = 'none';
-      document.querySelector('.photo-scroll-wrapper').style.display = '';
-      document.querySelector('.image-scroll-wrapper').style.display = '';
-      document.querySelector('.banner-scroll-wrapper').style.display = '';
-      launchTitleEl.style.display = '';
-      renderProdutos(allProdutos);
-    });
+    logoImg.addEventListener('click', resetToHomePage);
 
     searchInput.addEventListener('input', () => {
       const term = searchInput.value.trim();
@@ -409,13 +426,14 @@
       renderProdutos(filtered);
       showBreadcrumb(term || 'Resultados', filtered);
     });
-  // Atualiza o carrinho quando a página ganha foco (ex: ao voltar do produto.html)
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) renderCartCount();
-});
 
-// Atualiza também quando a página é carregada (já existe, só confirmando)
-document.addEventListener('DOMContentLoaded', renderCartCount);
+    // Atualiza o carrinho quando a página ganha foco (ex: ao voltar do produto.html)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) renderCartCount();
+    });
+
+    // Atualiza também quando a página é carregada (já existe, só confirmando)
+    document.addEventListener('DOMContentLoaded', renderCartCount);
   </script>
 </body>
 </html>
