@@ -286,5 +286,12 @@ hr { border: none; border-top: 1px solid #ddd; margin: 16px 0; }
           break;
         }
       });
+  // Atualiza o carrinho quando a página ganha foco (ex: ao voltar de outras abas)
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) renderCartCount();
+});
+
+// Mantém o carrinho atualizado ao carregar
+document.addEventListener('DOMContentLoaded', renderCartCount);
   </script></body>
 </html>
