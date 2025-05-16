@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html><html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -9,7 +8,17 @@
     body { font-family: Arial, sans-serif; background-color: #fff; }
     .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
-    .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; }
+    .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; position: relative; }
+    .bag-icon .cart-count {
+      position: absolute;
+      top: -4px; right: -8px;
+      background: #ff0000;
+      color: #fff;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 12px;
+      display: none;
+    }
     .logo img { max-height: 80px; width: auto; cursor: pointer; }
     .search-container { display: flex; width: 100%; padding: 0 16px 16px; }
     .search-input {
@@ -27,76 +36,74 @@
       display: flex; gap: 16px; overflow-x: auto;
       scroll-behavior: smooth; padding: 8px 16px 16px;
     }
-    .categories-container.hidden::-webkit-scrollbar-thumb { background-color: rgba(204,204,204,0); }
     .category { cursor: pointer; white-space: nowrap; padding: 8px 0; }
     .produto-container { padding: 16px; }
     .breadcrumb { font-size: 14px; color: #666; margin-bottom: 16px; }
-    .breadcrumb a { color: #007bff; text-decoration: none; }
+    .breadcrumb a { color: #007bff; text-decoration: none; }/* CARROSSEL */
+.carousel { position: relative; width: 100%; max-width: 480px; margin: 0 auto 16px; }
+.carousel img { width: 100%; border-radius: 8px; }
+.badge {
+  position: absolute; top: 8px; left: 8px;
+  background: rgba(255,0,0,0.8); color: #fff;
+  padding: 4px 8px; border-radius: 4px; font-size: 14px;
+}
+.counter {
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,0.6); color: #fff;
+  padding: 4px 8px; border-radius: 12px; font-size: 14px;
+}
+.thumbnails { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+.thumbnails img {
+  width: 60px; height: 60px; object-fit: cover;
+  border: 2px solid #ddd; border-radius: 4px; cursor: pointer;
+}
+.thumbnails img.active { border-color: #007bff; }
 
-    /* CARROSSEL */
-    .carousel { position: relative; width: 100%; max-width: 480px; margin: 0 auto 16px; }
-    .carousel img { width: 100%; border-radius: 8px; }
-    .badge {
-      position: absolute; top: 8px; left: 8px;
-      background: rgba(255,0,0,0.8); color: #fff;
-      padding: 4px 8px; border-radius: 4px; font-size: 14px;
-    }
-    .counter {
-      position: absolute; bottom: 8px; right: 8px;
-      background: rgba(0,0,0,0.6); color: #fff;
-      padding: 4px 8px; border-radius: 12px; font-size: 14px;
-    }
-    .thumbnails { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
-    .thumbnails img {
-      width: 60px; height: 60px; object-fit: cover;
-      border: 2px solid #ddd; border-radius: 4px; cursor: pointer;
-    }
-    .thumbnails img.active { border-color: #007bff; }
+/* DADOS DO PRODUTO */
+.produto-nome { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 8px; }
+.produto-preco { font-size: 24px; font-weight: bold; color: #000; margin-bottom: 8px; }
+.produto-parcelamento { font-size: 15px; color: #666; margin-bottom: 8px; }
+.produto-extra { font-size: 14px; color: #007bff; margin-bottom: 16px; }
 
-    /* DADOS DO PRODUTO */
-    .produto-nome { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 8px; }
-    .produto-preco { font-size: 24px; font-weight: bold; color: #000; margin-bottom: 8px; }
-    .produto-parcelamento { font-size: 15px; color: #666; margin-bottom: 8px; }
-    .produto-extra { font-size: 14px; color: #007bff; margin-bottom: 16px; }
+/* OPÇÕES (cores ou variantes) */
+.options { margin-bottom: 16px; }
+.options-label { font-size: 14px; margin-bottom: 4px; }
+.option-swatch {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+}
+.option-swatch.selected { border-color: #000; }
 
-    /* OPÇÕES (cores ou variantes) */
-    .options { margin-bottom: 16px; }
-    .options-label { font-size: 14px; margin-bottom: 4px; }
-    .option-swatch {
-      display: inline-block;
-      padding: 6px 12px;
-      border: 2px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-right: 8px;
-    }
-    .option-swatch.selected { border-color: #000; }
+.purchase-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.qty-controls {
+  display: flex; align-items: center;
+  border: 1px solid #ccc; border-radius: 8px;
+}
+.qty-controls button {
+  background: none; border: none; font-size: 18px; padding: 8px 12px; cursor: pointer;
+}
+.qty-controls .qty { padding: 0 12px; font-size: 18px; min-width: 24px; text-align: center; }
+.buy-btn {
+  flex: 1; background-color: #ff69b4; color: #fff; border: none;
+  padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer;
+}
 
-    .purchase-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-    .qty-controls {
-      display: flex; align-items: center;
-      border: 1px solid #ccc; border-radius: 8px;
-    }
-    .qty-controls button {
-      background: none; border: none; font-size: 18px; padding: 8px 12px; cursor: pointer;
-    }
-    .qty-controls .qty { padding: 0 12px; font-size: 18px; min-width: 24px; text-align: center; }
-    .buy-btn {
-      flex: 1; background-color: #ff69b4; color: #fff; border: none;
-      padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer;
-    }
+.info-section { font-size: 14px; color: #555; margin-bottom: 4px; }
+.descricao { font-size: 14px; color: #333; margin-top: 8px; line-height: 1.5; }
+hr { border: none; border-top: 1px solid #ddd; margin: 16px 0; }
 
-    .info-section { font-size: 14px; color: #555; margin-bottom: 4px; }
-    .descricao { font-size: 14px; color: #333; margin-top: 8px; line-height: 1.5; }
-    hr { border: none; border-top: 1px solid #ddd; margin: 16px 0; }
+/* overlayMenu */
+#overlayMenu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 60px 20px; display: flex; flex-direction: column; }
+#overlayMenu.open { transform: translateX(0); }
+#overlayMenu .close-btn { position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer; }
+#overlayMenu nav { display: flex; flex-direction: column; gap: 0; margin-top: 20px; }
+#overlayMenu nav a { font-size: 20px; color: #000; text-decoration: none; text-transform: uppercase; padding: 8px 0; }
 
-    /* overlayMenu */
-    #overlayMenu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 2000; padding: 60px 20px; display: flex; flex-direction: column; }
-    #overlayMenu.open { transform: translateX(0); }
-    #overlayMenu .close-btn { position: absolute; top: 16px; right: 16px; font-size: 32px; cursor: pointer; }
-    #overlayMenu nav { display: flex; flex-direction: column; gap: 0; margin-top: 20px; }
-    #overlayMenu nav a { font-size: 20px; color: #000; text-decoration: none; text-transform: uppercase; padding: 8px 0; }
   </style>
 </head>
 <body>
@@ -107,13 +114,14 @@
       <a href="#">Produtos</a>
       <a href="#">Contato</a>
     </nav>
-  </div>
-
-  <div class="nav-wrapper">
+  </div>  <div class="nav-wrapper">
     <header class="header">
       <div class="menu-icon">&#9776;</div>
       <div class="logo"><img src="logo.webp" alt="Logo" /></div>
-      <div class="bag-icon">&#128717;</div>
+      <div class="bag-icon" id="cart-icon">
+        &#128717;
+        <span class="cart-count" id="cart-count">0</span>
+      </div>
     </header>
     <div class="search-container">
       <input class="search-input" type="text" placeholder="O que você está procurando?" />
@@ -131,11 +139,30 @@
       <div class="category">CINTOS</div>
       <div class="category">ÓCULOS</div>
     </div>
-  </div>
+  </div>  <div class="produto-container" id="produto"></div>  <script>
+    // carrinho em localStorage
+    const CART_KEY = 'cartCount';
+    const cartCountEl = document.getElementById('cart-count');
+    function getCartCount() {
+      return parseInt(localStorage.getItem(CART_KEY) || '0', 10);
+    }
+    function setCartCount(count) {
+      localStorage.setItem(CART_KEY, count);
+      renderCartCount();
+    }
+    function renderCartCount() {
+      const count = getCartCount();
+      if (count > 0) {
+        cartCountEl.textContent = count;
+        cartCountEl.style.display = 'inline-block';
+      } else {
+        cartCountEl.style.display = 'none';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCartCount();
+    });
 
-  <div class="produto-container" id="produto"></div>
-
-  <script>
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
     overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
@@ -202,7 +229,7 @@
           `;
           document.getElementById('produto').innerHTML = html;
 
-          // carousel setup
+          // configurações do carousel
           let idx = 0;
           const imgEl    = document.getElementById('carousel-image');
           const countEl  = document.getElementById('image-counter');
@@ -225,7 +252,7 @@
           showImage(0);
           thumbsEl.querySelector('img').classList.add('active');
 
-          // options setup
+          // opções de variantes
           if (options.length) {
             const list = document.getElementById('option-list');
             options.forEach((opt,i) => {
@@ -241,7 +268,7 @@
             });
           }
 
-          // quantity controls
+          // controle de quantidade
           let qty = 1;
           document.getElementById('decrease').onclick = () => {
             if (qty>1) { qty--; document.getElementById('quantity').textContent = qty; }
@@ -250,9 +277,14 @@
             qty++; document.getElementById('quantity').textContent = qty;
           };
 
+          // listener do botão COMPRAR para carrinho
+          document.querySelector('.buy-btn').addEventListener('click', () => {
+            const current = getCartCount();
+            setCartCount(current + 1);
+          });
+
           break;
         }
       });
-  </script>
-</body>
+  </script></body>
 </html>
