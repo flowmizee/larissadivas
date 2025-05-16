@@ -34,6 +34,7 @@
       max-width: 600px;
       margin: 0 auto;
       flex: 1;
+      padding-bottom: 0; /* Remove padding inferior */
     }
     .breadcrumb-list {
       font-size: 14px;
@@ -76,15 +77,12 @@
       margin-right: 12px;
     }
     
-    /* GRID DE PRODUTOS igual ao Web App (oculto por padrão) */
-    .produtos-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 16px; }
-
-    /* RODAPÉ ROSA */
+    /* RODAPÉ ROSA - ajustado para ficar colado */
     .site-footer {
       background-color: #ff69b4;
       color: #fff;
       padding: 16px;
-      margin-top: auto;
+      margin-top: 24px; /* Espaço mínimo entre conteúdo e rodapé */
     }
     .footer-item {
       margin-bottom: 12px;
@@ -198,10 +196,7 @@
     </div>
   </div>
 
-  <!-- Aqui aparece o grid de resultados (oculto por padrão) -->
-  <div id="produtos" class="produtos-grid"></div>
-
-  <!-- RODAPÉ ROSA -->
+  <!-- RODAPÉ ROSA - agora bem próximo do conteúdo -->
   <footer class="site-footer">
     <div class="footer-item instagram">
       <a href="https://www.instagram.com/divasbijouxshoes?igsh=MW55M2QzbTJnaGF4bg==" target="_blank" rel="noopener">
@@ -240,38 +235,6 @@
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').onclick = () => overlay.classList.add('open');
     overlay.querySelector('.close-btn').onclick = () => overlay.classList.remove('open');
-
-    // capturar produto específico se vier pela URL
-    const params      = new URLSearchParams(window.location.search);
-    const nomeProduto = decodeURIComponent(params.get('produto') || '');
-    let allProdutos   = [];
-
-    fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
-      .then(r => r.text())
-      .then(csv => {
-        const lines = csv.split('\n').slice(1);
-
-        // popula allProdutos
-        lines.forEach(line => {
-          const c = line.split(',');
-          if (!c[2]?.trim()) return;
-          allProdutos.push({
-            nome:         c[2].trim(),
-            imagens:      [c[3],c[4],c[5]].map(u=>u?.trim()).filter(u=>u),
-            opcoes:       [c[6],c[7],c[8]].map(o=>o?.trim()).filter(o=>o),
-            status:       c[9]?.trim()  || '',
-            descricao:    c[10]?.trim() || '',
-            preco:        c[11]?.trim() || '',
-            mensagem:     c[12]?.trim() || '',
-            parcelamento: c[13]?.trim() || ''
-          });
-        });
-      });
-
-    // atualiza carrinho ao voltar de outra aba
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) renderCartCount();
-    });
   </script>
 </body>
 </html>
