@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Carrinho</title>
   <style>
+    /* ESTILOS EXISTENTES */
     html, body { margin: 0; padding: 0; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background-color: #fff; }
@@ -17,14 +18,36 @@
       padding: 2px 6px; border-radius: 12px; display: none;
     }
     .logo img { max-height: 80px; width: auto; cursor: pointer; }
-    .back-icon img { /* Alterado aqui */
+    .back-icon img {
       width: 28px;
       height: 28px;
       display: block;
     }
     .cart-container { padding: 16px; }
     .cart-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; }
-    .cart-item { display: flex; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+    
+    /* NOVO ESTILO PARA LIXEIRA */
+    .cart-item { 
+      display: flex; 
+      gap: 16px; 
+      margin-bottom: 24px; 
+      padding-bottom: 16px; 
+      border-bottom: 1px solid #eee;
+      position: relative; /* Adicionado para posicionar a lixeira */
+    }
+    .remove-item {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      padding: 4px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
     .cart-item-image { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; }
     .cart-item-details { flex: 1; }
     .cart-item-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; text-transform: capitalize; }
@@ -64,7 +87,7 @@
   <div class="nav-wrapper">
     <header class="header">
       <a href="index.html" class="back-icon">
-        <img src="voltar.png" alt="Voltar"> <!-- Alterado aqui -->
+        <img src="voltar.png" alt="Voltar">
       </a>
       <a href="index.html" class="logo">
         <img src="logo.webp" alt="Logo">
@@ -76,7 +99,6 @@
     </header>
   </div>
 
-  <!-- O restante do código permanece igual -->
   <div class="cart-container">
     <h1 class="cart-title">Seu Carrinho</h1>
     <div id="cart-items"></div>
@@ -139,7 +161,7 @@
         let total = 0;
         cartItemsEl.innerHTML = '';
 
-        cartItems.forEach(item => {
+        cartItems.forEach((item, index) => {
           const subtotal = parseFloat(item.preco) * item.quantidade;
           total += subtotal;
 
@@ -154,8 +176,24 @@
               <div class="cart-item-qty">Quantidade: ${item.quantidade}</div>
               <div class="cart-item-subtotal">Subtotal: ${formatPrice(subtotal)}</div>
             </div>
+            <img src="lixeira.png" 
+                 class="remove-item" 
+                 data-index="${index}"
+                 alt="Remover item"
+                 title="Remover item">
           `;
           cartItemsEl.appendChild(itemEl);
+        });
+
+        // Adiciona eventos de clique para as lixeiras
+        document.querySelectorAll('.remove-item').forEach(icon => {
+          icon.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            cartItems.splice(index, 1);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            renderCartItems();
+            renderCartCount();
+          });
         });
 
         cartTotalEl.textContent = formatPrice(total);
