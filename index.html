@@ -178,10 +178,10 @@
       <a href="index.html" class="logo">
   <img src="logo.webp" alt="Logo">
 </a>
-      <div class="bag-icon" id="cart-icon">
-        &#128717;
-        <span class="cart-count" id="cart-count">0</span>
-      </div>
+      <a href="carrinho.html" class="bag-icon" id="cart-icon">
+  &#128717;
+  <span class="cart-count" id="cart-count">0</span>
+</a>
     </header>
     <div class="search-container">
       <input class="search-input" type="text" placeholder="O que você está procurando?">
@@ -260,33 +260,33 @@
   </footer>
 
   <script>
-    // CARRINHO - MESMA LÓGICA DA PÁGINA DE PRODUTO
-    const CART_KEY = 'cartCount';
-    const cartCountEl = document.getElementById('cart-count');
-    
-    function getCartCount() {
-      return parseInt(localStorage.getItem(CART_KEY) || '0', 10);
-    }
-    
-    function setCartCount(count) {
-      localStorage.setItem(CART_KEY, count);
-      renderCartCount();
-    }
-    
-    function renderCartCount() {
-      const count = getCartCount();
-      if (count > 0) {
-        cartCountEl.textContent = count;
-        cartCountEl.style.display = 'inline-block';
-      } else {
-        cartCountEl.style.display = 'none';
-      }
-    }
-    
-    // Inicializa o contador do carrinho
-    document.addEventListener('DOMContentLoaded', () => {
-      renderCartCount();
-    });
+   // — CARRINHO UNIFICADO USANDO cartItems —
+const CART_KEY = 'cartItems';
+const cartCountEl = document.getElementById('cart-count');
+
+function getCartItems() {
+  try {
+    return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function renderCartCount() {
+  const totalQty = getCartItems().reduce((sum, item) => sum + (item.quantidade || 0), 0);
+  if (totalQty > 0) {
+    cartCountEl.textContent = totalQty;
+    cartCountEl.style.display = 'inline-block';
+  } else {
+    cartCountEl.style.display = 'none';
+  }
+}
+
+// inicializa e atualiza ao voltar de outra aba
+document.addEventListener('DOMContentLoaded', renderCartCount);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) renderCartCount();
+});
 
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
