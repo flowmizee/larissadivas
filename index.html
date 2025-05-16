@@ -167,7 +167,7 @@
     <div class="close-btn">&times;</div>
     <nav>
       <a href="index.html" id="home-link">Início</a>
-      <a href="#">Produtos</a>
+      <a href="#" id="all-products-link">Produtos</a>
       <a href="contato.html">Contato</a>
     </nav>
   </div>
@@ -499,6 +499,27 @@
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) renderCartCount();
     });
+  const allProductsLink = document.getElementById('all-products-link');
+allProductsLink.addEventListener('click', e => {
+  e.preventDefault();
+  // 1) Fecha o menu
+  overlay.classList.remove('open');
+
+  // 2) Ordena todos os produtos alfabeticamente
+  const sortedList = [...allProdutos].sort((a, b) =>
+    a.nome.localeCompare(b.nome, 'pt', { sensitivity: 'base' })
+  );
+
+  // 3) Esconde as seções de home
+  document.querySelector('.photo-scroll-wrapper').style.display  = 'none';
+  document.querySelector('.image-scroll-wrapper').style.display  = 'none';
+  document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+  launchTitleEl.style.display                                  = 'none';
+
+  // 4) Renderiza e atualiza breadcrumb com "os" em minúsculo
+  renderProdutos(sortedList);
+  showBreadcrumb('Todos os Produtos', sortedList);
+});
 
     // Atualiza também quando a página é carregada (já existe, só confirmando)
     document.addEventListener('DOMContentLoaded', renderCartCount);
