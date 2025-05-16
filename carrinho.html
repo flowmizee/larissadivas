@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Carrinho de Compras</title>
+  <title>Carrinho</title>
   <style>
-    /* RESET */
+    html, body { margin: 0; padding: 0; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background-color: #fff; color: #333; }
-    a { text-decoration: none; color: inherit; }
-    button { cursor: pointer; }
-
-    /* NAVBAR */
-    .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; border-bottom: 1px solid #eee; }
+    body { font-family: Arial, sans-serif; background-color: #fff; }
+    .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
     .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; position: relative; }
     .bag-icon .cart-count {
@@ -20,184 +16,157 @@
       background: #ff0000; color: #fff; font-size: 12px;
       padding: 2px 6px; border-radius: 12px; display: none;
     }
-    .logo img { max-height: 60px; width: auto; }
-
-    /* CART TABLE */
-    .cart-container { padding: 16px; max-width: 800px; margin: 0 auto; }
+    .logo img { max-height: 80px; width: auto; cursor: pointer; }
+    .back-icon img { /* Alterado aqui */
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .cart-container { padding: 16px; }
     .cart-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-    th { background-color: #f9f9f9; }
-    td img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
-    .qty-controls { display: flex; align-items: center; gap: 4px; }
-    .qty-controls button { background: #eee; border: 1px solid #ccc; padding: 4px 8px; border-radius: 4px; }
-    .remove-btn { background: none; border: none; color: #ff0000; font-size: 16px; }
-
-    /* TOTAL */
-    .cart-total { text-align: right; margin-top: 16px; font-size: 20px; font-weight: bold; }
-    .empty-cart { text-align: center; margin-top: 40px; font-size: 18px; color: #666; }
+    .cart-item { display: flex; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+    .cart-item-image { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; }
+    .cart-item-details { flex: 1; }
+    .cart-item-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; text-transform: capitalize; }
+    .cart-item-option { font-size: 14px; color: #666; margin-bottom: 8px; }
+    .cart-item-price { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+    .cart-item-qty { font-size: 14px; color: #555; }
+    .cart-item-subtotal { font-size: 16px; font-weight: bold; margin-top: 8px; }
+    .cart-summary { padding: 16px; border-top: 1px solid #eee; }
+    .cart-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; margin-bottom: 16px; }
+    .checkout-btn { width: 100%; background-color: #ff69b4; color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 16px; }
+    .continue-shopping { display: block; text-align: center; color: #007bff; text-decoration: none; font-size: 14px; }
+    .site-footer { 
+      background-color: #ff69b4;
+      color: #fff;
+      padding: 16px;
+      margin-top: 0;
+    }
+    .footer-item {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .footer-item.instagram {
+      margin-bottom: 32px;
+    }
+    .footer-item.instagram img {
+      width: 20px;
+      height: auto;
+      display: block;
+    }
+    .footer-item a {
+      color: inherit;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
-
-  <!-- NAVBAR -->
   <div class="nav-wrapper">
     <header class="header">
-      <div class="menu-icon" onclick="window.history.back()">&#9776;</div>
+      <a href="index.html" class="back-icon">
+        <img src="voltar.png" alt="Voltar"> <!-- Alterado aqui -->
+      </a>
       <a href="index.html" class="logo">
         <img src="logo.webp" alt="Logo">
       </a>
-      <div class="bag-icon" id="cart-icon" onclick="location.href='carrinho.html'">
+      <a href="carrinho.html" class="bag-icon" id="cart-icon">
         &#128717;
         <span class="cart-count" id="cart-count">0</span>
-      </div>
+      </a>
     </header>
   </div>
 
-  <!-- CONTEÚDO DO CARRINHO -->
+  <!-- O restante do código permanece igual -->
   <div class="cart-container">
-    <div class="cart-title">Seu Carrinho</div>
-    <table id="cart-table">
-      <thead>
-        <tr>
-          <th>Produto</th>
-          <th>Imagem</th>
-          <th>Quantidade</th>
-          <th>Preço Unitário</th>
-          <th>Preço Total</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Linhas dos itens serão inseridas aqui -->
-      </tbody>
-    </table>
-    <div class="empty-cart" id="empty-message" style="display:none;">
-      Seu carrinho está vazio.
-    </div>
-    <div class="cart-total" id="cart-total">
-      Total: R$ 0,00
-    </div>
+    <h1 class="cart-title">Seu Carrinho</h1>
+    <div id="cart-items"></div>
   </div>
 
+  <div class="cart-summary">
+    <div class="cart-total">
+      <span>Total:</span>
+      <span id="cart-total">R$ 0,00</span>
+    </div>
+    <button class="checkout-btn">CONTINUAR PARA O PAGAMENTO</button>
+    <a href="index.html" class="continue-shopping">Voltar às compras</a>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-item instagram">
+      <a href="https://www.instagram.com/divasbijouxshoes?igsh=MW55M2QzbTJnaGF4bg==" target="_blank" rel="noopener">
+        <img src="instagramicon.png" alt="Instagram">
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="https://wa.me/5598992124926" target="_blank" rel="noopener">
+        5598992124926
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="tel:+5589982124926">
+        98992124926
+      </a>
+    </div>
+    <div class="footer-item copyright">
+      © Flowmize – 2025. Todos os direitos reservados.
+    </div>
+  </footer>
+
   <script>
-    const STORAGE_KEY = 'cartItems';
+    document.addEventListener('DOMContentLoaded', function() {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const cartItemsEl = document.getElementById('cart-items');
+      const cartTotalEl = document.getElementById('cart-total');
+      const cartCountEl = document.getElementById('cart-count');
 
-    function getCartItems() {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    }
-
-    function saveCartItems(items) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-      renderCartCount();
-    }
-
-    function renderCartCount() {
-      const countEl = document.getElementById('cart-count');
-      const totalCount = getCartItems().reduce((sum, item) => sum + item.qty, 0);
-      countEl.textContent = totalCount;
-      countEl.style.display = totalCount > 0 ? 'inline-block' : 'none';
-    }
-
-    function formatCurrency(value) {
-      return value.toFixed(2).replace('.', ',');
-    }
-
-    function renderCart() {
-      const items = getCartItems();
-      const tbody = document.querySelector('#cart-table tbody');
-      tbody.innerHTML = '';
-
-      if (items.length === 0) {
-        document.getElementById('cart-table').style.display = 'none';
-        document.getElementById('empty-message').style.display = 'block';
-        document.getElementById('cart-total').textContent = 'Total: R$ 0,00';
-        return;
+      function renderCartCount() {
+        const totalQty = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
+        cartCountEl.textContent = totalQty;
+        cartCountEl.style.display = totalQty > 0 ? 'inline-block' : 'none';
       }
 
-      document.getElementById('cart-table').style.display = '';
-      document.getElementById('empty-message').style.display = 'none';
+      function formatPrice(price) {
+        return 'R$ ' + parseFloat(price).toFixed(2).replace('.', ',');
+      }
 
-      let grandTotal = 0;
-      items.forEach((item, index) => {
-        const row = document.createElement('tr');
+      function renderCartItems() {
+        if (cartItems.length === 0) {
+          cartItemsEl.innerHTML = '<p>Seu carrinho está vazio</p>';
+          cartTotalEl.textContent = 'R$ 0,00';
+          return;
+        }
 
-        // Nome
-        const tdName = document.createElement('td');
-        tdName.textContent = item.name;
-        row.appendChild(tdName);
+        let total = 0;
+        cartItemsEl.innerHTML = '';
 
-        // Imagem
-        const tdImg = document.createElement('td');
-        const img = document.createElement('img');
-        img.src = item.image;
-        img.alt = item.name;
-        tdImg.appendChild(img);
-        row.appendChild(tdImg);
+        cartItems.forEach(item => {
+          const subtotal = parseFloat(item.preco) * item.quantidade;
+          total += subtotal;
 
-        // Quantidade
-        const tdQty = document.createElement('td');
-        const qtyControls = document.createElement('div');
-        qtyControls.className = 'qty-controls';
-        const btnDec = document.createElement('button');
-        btnDec.textContent = '−';
-        btnDec.onclick = () => updateQty(index, -1);
-        const spanQty = document.createElement('span');
-        spanQty.textContent = item.qty;
-        const btnInc = document.createElement('button');
-        btnInc.textContent = '+';
-        btnInc.onclick = () => updateQty(index, +1);
-        qtyControls.append(btnDec, spanQty, btnInc);
-        tdQty.appendChild(qtyControls);
-        row.appendChild(tdQty);
+          const itemEl = document.createElement('div');
+          itemEl.className = 'cart-item';
+          itemEl.innerHTML = `
+            <img src="${item.imagens?.[0] || ''}" alt="${item.nome}" class="cart-item-image">
+            <div class="cart-item-details">
+              <div class="cart-item-name">${item.nome}</div>
+              ${item.opcao ? `<div class="cart-item-option">${item.opcao}</div>` : ''}
+              <div class="cart-item-price">${formatPrice(item.preco)}</div>
+              <div class="cart-item-qty">Quantidade: ${item.quantidade}</div>
+              <div class="cart-item-subtotal">Subtotal: ${formatPrice(subtotal)}</div>
+            </div>
+          `;
+          cartItemsEl.appendChild(itemEl);
+        });
 
-        // Preço unitário
-        const tdUnit = document.createElement('td');
-        tdUnit.textContent = 'R$ ' + formatCurrency(item.unitPrice);
-        row.appendChild(tdUnit);
+        cartTotalEl.textContent = formatPrice(total);
+      }
 
-        // Preço total
-        const totalPrice = item.qty * item.unitPrice;
-        grandTotal += totalPrice;
-        const tdTotal = document.createElement('td');
-        tdTotal.textContent = 'R$ ' + formatCurrency(totalPrice);
-        row.appendChild(tdTotal);
-
-        // Ações
-        const tdAction = document.createElement('td');
-        const btnRemove = document.createElement('button');
-        btnRemove.className = 'remove-btn';
-        btnRemove.textContent = '✕';
-        btnRemove.title = 'Remover item';
-        btnRemove.onclick = () => removeItem(index);
-        tdAction.appendChild(btnRemove);
-        row.appendChild(tdAction);
-
-        tbody.appendChild(row);
-      });
-
-      document.getElementById('cart-total').textContent =
-        'Total: R$ ' + formatCurrency(grandTotal);
-    }
-
-    function updateQty(idx, delta) {
-      const items = getCartItems();
-      items[idx].qty = Math.max(1, items[idx].qty + delta);
-      saveCartItems(items);
-      renderCart();
-    }
-
-    function removeItem(idx) {
-      const items = getCartItems();
-      items.splice(idx, 1);
-      saveCartItems(items);
-      renderCart();
-    }
-
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', () => {
+      renderCartItems();
       renderCartCount();
-      renderCart();
+
+      document.querySelector('.checkout-btn').addEventListener('click', function() {
+        alert('Redirecionando para o pagamento...');
+      });
     });
   </script>
 </body>
