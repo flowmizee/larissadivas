@@ -409,6 +409,13 @@
       renderProdutos(filtered);
       showBreadcrumb(term || 'Resultados', filtered);
     });
+  // Atualiza o carrinho quando a página ganha foco (ex: ao voltar do produto.html)
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) renderCartCount();
+});
+
+// Atualiza também quando a página é carregada (já existe, só confirmando)
+document.addEventListener('DOMContentLoaded', renderCartCount);
   </script>
 </body>
 </html>
