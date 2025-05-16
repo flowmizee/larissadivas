@@ -458,7 +458,13 @@ document.addEventListener('DOMContentLoaded', renderCartCount);
   if (existente) {
     existente.quantidade += quantidade;
   } else {
-    items.push({ nome, preco: precoText, quantidade, opcao });
+   items.push({ 
+  nome, 
+  preco: precoText, 
+  quantidade, 
+  opcao,
+  imagens: images // Adiciona as imagens do produto ao item do carrinho
+});
   }
   setCartItems(items);
 
