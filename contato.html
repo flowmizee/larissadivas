@@ -184,10 +184,10 @@
       <a href="index.html" class="logo">
         <img src="logo.webp" alt="Logo">
       </a>
-      <div class="bag-icon" id="cart-icon">
-        &#128717;
-        <span class="cart-count" id="cart-count">0</span>
-      </div>
+      <a href="carrinho.html" class="bag-icon" id="cart-icon">
+  &#128717;
+  <span class="cart-count" id="cart-count">0</span>
+</a>
     </header>
   </div>
 
@@ -245,19 +245,34 @@
   </footer>
 
   <script>
-    // CARRINHO
-    const CART_KEY = 'cartCount';
-    const cartCountEl = document.getElementById('cart-count');
-    function getCartCount() { return parseInt(localStorage.getItem(CART_KEY) || '0', 10); }
-    function setCartCount(c) { localStorage.setItem(CART_KEY, c); renderCartCount(); }
-    function renderCartCount() {
-      const c = getCartCount();
-      cartCountEl.textContent = c;
-      cartCountEl.style.display = c > 0 ? 'inline-block' : 'none';
-    }
-    document.addEventListener('DOMContentLoaded', renderCartCount);
+  // — CARRINHO UNIFICADO USANDO cartItems —
+const CART_KEY = 'cartItems';
+const cartCountEl = document.getElementById('cart-count');
 
-    // OVERLAY MENU
+function getCartItems() {
+  try {
+    return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function renderCartCount() {
+  const totalQty = getCartItems().reduce((sum, item) => sum + (item.quantidade || 0), 0);
+  if (totalQty > 0) {
+    cartCountEl.textContent = totalQty;
+    cartCountEl.style.display = 'inline-block';
+  } else {
+    cartCountEl.style.display = 'none';
+  }
+}
+
+// Inicializa e mantém atualizado ao voltar de outra aba
+document.addEventListener('DOMContentLoaded', renderCartCount);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) renderCartCount();
+});
+     // OVERLAY MENU
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').onclick = () => overlay.classList.add('open');
     overlay.querySelector('.close-btn').onclick = () => overlay.classList.remove('open');
