@@ -4,6 +4,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Web App</title>
   <style>
+  html, body {
+  margin: 0;
+  padding: 0;
+}
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background-color: #fff; }
     .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
@@ -115,13 +119,54 @@
       .produtos-grid { grid-template-columns: 1fr 1fr; }
       .produto img { height: 220px; }
     }
+  /* remove gap entre produtos e footer */
+.produtos-wrapper {
+  margin-bottom: 0;
+}
+
+/* zera margem superior do footer */
+.site-footer {
+  background-color: #ff69b4;  /* rosa igual ao botão */
+  color: #fff;
+  padding: 16px;
+  margin-top: 0;
+}
+
+/* itens do footer, um embaixo do outro */
+.site-footer .footer-item {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+/* aumenta o espaçamento APENAS depois do ícone */
+.site-footer .footer-item.instagram {
+  margin-bottom: 32px;
+}
+
+/* tamanho do ícone do Instagram */
+.site-footer .footer-item.instagram img {
+  width: 20px;
+  height: auto;
+  display: block;
+}
+
+/* links sem decoração, mantendo cor branca */
+.site-footer .footer-item a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* remove margem da última linha, se quiser */
+.site-footer .footer-item:last-child {
+  margin-bottom: 0;
+}
   </style>
 </head>
 <body>
   <div id="overlayMenu">
     <div class="close-btn">&times;</div>
     <nav>
-      <a href="#" id="home-link">Início</a>
+      <a href="index.html" id="home-link">Início</a>
       <a href="#">Produtos</a>
       <a href="#">Contato</a>
     </nav>
@@ -130,7 +175,9 @@
   <div class="nav-wrapper">
     <header class="header">
       <div class="menu-icon">&#9776;</div>
-      <div class="logo"><img src="logo.webp" alt="Logo"></div>
+      <a href="index.html" class="logo">
+  <img src="logo.webp" alt="Logo">
+</a>
       <div class="bag-icon" id="cart-icon">
         &#128717;
         <span class="cart-count" id="cart-count">0</span>
@@ -190,6 +237,27 @@
     <div class="launch-title">Lançamentos</div>
     <div id="produtos" class="produtos-grid"></div>
   </div>
+  <!-- RODAPÉ ROSA -->
+  <footer class="site-footer">
+    <div class="footer-item instagram">
+      <a href="https://www.instagram.com/divasbijouxshoes?igsh=MW55M2QzbTJnaGF4bg==" target="_blank" rel="noopener">
+        <img src="instagramicon.png" alt="Instagram">
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="https://wa.me/5598992124926" target="_blank" rel="noopener">
+        5598992124926
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="tel:+5589982124926">
+        98992124926
+      </a>
+    </div>
+    <div class="footer-item copyright">
+      © Flowmize – 2025. Todos os direitos reservados.
+    </div>
+  </footer>
 
   <script>
     // CARRINHO - MESMA LÓGICA DA PÁGINA DE PRODUTO
