@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Carrinho de Compras</title>
+  <style>
+    /* RESET */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background-color: #fff; color: #333; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; }
+
+    /* NAVBAR */
+    .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; border-bottom: 1px solid #eee; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
+    .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; position: relative; }
+    .bag-icon .cart-count {
+      position: absolute; top: -4px; right: -8px;
+      background: #ff0000; color: #fff; font-size: 12px;
+      padding: 2px 6px; border-radius: 12px; display: none;
+    }
+    .logo img { max-height: 60px; width: auto; }
+
+    /* CART TABLE */
+    .cart-container { padding: 16px; max-width: 800px; margin: 0 auto; }
+    .cart-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background-color: #f9f9f9; }
+    td img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+    .qty-controls { display: flex; align-items: center; gap: 4px; }
+    .qty-controls button { background: #eee; border: 1px solid #ccc; padding: 4px 8px; border-radius: 4px; }
+    .remove-btn { background: none; border: none; color: #ff0000; font-size: 16px; }
+
+    /* TOTAL */
+    .cart-total { text-align: right; margin-top: 16px; font-size: 20px; font-weight: bold; }
+    .empty-cart { text-align: center; margin-top: 40px; font-size: 18px; color: #666; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="nav-wrapper">
+    <header class="header">
+      <div class="menu-icon" onclick="window.history.back()">&#9776;</div>
+      <a href="index.html" class="logo">
+        <img src="logo.webp" alt="Logo">
+      </a>
+      <div class="bag-icon" id="cart-icon" onclick="location.href='carrinho.html'">
+        &#128717;
+        <span class="cart-count" id="cart-count">0</span>
+      </div>
+    </header>
+  </div>
+
+  <!-- CONTEÚDO DO CARRINHO -->
+  <div class="cart-container">
+    <div class="cart-title">Seu Carrinho</div>
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Imagem</th>
+          <th>Quantidade</th>
+          <th>Preço Unitário</th>
+          <th>Preço Total</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Linhas dos itens serão inseridas aqui -->
+      </tbody>
+    </table>
+    <div class="empty-cart" id="empty-message" style="display:none;">
+      Seu carrinho está vazio.
+    </div>
+    <div class="cart-total" id="cart-total">
+      Total: R$ 0,00
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'cartItems';
+
+    function getCartItems() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    }
+
+    function saveCartItems(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      renderCartCount();
+    }
+
+    function renderCartCount() {
+      const countEl = document.getElementById('cart-count');
+      const totalCount = getCartItems().reduce((sum, item) => sum + item.qty, 0);
+      countEl.textContent = totalCount;
+      countEl.style.display = totalCount > 0 ? 'inline-block' : 'none';
+    }
+
+    function formatCurrency(value) {
+      return value.toFixed(2).replace('.', ',');
+    }
+
+    function renderCart() {
+      const items = getCartItems();
+      const tbody = document.querySelector('#cart-table tbody');
+      tbody.innerHTML = '';
+
+      if (items.length === 0) {
+        document.getElementById('cart-table').style.display = 'none';
+        document.getElementById('empty-message').style.display = 'block';
+        document.getElementById('cart-total').textContent = 'Total: R$ 0,00';
+        return;
+      }
+
+      document.getElementById('cart-table').style.display = '';
+      document.getElementById('empty-message').style.display = 'none';
+
+      let grandTotal = 0;
+      items.forEach((item, index) => {
+        const row = document.createElement('tr');
+
+        // Nome
+        const tdName = document.createElement('td');
+        tdName.textContent = item.name;
+        row.appendChild(tdName);
+
+        // Imagem
+        const tdImg = document.createElement('td');
+        const img = document.createElement('img');
+        img.src = item.image;
+        img.alt = item.name;
+        tdImg.appendChild(img);
+        row.appendChild(tdImg);
+
+        // Quantidade
+        const tdQty = document.createElement('td');
+        const qtyControls = document.createElement('div');
+        qtyControls.className = 'qty-controls';
+        const btnDec = document.createElement('button');
+        btnDec.textContent = '−';
+        btnDec.onclick = () => updateQty(index, -1);
+        const spanQty = document.createElement('span');
+        spanQty.textContent = item.qty;
+        const btnInc = document.createElement('button');
+        btnInc.textContent = '+';
+        btnInc.onclick = () => updateQty(index, +1);
+        qtyControls.append(btnDec, spanQty, btnInc);
+        tdQty.appendChild(qtyControls);
+        row.appendChild(tdQty);
+
+        // Preço unitário
+        const tdUnit = document.createElement('td');
+        tdUnit.textContent = 'R$ ' + formatCurrency(item.unitPrice);
+        row.appendChild(tdUnit);
+
+        // Preço total
+        const totalPrice = item.qty * item.unitPrice;
+        grandTotal += totalPrice;
+        const tdTotal = document.createElement('td');
+        tdTotal.textContent = 'R$ ' + formatCurrency(totalPrice);
+        row.appendChild(tdTotal);
+
+        // Ações
+        const tdAction = document.createElement('td');
+        const btnRemove = document.createElement('button');
+        btnRemove.className = 'remove-btn';
+        btnRemove.textContent = '✕';
+        btnRemove.title = 'Remover item';
+        btnRemove.onclick = () => removeItem(index);
+        tdAction.appendChild(btnRemove);
+        row.appendChild(tdAction);
+
+        tbody.appendChild(row);
+      });
+
+      document.getElementById('cart-total').textContent =
+        'Total: R$ ' + formatCurrency(grandTotal);
+    }
+
+    function updateQty(idx, delta) {
+      const items = getCartItems();
+      items[idx].qty = Math.max(1, items[idx].qty + delta);
+      saveCartItems(items);
+      renderCart();
+    }
+
+    function removeItem(idx) {
+      const items = getCartItems();
+      items.splice(idx, 1);
+      saveCartItems(items);
+      renderCart();
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCartCount();
+      renderCart();
+    });
+  </script>
+</body>
+</html>
