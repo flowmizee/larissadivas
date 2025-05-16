@@ -201,15 +201,15 @@
   
   <div class="nav-wrapper">
     <header class="header">
-      <div class="menu-icon">&#9776;</div>
-      <a href="index.html" class="logo">
-        <img src="logo.webp" alt="Logo">
-      </a>
-      <div class="bag-icon" id="cart-icon">
-        &#128717;
-        <span class="cart-count" id="cart-count">0</span>
-      </div>
-    </header>
+  <div class="menu-icon">&#9776;</div>
+  <a href="index.html" class="logo">
+    <img src="logo.webp" alt="Logo">
+  </a>
+  <a href="carrinho.html" class="bag-icon" id="cart-icon">
+    &#128717;
+    <span class="cart-count" id="cart-count">0</span>
+  </a>
+</header>
     <div class="search-container">
       <input class="search-input" type="text" placeholder="O que você está procurando?" />
       <button class="search-button"><img src="lupa.webp" alt="Buscar" /></button>
@@ -268,27 +268,32 @@
   </footer>
   
   <script>
-    // CARRINHO
-    const CART_KEY = 'cartCount';
-    const cartCountEl = document.getElementById('cart-count');
-    
-    function getCartCount() { 
-      return parseInt(localStorage.getItem(CART_KEY) || '0', 10); 
-    }
-    
-    function setCartCount(c) { 
-      localStorage.setItem(CART_KEY, c); 
-      renderCartCount(); 
-    }
-    
-    function renderCartCount() {
-      const c = getCartCount();
-      cartCountEl.textContent = c;
-      cartCountEl.style.display = c > 0 ? 'inline-block' : 'none';
-    }
-    
-    document.addEventListener('DOMContentLoaded', renderCartCount);
-    
+   // ––––––––––––––––––––––––––––––––––
+// Gerenciamento de carrinho no localStorage
+const CART_KEY = 'cartItems';
+
+function getCartItems() {
+  try {
+    return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function setCartItems(items) {
+  localStorage.setItem(CART_KEY, JSON.stringify(items));
+  renderCartCount();
+}
+
+function renderCartCount() {
+  const cartCountEl = document.getElementById('cart-count');
+  const totalQty = getCartItems().reduce((sum, item) => sum + item.quantidade, 0);
+  cartCountEl.textContent = totalQty;
+  cartCountEl.style.display = totalQty > 0 ? 'inline-block' : 'none';
+}
+
+document.addEventListener('DOMContentLoaded', renderCartCount);
+// ––––––––––––––––––––––––––––––––––
     // OVERLAY MENU
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').onclick = () => overlay.classList.add('open');
@@ -439,9 +444,27 @@
           document.getElementById('quantity').textContent = qty; 
         };
     
-        // comprar
-        document.querySelector('.buy-btn').onclick = () => setCartCount(getCartCount()+1);
-    
+        document.querySelector('.buy-btn').onclick = () => {
+  // 1. Captura dados do produto
+  const nome = nomeProduto || document.querySelector('.produto-nome').textContent;
+  const precoText = document.querySelector('.produto-preco').textContent.replace('R$ ', '');
+  const quantidade = parseInt(document.getElementById('quantity').textContent, 10);
+  const opcaoEl = document.querySelector('.option-swatch.selected');
+  const opcao = opcaoEl ? opcaoEl.textContent : null;
+
+  // 2. Adiciona/atualiza item no carrinho
+  const items = getCartItems();
+  const existente = items.find(i => i.nome === nome && i.opcao === opcao);
+  if (existente) {
+    existente.quantidade += quantidade;
+  } else {
+    items.push({ nome, preco: precoText, quantidade, opcao });
+  }
+  setCartItems(items);
+
+  // **Não redirecionar aqui**; só atualiza o carrinho
+};
+        
         break;
       }
     }
@@ -584,4 +607,4 @@
     });
   </script>
 </body>
-</html>
+</html> 
