@@ -195,6 +195,10 @@
 #complemento {
   width: 84%;    /* altera só o campo Complemento */
 }
+  /* Campo Ponto de Referência */
+#referencia {
+  width: 84%;
+}
 
 /* Drop-downs */
 #tipoEntrega {
@@ -277,6 +281,13 @@
         <label class="required">Cidade</label>
         <input type="text" id="cidade">
       </div>
+      
+      <!-- Substitua seu bloco atual por este -->
+<div class="form-group entrega-field full" style="display: none;">
+  <label class="required">Ponto de Referência</label>
+  <input type="text" id="referencia">
+  <div class="error" id="error-referencia"></div>
+</div>
 
       <div class="form-group entrega-field full" style="display: none;">
         <label>Complemento (Opcional)</label>
@@ -449,53 +460,62 @@
         }
         errorWhatsapp.textContent = '';
 
-        // Validar campos obrigatórios para entrega
-        const tipoEntrega = document.getElementById('tipoEntrega').value;
-        if (tipoEntrega === 'entrega') {
-          const estado = document.getElementById('estado').value;
-          const cidade = document.getElementById('cidade').value;
-          
-          if (!estado || !cidade) {
-            alert('Por favor, preencha todos os campos obrigatórios para entrega!');
-            return;
-          }
-        }
+     // Validar campos obrigatórios para entrega
+const tipoEntrega = document.getElementById('tipoEntrega').value;
+if (tipoEntrega === 'entrega') {
+  const estado = document.getElementById('estado').value;
+  const cidade = document.getElementById('cidade').value;
+  
+  if (!estado || !cidade) {
+    alert('Por favor, preencha todos os campos obrigatórios para entrega!');
+    return;
+  }
 
-        // Coletar dados
+  // === Nova validação de referência ===
+  const referenciaEl = document.getElementById('referencia');
+  if (!referenciaEl.value.trim()) {
+    document.getElementById('error-referencia').textContent = 'Por favor, informe um ponto de referência.';
+    referenciaEl.focus();
+    return;
+  }
+  document.getElementById('error-referencia').textContent = '';
+}
+
         const formData = {
-          tipoEntrega: tipoEntrega,
-          nome: document.getElementById('nome').value,
-          whatsapp: whatsapp,
-          estado: document.getElementById('estado').value,
-          cidade: document.getElementById('cidade').value,
-          complemento: document.getElementById('complemento').value,
-          pagamento: document.getElementById('pagamento').value,
-          carrinho: JSON.parse(localStorage.getItem('cartItems')) || [],
-          total: document.getElementById('cart-total').textContent
-        };
-
+  tipoEntrega,
+  nome: document.getElementById('nome').value,
+  whatsapp,
+  estado,
+  cidade,
+  complemento: document.getElementById('complemento').value,
+  referencia: tipoEntrega === 'entrega' ? referenciaEl.value.trim() : '',
+  pagamento: document.getElementById('pagamento').value,
+  carrinho,
+  total: document.getElementById('cart-total').textContent
+};
         // Montar mensagem para WhatsApp
-        let message = `*NOVO PEDIDO*%0A%0A`;
-        message += `*Nome:* ${formData.nome}%0A`;
-        message += `*WhatsApp:* ${formData.whatsapp}%0A`;
-        message += `*Tipo de Entrega:* ${formData.tipoEntrega.toUpperCase()}%0A`;
+let message = `*NOVO PEDIDO*%0A%0A`;
+message += `*Nome:* ${formData.nome}%0A`;
+message += `*WhatsApp:* ${formData.whatsapp}%0A`;
+message += `*Tipo de Entrega:* ${formData.tipoEntrega.toUpperCase()}%0A`;
 
-        if(formData.tipoEntrega === 'entrega') {
-          message += `*Endereço:* ${formData.estado}, ${formData.cidade}%0A`;
-          message += `*Complemento:* ${formData.complemento || 'Não informado'}%0A`;
-        }
+if (formData.tipoEntrega === 'entrega') {
+  message += `*Endereço:* ${formData.estado}, ${formData.cidade}%0A`;
+  message += `*Ponto de Referência:* ${formData.referencia}%0A`;
+  message += `*Complemento:* ${formData.complemento || 'Não informado'}%0A`;
+}
 
-        message += `*Pagamento:* ${formData.pagamento}%0A`;
-        if(formData.pagamento === 'Pix') {
-          message += `%0A*CHAVE PIX:* 5598992124926%0A`;
-        }
+message += `*Pagamento:* ${formData.pagamento}%0A`;
+if (formData.pagamento === 'Pix') {
+  message += `%0A*CHAVE PIX:* 5598992124926%0A`;
+}
 
-        message += `%0A*ITENS:*%0A`;
-        formData.carrinho.forEach(item => {
-          message += `➤ ${item.nome} (${item.quantidade}x) - ${formatPrice(item.preco)}%0A`;
-        });
+message += `%0A*ITENS:*%0A`;
+formData.carrinho.forEach(item => {
+  message += `➤ ${item.nome} (${item.quantidade}x) - ${formatPrice(item.preco)}%0A`;
+});
 
-        message += `%0A*TOTAL:* ${formData.total}`;
+message += `%0A*TOTAL:* ${formData.total}`;
 
         // Limpar carrinho e redirecionar
         localStorage.removeItem('cartItems');
