@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Carrinho</title>
   <style>
-    /* ESTILOS EXISTENTES */
+    /* ESTILOS EXISTENTES (mantidos iguais) */
     html, body { margin: 0; padding: 0; height: 100%; }
     body { 
       font-family: Arial, sans-serif; 
@@ -346,6 +346,9 @@
       const errorWhatsapp = document.getElementById('error-whatsapp');
       const errorReferencia = document.getElementById('error-referencia');
 
+      // URL do Google AppScript - SUBSTITUA PELA SUA URL
+      const APPSCRIPT_URL = "SUA_URL_DO_APPSCRIPT_AQUI";
+
       // Funções existentes do carrinho
       function renderCartCount() {
         const totalQty = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
@@ -418,6 +421,38 @@
         backdrop.style.display = 'none';
       }
 
+      // Função para enviar dados para o Google Sheets
+      async function sendToGoogleSheets(formData) {
+        try {
+          // Envia para a aba Pedidos
+          await fetch(APPSCRIPT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: 'addPedido',
+              data: formData
+            })
+          });
+
+          // Envia para a aba Resumo
+          await fetch(APPSCRIPT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: 'addResumo',
+              data: formData
+            })
+          });
+        } catch (error) {
+          console.error('Erro ao enviar para Google Sheets:', error);
+          // Não mostra erro para o usuário, apenas registra no console
+        }
+      }
+
       // Event listeners do modal
       openModalBtn.addEventListener('click', showModal);
       closeModalBtn.addEventListener('click', hideModal);
@@ -443,7 +478,7 @@
       });
 
       // Enviar pedido
-      document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+      document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         // Validar carrinho vazio
@@ -494,8 +529,14 @@
           referencia,
           pagamento: document.getElementById('pagamento').value,
           itens: cartItems,
-          total: document.getElementById('cart-total').textContent
+          total: document.getElementById('cart-total').textContent,
+          timestamp: new Date().toISOString()
         };
+
+        // Enviar para o Google Sheets (silenciosamente)
+        if (APPSCRIPT_URL && APPSCRIPT_URL !== "SUA_URL_DO_APPSCRIPT_AQUI") {
+          sendToGoogleSheets(formData);
+        }
 
         // Montar mensagem para WhatsApp no formato solicitado
         let message = `================================%0A`;
