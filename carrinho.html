@@ -175,44 +175,44 @@
       margin: 10px 0;
       grid-column: 1 / -1;
     }
-/* Campos de texto */
-#nome {
-  width: 84%;    /* altera só o campo Nome */
-}
+    /* Campos de texto */
+    #nome {
+      width: 84%;    /* altera só o campo Nome */
+    }
 
-#whatsapp {
-  width: 84%;    /* altera só o campo WhatsApp */
-}
+    #whatsapp {
+      width: 84%;    /* altera só o campo WhatsApp */
+    }
 
-#estado {
-  width: 68%;    /* altera só o campo Estado */
-}
+    #estado {
+      width: 68%;    /* altera só o campo Estado */
+    }
 
-#cidade {
-  width: 68%;    /* altera só o campo Cidade */
-}
+    #cidade {
+      width: 68%;    /* altera só o campo Cidade */
+    }
 
-#complemento {
-  width: 84%;    /* altera só o campo Complemento */
-}
-  /* Campo Ponto de Referência */
-#referencia {
-  width: 84%;
-}
+    #complemento {
+      width: 84%;    /* altera só o campo Complemento */
+    }
+    /* Campo Ponto de Referência */
+    #referencia {
+      width: 84%;
+    }
 
-/* Drop-downs */
-#tipoEntrega {
-  width: 90%;    /* altera só o select Tipo de Entrega */
-}
+    /* Drop-downs */
+    #tipoEntrega {
+      width: 90%;    /* altera só o select Tipo de Entrega */
+    }
 
-#pagamento {
-  width: 90%;    /* altera só o select Pagamento */
-}
+    #pagamento {
+      width: 90%;    /* altera só o select Pagamento */
+    }
 
-/* Botão “FAZER PEDIDO” */
-#modal-sheet button.checkout-btn.full {
-  width: 90%;    /* altera só o botão */
-}
+    /* Botão "FAZER PEDIDO" */
+    #modal-sheet button.checkout-btn.full {
+      width: 90%;    /* altera só o botão */
+    }
   </style>
 </head>
 <body>
@@ -282,12 +282,11 @@
         <input type="text" id="cidade">
       </div>
       
-      <!-- Substitua seu bloco atual por este -->
-<div class="form-group entrega-field full" style="display: none;">
-  <label class="required">Ponto de Referência</label>
-  <input type="text" id="referencia">
-  <div class="error" id="error-referencia"></div>
-</div>
+      <div class="form-group entrega-field full" style="display: none;">
+        <label class="required">Ponto de Referência</label>
+        <input type="text" id="referencia">
+        <div class="error" id="error-referencia"></div>
+      </div>
 
       <div class="form-group entrega-field full" style="display: none;">
         <label>Complemento (Opcional)</label>
@@ -345,6 +344,7 @@
       const backdrop = document.getElementById('backdrop');
       const modal = document.getElementById('modal-sheet');
       const errorWhatsapp = document.getElementById('error-whatsapp');
+      const errorReferencia = document.getElementById('error-referencia');
 
       // Funções existentes do carrinho
       function renderCartCount() {
@@ -442,7 +442,7 @@
         this.value = this.value.replace(/\D/g, '');
       });
 
-      // Enviar pedido
+      // Enviar pedido - AJUSTE PRINCIPAL AQUI
       document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -460,66 +460,97 @@
         }
         errorWhatsapp.textContent = '';
 
-     // Validar campos obrigatórios para entrega
-const tipoEntrega = document.getElementById('tipoEntrega').value;
-if (tipoEntrega === 'entrega') {
-  const estado = document.getElementById('estado').value;
-  const cidade = document.getElementById('cidade').value;
-  
-  if (!estado || !cidade) {
-    alert('Por favor, preencha todos os campos obrigatórios para entrega!');
-    return;
-  }
+        // Validar campos obrigatórios para entrega
+        const tipoEntrega = document.getElementById('tipoEntrega').value;
+        let estado = '', cidade = '', referencia = '';
+        
+        if (tipoEntrega === 'entrega') {
+          estado = document.getElementById('estado').value;
+          cidade = document.getElementById('cidade').value;
+          referencia = document.getElementById('referencia').value.trim();
+          
+          if (!estado || !cidade) {
+            alert('Por favor, preencha todos os campos obrigatórios para entrega!');
+            return;
+          }
 
-  // === Nova validação de referência ===
-  const referenciaEl = document.getElementById('referencia');
-  if (!referenciaEl.value.trim()) {
-    document.getElementById('error-referencia').textContent = 'Por favor, informe um ponto de referência.';
-    referenciaEl.focus();
-    return;
-  }
-  document.getElementById('error-referencia').textContent = '';
-}
+          if (!referencia) {
+            errorReferencia.textContent = 'Por favor, informe um ponto de referência.';
+            document.getElementById('referencia').focus();
+            return;
+          }
+          errorReferencia.textContent = '';
+        }
 
+        // Montar objeto com os dados do formulário
         const formData = {
-  tipoEntrega,
-  nome: document.getElementById('nome').value,
-  whatsapp,
-  estado,
-  cidade,
-  complemento: document.getElementById('complemento').value,
-  referencia: tipoEntrega === 'entrega' ? referenciaEl.value.trim() : '',
-  pagamento: document.getElementById('pagamento').value,
-  carrinho,
-  total: document.getElementById('cart-total').textContent
-};
+          tipoEntrega,
+          nome: document.getElementById('nome').value,
+          whatsapp,
+          estado,
+          cidade,
+          complemento: document.getElementById('complemento').value,
+          referencia,
+          pagamento: document.getElementById('pagamento').value,
+          itens: cartItems,
+          total: document.getElementById('cart-total').textContent
+        };
+
         // Montar mensagem para WhatsApp
-let message = `*NOVO PEDIDO*%0A%0A`;
-message += `*Nome:* ${formData.nome}%0A`;
-message += `*WhatsApp:* ${formData.whatsapp}%0A`;
-message += `*Tipo de Entrega:* ${formData.tipoEntrega.toUpperCase()}%0A`;
+        let message = `*NOVO PEDIDO*%0A%0A`;
+        message += `*Nome:* ${formData.nome}%0A`;
+        message += `*WhatsApp:* ${formData.whatsapp}%0A`;
+        message += `*Tipo de Entrega:* ${formData.tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A`;
 
-if (formData.tipoEntrega === 'entrega') {
-  message += `*Endereço:* ${formData.estado}, ${formData.cidade}%0A`;
-  message += `*Ponto de Referência:* ${formData.referencia}%0A`;
-  message += `*Complemento:* ${formData.complemento || 'Não informado'}%0A`;
-}
+        if (formData.tipoEntrega === 'entrega') {
+          message += `*Estado:* ${formData.estado}%0A`;
+          message += `*Cidade:* ${formData.cidade}%0A`;
+          message += `*Ponto de Referência:* ${formData.referencia}%0A`;
+          if (formData.complemento) {
+            message += `*Complemento:* ${formData.complemento}%0A`;
+          }
+        }
 
-message += `*Pagamento:* ${formData.pagamento}%0A`;
-if (formData.pagamento === 'Pix') {
-  message += `%0A*CHAVE PIX:* 5598992124926%0A`;
-}
+        message += `*Forma de Pagamento:* ${formData.pagamento}%0A`;
+        if (formData.pagamento === 'Pix') {
+          message += `%0A*CHAVE PIX:* 5598992124926%0A`;
+        }
 
-message += `%0A*ITENS:*%0A`;
-formData.carrinho.forEach(item => {
-  message += `➤ ${item.nome} (${item.quantidade}x) - ${formatPrice(item.preco)}%0A`;
-});
+        message += `%0A*ITENS DO PEDIDO:*%0A%0A`;
+        formData.itens.forEach(item => {
+          message += `➤ *${item.nome}*%0A`;
+          message += `Quantidade: ${item.quantidade}%0A`;
+          if (item.opcao) {
+            message += `Opção: ${item.opcao}%0A`;
+          }
+          message += `Preço unitário: ${formatPrice(item.preco)}%0A`;
+          message += `Subtotal: ${formatPrice(item.preco * item.quantidade)}%0A%0A`;
+        });
 
-message += `%0A*TOTAL:* ${formData.total}`;
+        message += `%0A*TOTAL DO PEDIDO:* ${formData.total}%0A%0A`;
+        message += `*Obrigado pelo seu pedido!*`;
 
-        // Limpar carrinho e redirecionar
+        // Limpar carrinho
         localStorage.removeItem('cartItems');
-        window.location.href = `https://wa.me/5598992124926?text=${message}`;
+        
+        // Criar link do WhatsApp
+        const whatsappUrl = `https://wa.me/5598992124926?text=${message}`;
+        
+        // Abrir em nova aba e depois redirecionar
+        const newWindow = window.open(whatsappUrl, '_blank');
+        
+        // Focar na nova janela (caso o navegador tenha bloqueado a abertura)
+        if (newWindow) {
+          newWindow.focus();
+        } else {
+          // Se o navegador bloqueou a abertura, mostrar alerta
+          alert('Por favor, permita pop-ups para enviar seu pedido pelo WhatsApp.');
+        }
+        
+        // Redirecionar para a página inicial após breve delay
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 500);
       });
 
       renderCartItems();
