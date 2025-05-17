@@ -348,7 +348,7 @@
       const errorReferencia = document.getElementById('error-referencia');
 
       // URL do Google AppScript - SUBSTITUA PELA SUA URL
-      const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYPTQ7HodH71tki5SZszvTbDpGg86qjhYIrEIFyUpiGmeARfJgGr8CgdPXh76aUhCA/exec";
+      const APPSCRIPT_URL = "SUA_URL_DO_APPSCRIPT_AQUI";
 
       // Funções existentes do carrinho
       function renderCartCount() {
@@ -422,43 +422,40 @@
         backdrop.style.display = 'none';
       }
 
-      // Função para enviar dados para o Google Sheets - VERSÃO AJUSTADA
-      async function sendToGoogleSheets(formData) {
-        try {
-          // Formata os itens no padrão "Nome xQuantidade - R$Preço"
-          const itemsText = formData.itens.map(item => 
-            `${item.nome} x${item.quantidade} - ${formatPrice(item.preco)}`
-          ).join('\n');
-          
-          // Calcula o total de itens
-          const totalItems = formData.itens.reduce((sum, item) => sum + item.quantidade, 0);
-          
-          // Prepara os dados para a aba Pedidos
-          const pedidoData = {
-            nome: formData.nome,
-            whatsapp: formData.whatsapp,
-            items: itemsText,
-            qtdTotal: totalItems,
-            total: formData.total,
-            tipoEntrega: formData.tipoEntrega,
-            pagamento: formData.pagamento,
-            referencia: formData.referencia || '',
-            complemento: formData.complemento || ''
-          };
+      // Função para enviar dados para o Google Sheets (assíncrona)
+      function sendToGoogleSheets(formData) {
+        return new Promise((resolve) => {
+          // Executa em segundo plano sem bloquear a interface
+          setTimeout(async () => {
+            try {
+              const itemsText = formData.itens.map(item => 
+                `${item.nome} x${item.quantidade} - ${formatPrice(item.preco)}`
+              ).join('\n');
+              
+              const totalItems = formData.itens.reduce((sum, item) => sum + item.quantidade, 0);
+              
+              const pedidoData = {
+                nome: formData.nome,
+                whatsapp: formData.whatsapp,
+                items: itemsText,
+                qtdTotal: totalItems,
+                total: formData.total,
+                tipoEntrega: formData.tipoEntrega,
+                pagamento: formData.pagamento,
+                referencia: formData.referencia || '',
+                complemento: formData.complemento || ''
+              };
 
-          // Envia via GET (mais confiável para AppScript)
-          const params = new URLSearchParams(pedidoData);
-          const response = await fetch(`${APPSCRIPT_URL}?${params}`);
-          
-          if (!response.ok) {
-            throw new Error('Erro ao enviar dados');
-          }
-          
-          return await response.json();
-        } catch (error) {
-          console.error('Erro ao enviar para Google Sheets:', error);
-          throw error;
-        }
+              const params = new URLSearchParams(pedidoData);
+              await fetch(`${APPSCRIPT_URL}?${params}`);
+              
+              resolve(true);
+            } catch (error) {
+              console.error("Erro no envio para Google Sheets:", error);
+              resolve(false);
+            }
+          }, 0);
+        });
       }
 
       // Event listeners do modal
@@ -485,17 +482,16 @@
         this.value = this.value.replace(/\D/g, '');
       });
 
-      // Enviar pedido
-      document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+      // Enviar pedido - VERSÃO AJUSTADA PARA FLUXO RÁPIDO
+      document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // Validar carrinho vazio
+        // Validações rápidas
         if (cartItems.length === 0) {
           alert('Seu carrinho está vazio!');
           return;
         }
 
-        // Validar WhatsApp
         const whatsapp = document.getElementById('whatsapp').value;
         if (!/^\d{11}$/.test(whatsapp)) {
           errorWhatsapp.textContent = 'WhatsApp inválido! Deve conter 11 dígitos numéricos.';
@@ -503,21 +499,9 @@
         }
         errorWhatsapp.textContent = '';
 
-        // Validar campos obrigatórios para entrega
         const tipoEntrega = document.getElementById('tipoEntrega').value;
-        let estado = '', cidade = '', referencia = '', complemento = '';
-        
         if (tipoEntrega === 'entrega') {
-          estado = document.getElementById('estado').value;
-          cidade = document.getElementById('cidade').value;
-          referencia = document.getElementById('referencia').value.trim();
-          complemento = document.getElementById('complemento').value;
-          
-          if (!estado || !cidade) {
-            alert('Por favor, preencha todos os campos obrigatórios para entrega!');
-            return;
-          }
-
+          const referencia = document.getElementById('referencia').value.trim();
           if (!referencia) {
             errorReferencia.textContent = 'Por favor, informe um ponto de referência.';
             document.getElementById('referencia').focus();
@@ -526,30 +510,21 @@
           errorReferencia.textContent = '';
         }
 
-        // Montar objeto com os dados do formulário
+        // Montar dados do formulário
         const formData = {
           tipoEntrega,
           nome: document.getElementById('nome').value,
           whatsapp,
-          estado,
-          cidade,
-          complemento,
-          referencia,
+          estado: document.getElementById('estado').value || '',
+          cidade: document.getElementById('cidade').value || '',
+          complemento: document.getElementById('complemento').value || '',
+          referencia: document.getElementById('referencia').value || '',
           pagamento: document.getElementById('pagamento').value,
           itens: cartItems,
           total: document.getElementById('cart-total').textContent
         };
 
-        // Enviar para o Google Sheets (silenciosamente)
-        if (APPSCRIPT_URL && APPSCRIPT_URL !== "SUA_URL_DO_APPSCRIPT_AQUI") {
-          try {
-            await sendToGoogleSheets(formData);
-          } catch (error) {
-            console.error("Falha no envio para Google Sheets, mas continuando...", error);
-          }
-        }
-
-        // Montar mensagem para WhatsApp no formato solicitado
+        // 1. Montar mensagem para WhatsApp
         let message = `================================%0A`;
         message += `         *COMPROVANTE DE PEDIDO*%0A`;
         message += `================================%0A%0A`;
@@ -585,14 +560,31 @@
         message += `*TOTAL DO PEDIDO:* ${formData.total}%0A`;
         message += `______________________________________%0A%0A`;
 
-        // Limpar carrinho e redirecionar para WhatsApp
+        // 2. Limpar carrinho
         localStorage.removeItem('cartItems');
-        window.open(`https://wa.me/5598992124926?text=${message}`, '_blank');
+
+        // 3. Abrir WhatsApp IMEDIATAMENTE
+        const whatsappWindow = window.open(`https://wa.me/5598992124926?text=${message}`, '_blank');
         
-        // Redirecionar de volta para a página inicial após 1 segundo
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1000);
+        // 4. Enviar para Google Sheets em segundo plano
+        if (APPSCRIPT_URL && APPSCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwYPTQ7HodH71tki5SZszvTbDpGg86qjhYIrEIFyUpiGmeARfJgGr8CgdPXh76aUhCA/exec") {
+          sendToGoogleSheets(formData).then(() => {
+            console.log("Dados enviados para planilha em segundo plano");
+          });
+        }
+
+        // 5. Redirecionar para página inicial só depois que o WhatsApp abrir
+        if (whatsappWindow) {
+          // Verifica se a janela do WhatsApp foi aberta com sucesso
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 300); // Tempo curto para garantir que o WhatsApp abriu
+        } else {
+          // Se o popup foi bloqueado, redireciona após 1 segundo
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        }
       });
 
       renderCartItems();
