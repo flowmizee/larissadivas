@@ -348,50 +348,121 @@
       const errorReferencia = document.getElementById('error-referencia');
 
       // URL do Google AppScript - SUBSTITUA PELA SUA URL
-      const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzyAVPWPHK69GhntZrHbjJz80bOWrvaG3meH6eTy9qaVMbF20Rt0pstRLs3ObPZzTiu/exec";
+      const APPSCRIPT_URL = "SUA_URL_DO_APPSCRIPT_AQUI";
+
+      // Funções existentes do carrinho
+      function renderCartCount() {
+        const totalQty = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
+        cartCountEl.textContent = totalQty;
+        cartCountEl.style.display = totalQty > 0 ? 'inline-block' : 'none';
+      }
+
+      function formatPrice(price) {
+        return 'R$ ' + parseFloat(price).toFixed(2).replace('.', ',');
+      }
+
+      function renderCartItems() {
+        if (cartItems.length === 0) {
+          cartItemsEl.innerHTML = '<p>Seu carrinho está vazio</p>';
+          cartTotalEl.textContent = 'R$ 0,00';
+          return;
+        }
+
+        let total = 0;
+        cartItemsEl.innerHTML = '';
+
+        cartItems.forEach((item, index) => {
+          const subtotal = parseFloat(item.preco) * item.quantidade;
+          total += subtotal;
+
+          const itemEl = document.createElement('div');
+          itemEl.className = 'cart-item';
+          itemEl.innerHTML = `
+            <img src="${item.imagens?.[0] || ''}" alt="${item.nome}" class="cart-item-image">
+            <div class="cart-item-details">
+              <div class="cart-item-name">${item.nome}</div>
+              ${item.opcao ? `<div class="cart-item-option">${item.opcao}</div>` : ''}
+              <div class="cart-item-price">${formatPrice(item.preco)}</div>
+              <div class="cart-item-qty">Quantidade: ${item.quantidade}</div>
+              <div class="cart-item-subtotal">Subtotal: ${formatPrice(subtotal)}</div>
+            </div>
+            <img src="lixeira.png" 
+                 class="remove-item" 
+                 data-index="${index}"
+                 alt="Remover item"
+                 title="Remover item">
+          `;
+          cartItemsEl.appendChild(itemEl);
+        });
+
+        document.querySelectorAll('.remove-item').forEach(icon => {
+          icon.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            cartItems.splice(index, 1);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            renderCartItems();
+            renderCartCount();
+          });
+        });
+
+        cartTotalEl.textContent = formatPrice(total);
+      }
+
+      function showModal() {
+        if (cartItems.length === 0) {
+          alert('Seu carrinho está vazio!');
+          return;
+        }
+        modal.classList.add('open');
+        backdrop.style.display = 'block';
+      }
+
+      function hideModal() {
+        modal.classList.remove('open');
+        backdrop.style.display = 'none';
+      }
+
+      // Função para enviar dados para o Google Sheets - VERSÃO AJUSTADA
+      async function sendToGoogleSheets(formData) {
+        try {
+          // Formata os itens no padrão "Nome xQuantidade - R$Preço"
+          const itemsText = formData.itens.map(item => 
+            `${item.nome} x${item.quantidade} - ${formatPrice(item.preco)}`
+          ).join('\n');
+          
+          // Calcula o total de itens
+          const totalItems = formData.itens.reduce((sum, item) => sum + item.quantidade, 0);
+          
+          // Prepara os dados para a aba Pedidos
+          const pedidoData = {
+            nome: formData.nome,
+            whatsapp: formData.whatsapp,
+            items: itemsText,
+            qtdTotal: totalItems,
+            total: formData.total,
+            tipoEntrega: formData.tipoEntrega,
+            pagamento: formData.pagamento,
+            referencia: formData.referencia || '',
+            complemento: formData.complemento || ''
+          };
+
+          // Envia via GET (mais confiável para AppScript)
+          const params = new URLSearchParams(pedidoData);
+          const response = await fetch(`${APPSCRIPT_URL}?${params}`);
+          
+          if (!response.ok) {
+            throw new Error('Erro ao enviar dados');
+          }
+          
+          return await response.json();
+        } catch (error) {
+          console.error('Erro ao enviar para Google Sheets:', error);
+          throw error;
+        }
+      }
 
       // Event listeners do modal
-      openModalBtn.addEventListener('c// Função para enviar dados para o Google Sheets - VERSÃO ATUALIZADA
-async function sendToGoogleSheets(formData) {
-  try {
-    // Prepara os dados no formato correto
-    const payload = {
-      action: 'saveOrder',
-      data: {
-        nome: formData.nome,
-        whatsapp: formData.whatsapp,
-        itens: formData.itens,
-        total: formData.total.replace('R$ ', '').replace(',', '.'),
-        tipoEntrega: formData.tipoEntrega,
-        pagamento: formData.pagamento,
-        estado: formData.estado || '',
-        cidade: formData.cidade || '',
-        referencia: formData.referencia || '',
-        complemento: formData.complemento || ''
-      }
-    };
-
-    // Envia para o Google Apps Script
-    const response = await fetch(APPSCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
-    });
-    
-    const result = await response.json();
-    console.log('Resposta do servidor:', result);
-    
-    if (!response.ok) {
-      throw new Error(result.message || 'Erro ao enviar dados');
-    }
-    return result;
-  } catch (error) {
-    console.error('Erro ao enviar para Google Sheets:', error);
-    throw error;
-  }
-    }lick', showModal);
+      openModalBtn.addEventListener('click', showModal);
       closeModalBtn.addEventListener('click', hideModal);
       backdrop.addEventListener('click', hideModal);
 
@@ -466,13 +537,16 @@ async function sendToGoogleSheets(formData) {
           referencia,
           pagamento: document.getElementById('pagamento').value,
           itens: cartItems,
-          total: document.getElementById('cart-total').textContent,
-          timestamp: new Date().toISOString()
+          total: document.getElementById('cart-total').textContent
         };
 
         // Enviar para o Google Sheets (silenciosamente)
         if (APPSCRIPT_URL && APPSCRIPT_URL !== "SUA_URL_DO_APPSCRIPT_AQUI") {
-          sendToGoogleSheets(formData);
+          try {
+            await sendToGoogleSheets(formData);
+          } catch (error) {
+            console.error("Falha no envio para Google Sheets, mas continuando...", error);
+          }
         }
 
         // Montar mensagem para WhatsApp no formato solicitado
