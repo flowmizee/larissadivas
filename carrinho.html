@@ -442,7 +442,7 @@
         this.value = this.value.replace(/\D/g, '');
       });
 
-      // Enviar pedido - AJUSTE PRINCIPAL AQUI
+      // Enviar pedido
       document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -530,27 +530,14 @@
         message += `%0A*TOTAL DO PEDIDO:* ${formData.total}%0A%0A`;
         message += `*Obrigado pelo seu pedido!*`;
 
-        // Limpar carrinho
+        // Limpar carrinho e redirecionar para WhatsApp
         localStorage.removeItem('cartItems');
+        window.open(`https://wa.me/5598992124926?text=${message}`, '_blank');
         
-        // Criar link do WhatsApp
-        const whatsappUrl = `https://wa.me/5598992124926?text=${message}`;
-        
-        // Abrir em nova aba e depois redirecionar
-        const newWindow = window.open(whatsappUrl, '_blank');
-        
-        // Focar na nova janela (caso o navegador tenha bloqueado a abertura)
-        if (newWindow) {
-          newWindow.focus();
-        } else {
-          // Se o navegador bloqueou a abertura, mostrar alerta
-          alert('Por favor, permita pop-ups para enviar seu pedido pelo WhatsApp.');
-        }
-        
-        // Redirecionar para a página inicial após breve delay
+        // Redirecionar de volta para a página inicial após 1 segundo
         setTimeout(() => {
           window.location.href = 'index.html';
-        }, 500);
+        }, 1000);
       });
 
       renderCartItems();
