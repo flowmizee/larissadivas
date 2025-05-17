@@ -442,8 +442,8 @@
         this.value = this.value.replace(/\D/g, '');
       });
 
-      // Enviar pedido para Google Apps Script e WhatsApp
-      document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+      // Enviar pedido
+      document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
         // Validar carrinho vazio
@@ -483,78 +483,55 @@
           errorReferencia.textContent = '';
         }
 
-        // Preparar dados para envio
-        const nome = document.getElementById('nome').value;
-        const pagamento = document.getElementById('pagamento').value;
-        const total = document.getElementById('cart-total').textContent;
-        
-        // Lista de produtos formatada
-        const produtos = cartItems.map(item => 
-          `${item.nome}${item.opcao ? ` (${item.opcao})` : ''}`
-        ).join(', ');
-        
-        // Quantidade total de produtos
-        const quantidadeTotal = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
+        // Montar objeto com os dados do formulário
+        const formData = {
+          tipoEntrega,
+          nome: document.getElementById('nome').value,
+          whatsapp,
+          estado,
+          cidade,
+          complemento,
+          referencia,
+          pagamento: document.getElementById('pagamento').value,
+          itens: cartItems,
+          total: document.getElementById('cart-total').textContent
+        };
 
-        // Montar URL para Google Apps Script
-        const scriptUrl = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec';
-        const params = new URLSearchParams();
+        // Montar mensagem para WhatsApp no formato solicitado
+        let message = `================================%0A`;
+        message += `         *COMPROVANTE DE PEDIDO*%0A`;
+        message += `================================%0A%0A`;
         
-        params.append('produtos', produtos);
-        params.append('quantidade', quantidadeTotal);
-        params.append('preco_total', total);
-        params.append('nome', nome);
-        params.append('whatsapp', '55' + whatsapp); // Adiciona código do país
-        params.append('pagamento', pagamento);
-        params.append('tipo', tipoEntrega);
-        
-        if (tipoEntrega === 'entrega' && complemento) {
-          params.append('complemento', complemento);
-        }
+        message += `*Nome:* ${formData.nome}%0A`;
+        message += `*Tipo de Entrega:* ${formData.tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A%0A`;
 
-        // Enviar para Google Apps Script
-        try {
-          const response = await fetch(`${scriptUrl}?${params.toString()}`, {
-            method: 'GET',
-            mode: 'no-cors' // Modo no-cors para evitar problemas com CORS
-          });
-          
-          console.log('Pedido enviado para Google Sheets');
-        } catch (error) {
-          console.error('Erro ao enviar para Google Sheets:', error);
-        }
-
-        // Montar mensagem para WhatsApp (sem o número do cliente)
-        let message = `*NOVO PEDIDO*%0A%0A`;
-        message += `*Nome:* ${nome}%0A`;
-        message += `*Tipo de Entrega:* ${tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A`;
-
-        if (tipoEntrega === 'entrega') {
-          message += `*Estado:* ${estado}%0A`;
-          message += `*Cidade:* ${cidade}%0A`;
-          message += `*Ponto de Referência:* ${referencia}%0A`;
-          if (complemento) {
-            message += `*Complemento:* ${complemento}%0A`;
+        if (formData.tipoEntrega === 'entrega') {
+          message += `*Estado:* ${formData.estado}%0A`;
+          message += `*Cidade:* ${formData.cidade}%0A`;
+          message += `*Ponto de Referência:* ${formData.referencia}%0A`;
+          if (formData.complemento) {
+            message += `*Complemento:* ${formData.complemento}%0A`;
           }
+          message += `%0A`;
         }
 
-        message += `*Forma de Pagamento:* ${pagamento}%0A`;
-        if (pagamento === 'Pix') {
-          message += `%0A*CHAVE PIX:* 5598992124926%0A`;
+        message += `______________________________________%0A`;
+        message += `*Forma de Pagamento:* ${formData.pagamento}%0A`;
+        if (formData.pagamento === 'Pix') {
+          message += `*Chave Pix:* 5598992124926%0A`;
         }
+        message += `______________________________________%0A%0A`;
 
-        message += `%0A*ITENS DO PEDIDO:*%0A%0A`;
-        cartItems.forEach(item => {
+        message += `*Itens do Pedido:*%0A`;
+        formData.itens.forEach(item => {
           message += `➤ *${item.nome}*%0A`;
-          if (item.opcao) {
-            message += `Opção: ${item.opcao}%0A`;
-          }
-          message += `Quantidade: ${item.quantidade}%0A`;
-          message += `Preço unitário: ${formatPrice(item.preco)}%0A%0A`;
+          message += `   *Quantidade:* ${item.quantidade}%0A`;
+          message += `   *Valor unitário:* ${formatPrice(item.preco)}%0A%0A`;
         });
 
-        message += `%0A*TOTAL DO PEDIDO:* ${total}%0A%0A`;
-        message += `*Obrigado pelo seu pedido!*`;
+        message += `______________________________________%0A`;
+        message += `*TOTAL DO PEDIDO:* ${formData.total}%0A`;
+        message += `______________________________________%0A%0A`;
 
         // Limpar carrinho e redirecionar para WhatsApp
         localStorage.removeItem('cartItems');
