@@ -1,14 +1,15 @@
-<!DOCTYPE html><html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Divas</title>
   <link rel="icon" type="image/png" href="divas.png">
   <style>
-  html, body {
-  margin: 0;
-  padding: 0;
-}
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background-color: #fff; }
     .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
@@ -64,10 +65,41 @@
     .image-scroll { display: flex; gap: 24px; overflow-x: auto; scroll-behavior: smooth; }
     .image-scroll::-webkit-scrollbar { display: none; }
 
-    .banner-scroll-wrapper { background-color: #f2f2f2; padding: 8px 0 24px; overflow: hidden; }
-    .banner-scroll { display: flex; gap: 16px; animation: scrollBanners 20s linear infinite; padding: 0 16px; }
-    .banner-scroll img { height: 500px; object-fit: cover; border-radius: 12px; }
-    @keyframes scrollBanners { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .banner-scroll-wrapper { 
+      background-color: #f2f2f2; 
+      padding: 8px 0 24px; 
+      overflow: hidden;
+      position: relative;
+    }
+    .banner-scroll { 
+      display: flex;
+      gap: 16px;
+      padding: 0;
+      width: max-content;
+    }
+    .banner-scroll.single-banner {
+      width: 100%;
+      padding: 0;
+    }
+    .banner-scroll.scrolling {
+      animation: scrollBanners 15s linear infinite;
+      padding: 0 16px;
+    }
+    .banner-scroll img { 
+      height: 500px; 
+      width: calc(100vw - 100px);
+      object-fit: cover; 
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .banner-scroll.single-banner img {
+      width: 100%;
+      border-radius: 0;
+    }
+    @keyframes scrollBanners { 
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-50% - 8px)); }
+    }
 
     .produtos-wrapper { background-color: #f2f2f2; padding: 16px; }
     .launch-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; cursor: pointer; }
@@ -79,7 +111,7 @@
     .produto .parcelamento, .produto .extra { font-size: 13px; margin-bottom: 8px; }
     .produto .extra { color: #007bff; }
 
-    /* MENU OVERLAY - ATUALIZADO PARA FICAR IGUAL AO DA PÁGINA DE PRODUTO */
+    /* MENU OVERLAY */
     #overlayMenu { 
       position: fixed; 
       top: 0; 
@@ -119,48 +151,43 @@
     @media (max-width: 480px) {
       .produtos-grid { grid-template-columns: 1fr 1fr; }
       .produto img { height: 220px; }
+      .banner-scroll img {
+        height: 300px;
+      }
+      .banner-scroll.single-banner img {
+        height: 300px;
+      }
     }
-  /* remove gap entre produtos e footer */
-.produtos-wrapper {
-  margin-bottom: 0;
-}
 
-/* zera margem superior do footer */
-.site-footer {
-  background-color: #ff69b4;  /* rosa igual ao botão */
-  color: #fff;
-  padding: 16px;
-  margin-top: 0;
-}
-
-/* itens do footer, um embaixo do outro */
-.site-footer .footer-item {
-  margin-bottom: 12px;
-  font-size: 14px;
-}
-
-/* aumenta o espaçamento APENAS depois do ícone */
-.site-footer .footer-item.instagram {
-  margin-bottom: 32px;
-}
-
-/* tamanho do ícone do Instagram */
-.site-footer .footer-item.instagram img {
-  width: 20px;
-  height: auto;
-  display: block;
-}
-
-/* links sem decoração, mantendo cor branca */
-.site-footer .footer-item a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* remove margem da última linha, se quiser */
-.site-footer .footer-item:last-child {
-  margin-bottom: 0;
-}
+    /* FOOTER */
+    .produtos-wrapper {
+      margin-bottom: 0;
+    }
+    .site-footer {
+      background-color: #ff69b4;
+      color: #fff;
+      padding: 16px;
+      margin-top: 0;
+    }
+    .site-footer .footer-item {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .site-footer .footer-item.instagram {
+      margin-bottom: 32px;
+    }
+    .site-footer .footer-item.instagram img {
+      width: 20px;
+      height: auto;
+      display: block;
+    }
+    .site-footer .footer-item a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .site-footer .footer-item:last-child {
+      margin-bottom: 0;
+    }
   </style>
 </head>
 <body>
@@ -177,12 +204,12 @@
     <header class="header">
       <div class="menu-icon">&#9776;</div>
       <a href="index.html" class="logo">
-  <img src="logo.webp" alt="Logo">
-</a>
+        <img src="logo.webp" alt="Logo">
+      </a>
       <a href="carrinho.html" class="bag-icon" id="cart-icon">
-  &#128717;
-  <span class="cart-count" id="cart-count">0</span>
-</a>
+        &#128717;
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
     </header>
     <div class="search-container">
       <input class="search-input" type="text" placeholder="O que você está procurando?">
@@ -227,7 +254,7 @@
   </div>
 
   <div class="image-scroll-wrapper">
-    <div class="image-scroll"><!-- ... --></div>
+    <div class="image-scroll"></div>
   </div>
 
   <div class="banner-scroll-wrapper">
@@ -238,7 +265,7 @@
     <div class="launch-title">Lançamentos</div>
     <div id="produtos" class="produtos-grid"></div>
   </div>
-  <!-- RODAPÉ ROSA -->
+
   <footer class="site-footer">
     <div class="footer-item instagram">
       <a href="https://www.instagram.com/divasbijouxshoes?igsh=MW55M2QzbTJnaGF4bg==" target="_blank" rel="noopener">
@@ -261,55 +288,46 @@
   </footer>
 
   <script>
-   // — CARRINHO UNIFICADO USANDO cartItems —
-const CART_KEY = 'cartItems';
-const cartCountEl = document.getElementById('cart-count');
+    const CART_KEY = 'cartItems';
+    const cartCountEl = document.getElementById('cart-count');
 
-function getCartItems() {
-  try {
-    return JSON.parse(localStorage.getItem(CART_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
+    function getCartItems() {
+      try {
+        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
 
-function renderCartCount() {
-  const totalQty = getCartItems().reduce((sum, item) => sum + (item.quantidade || 0), 0);
-  if (totalQty > 0) {
-    cartCountEl.textContent = totalQty;
-    cartCountEl.style.display = 'inline-block';
-  } else {
-    cartCountEl.style.display = 'none';
-  }
-}
+    function renderCartCount() {
+      const totalQty = getCartItems().reduce((sum, item) => sum + (item.quantidade || 0), 0);
+      if (totalQty > 0) {
+        cartCountEl.textContent = totalQty;
+        cartCountEl.style.display = 'inline-block';
+      } else {
+        cartCountEl.style.display = 'none';
+      }
+    }
 
-// inicializa e atualiza ao voltar de outra aba
-document.addEventListener('DOMContentLoaded', renderCartCount);
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) renderCartCount();
-});
+    document.addEventListener('DOMContentLoaded', renderCartCount);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) renderCartCount();
+    });
 
     const overlay = document.getElementById('overlayMenu');
     document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
     overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
 
-    // Adiciona o link para a página inicial no menu hamburguer
-    document.getElementById('home-link').addEventListener('click', function(e) {
-      e.preventDefault();
-      resetToHomePage();
-      overlay.classList.remove('open');
-    });
-
-    const logoImg       = document.querySelector('.logo img');
-    const catsEl        = document.getElementById('cats');
-    const breadcrumbEl  = document.getElementById('breadcrumb');
-    const pathEl        = breadcrumbEl.querySelector('.path');
-    const crumbNameEl   = breadcrumbEl.querySelector('.crumbName');
+    const logoImg = document.querySelector('.logo img');
+    const catsEl = document.getElementById('cats');
+    const breadcrumbEl = document.getElementById('breadcrumb');
+    const pathEl = breadcrumbEl.querySelector('.path');
+    const crumbNameEl = breadcrumbEl.querySelector('.crumbName');
     const headerTitleEl = breadcrumbEl.querySelector('.header-row .title');
     const headerCountEl = breadcrumbEl.querySelector('.header-row .count');
     const launchTitleEl = document.querySelector('.launch-title');
-    const searchInput   = document.querySelector('.search-input');
-    const searchButton  = document.querySelector('.search-button');
+    const searchInput = document.querySelector('.search-input');
+    const searchButton = document.querySelector('.search-button');
 
     let allBanners = [], allProdutos = [];
 
@@ -332,30 +350,38 @@ document.addEventListener('visibilitychange', () => {
 
           if (cells[14]?.trim() === 'Lançamento') {
             allProdutos.push({
-              nome:         cells[2]?.trim()  || '',
-              imagens:      [cells[3],cells[4],cells[5]].map(u=>u?.trim()).filter(u=>u),
-              opcoes:       [cells[6],cells[7],cells[8]].map(o=>o?.trim()).filter(o=>o),
-              status:       cells[9]?.trim()  || '',
-              descricao:    cells[10]?.trim() || '',
-              preco:        cells[11]?.trim() || '',
-              mensagem:     cells[12]?.trim() || '',
+              nome: cells[2]?.trim() || '',
+              imagens: [cells[3],cells[4],cells[5]].map(u=>u?.trim()).filter(u=>u),
+              opcoes: [cells[6],cells[7],cells[8]].map(o=>o?.trim()).filter(o=>o),
+              status: cells[9]?.trim() || '',
+              descricao: cells[10]?.trim() || '',
+              preco: cells[11]?.trim() || '',
+              mensagem: cells[12]?.trim() || '',
               parcelamento: cells[13]?.trim() || ''
             });
           }
         });
 
+        // Limpa o container antes de adicionar banners
+        bannerContainer.innerHTML = '';
+
         if (allBanners.length === 1) {
-          bannerContainer.classList.remove('banner-scroll');
-          bannerContainer.innerHTML = '';
+          // Apenas 1 banner - mostra estático
+          bannerContainer.classList.add('single-banner');
           const img = document.createElement('img');
           img.src = allBanners[0];
           img.style.width = '100%';
           img.style.height = '500px';
           img.style.objectFit = 'cover';
           bannerContainer.appendChild(img);
-        } else {
-          bannerContainer.classList.add('banner-scroll');
-          allBanners.concat(allBanners).forEach(url => {
+        } else if (allBanners.length > 1) {
+          // 2+ banners - cria o efeito de scroll infinito
+          bannerContainer.classList.add('scrolling');
+          
+          // Duplica os banners para criar o efeito contínuo
+          const duplicatedBanners = [...allBanners, ...allBanners];
+          
+          duplicatedBanners.forEach(url => {
             const img = document.createElement('img');
             img.src = url;
             bannerContainer.appendChild(img);
@@ -375,11 +401,11 @@ document.addEventListener('visibilitychange', () => {
           const params = new URLSearchParams();
           params.set('produto', p.nome);
           params.set('imagens', encodeURIComponent(JSON.stringify(p.imagens)));
-          params.set('opcoes',  encodeURIComponent(JSON.stringify(p.opcoes)));
-          params.set('status',       p.status);
-          params.set('descricao',    p.descricao);
-          params.set('preco',        p.preco);
-          params.set('mensagem',     p.mensagem);
+          params.set('opcoes', encodeURIComponent(JSON.stringify(p.opcoes)));
+          params.set('status', p.status);
+          params.set('descricao', p.descricao);
+          params.set('preco', p.preco);
+          params.set('mensagem', p.mensagem);
           params.set('parcelamento', p.parcelamento);
           location.href = `produto.html?${params.toString()}`;
         });
@@ -426,7 +452,12 @@ document.addEventListener('visibilitychange', () => {
       renderProdutos(allProdutos);
     }
 
-    // Adiciona eventos de clique para as categorias na barra de rolagem
+    document.getElementById('home-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      resetToHomePage();
+      overlay.classList.remove('open');
+    });
+
     document.querySelectorAll('.category').forEach(el => {
       el.addEventListener('click', () => {
         const name = el.textContent.trim();
@@ -440,7 +471,6 @@ document.addEventListener('visibilitychange', () => {
       });
     });
 
-    // Adiciona eventos de clique para as fotos abaixo das categorias
     document.querySelectorAll('.photo-item').forEach(el => {
       el.addEventListener('click', () => {
         const category = el.getAttribute('data-category');
@@ -464,7 +494,6 @@ document.addEventListener('visibilitychange', () => {
     });
 
     pathEl.addEventListener('click', resetToHomePage);
-
     logoImg.addEventListener('click', resetToHomePage);
 
     searchInput.addEventListener('input', () => {
@@ -496,34 +525,20 @@ document.addEventListener('visibilitychange', () => {
       showBreadcrumb(term || 'Resultados', filtered);
     });
 
-    // Atualiza o carrinho quando a página ganha foco (ex: ao voltar do produto.html)
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) renderCartCount();
+    const allProductsLink = document.getElementById('all-products-link');
+    allProductsLink.addEventListener('click', e => {
+      e.preventDefault();
+      overlay.classList.remove('open');
+      const sortedList = [...allProdutos].sort((a, b) =>
+        a.nome.localeCompare(b.nome, 'pt', { sensitivity: 'base' })
+      );
+      document.querySelector('.photo-scroll-wrapper').style.display = 'none';
+      document.querySelector('.image-scroll-wrapper').style.display = 'none';
+      document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+      launchTitleEl.style.display = 'none';
+      renderProdutos(sortedList);
+      showBreadcrumb('Todos os Produtos', sortedList);
     });
-  const allProductsLink = document.getElementById('all-products-link');
-allProductsLink.addEventListener('click', e => {
-  e.preventDefault();
-  // 1) Fecha o menu
-  overlay.classList.remove('open');
-
-  // 2) Ordena todos os produtos alfabeticamente
-  const sortedList = [...allProdutos].sort((a, b) =>
-    a.nome.localeCompare(b.nome, 'pt', { sensitivity: 'base' })
-  );
-
-  // 3) Esconde as seções de home
-  document.querySelector('.photo-scroll-wrapper').style.display  = 'none';
-  document.querySelector('.image-scroll-wrapper').style.display  = 'none';
-  document.querySelector('.banner-scroll-wrapper').style.display = 'none';
-  launchTitleEl.style.display                                  = 'none';
-
-  // 4) Renderiza e atualiza breadcrumb com "os" em minúsculo
-  renderProdutos(sortedList);
-  showBreadcrumb('Todos os Produtos', sortedList);
-});
-
-    // Atualiza também quando a página é carregada (já existe, só confirmando)
-    document.addEventListener('DOMContentLoaded', renderCartCount);
   </script>
 </body>
 </html>
