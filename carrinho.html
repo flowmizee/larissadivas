@@ -276,11 +276,13 @@
       <div class="form-group entrega-field" style="display: none;">
         <label class="required">Estado</label>
         <input type="text" id="estado">
+        <div class="error" id="error-estado"></div>
       </div>
 
       <div class="form-group entrega-field" style="display: none;">
         <label class="required">Cidade</label>
         <input type="text" id="cidade">
+        <div class="error" id="error-cidade"></div>
       </div>
       
       <div class="form-group entrega-field full" style="display: none;">
@@ -346,6 +348,8 @@
       const modal = document.getElementById('modal-sheet');
       const errorWhatsapp = document.getElementById('error-whatsapp');
       const errorReferencia = document.getElementById('error-referencia');
+      const errorEstado = document.getElementById('error-estado');
+      const errorCidade = document.getElementById('error-cidade');
 
       // URL do Google AppScript - SUBSTITUA PELA SUA URL
       const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTg9fJLlwPeHcguEPNKs5-goUipOhD1e2-90rhoUXbrHZHtKj9lROUImIHHLTfHNcV/exec";
@@ -427,7 +431,7 @@
         try {
           // Formata os itens no padrão "Nome xQuantidade - R$Preço"
           const itemsText = formData.itens.map(item => 
-            `${item.nome} x${item.quantidade} - ${formatPrice(item.preco)}`
+            `${item.nome}${item.opcao ? ' (' + item.opcao + ')' : ''} x${item.quantidade} - ${formatPrice(item.preco)}`
           ).join('\n');
           
           // Calcula o total de itens
@@ -443,7 +447,9 @@
             tipoEntrega: formData.tipoEntrega,
             pagamento: formData.pagamento,
             referencia: formData.referencia || '',
-            complemento: formData.complemento || ''
+            complemento: formData.complemento || '',
+            estado: formData.estado || '',
+            cidade: formData.cidade || ''
           };
 
           // Envia via GET (mais confiável para AppScript)
@@ -489,28 +495,50 @@
       document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
+        // Resetar mensagens de erro
+        errorWhatsapp.textContent = '';
+        errorReferencia.textContent = '';
+        errorEstado.textContent = '';
+        errorCidade.textContent = '';
+
         // Validações rápidas
         if (cartItems.length === 0) {
           alert('Seu carrinho está vazio!');
           return;
         }
 
+        // Validar WhatsApp
         const whatsapp = document.getElementById('whatsapp').value;
         if (!/^\d{11}$/.test(whatsapp)) {
           errorWhatsapp.textContent = 'WhatsApp inválido! Deve conter 11 dígitos numéricos.';
+          document.getElementById('whatsapp').focus();
           return;
         }
-        errorWhatsapp.textContent = '';
 
         const tipoEntrega = document.getElementById('tipoEntrega').value;
+        
+        // Validar campos de entrega se necessário
         if (tipoEntrega === 'entrega') {
+          const estado = document.getElementById('estado').value.trim();
+          if (!estado) {
+            errorEstado.textContent = 'Por favor, informe o estado.';
+            document.getElementById('estado').focus();
+            return;
+          }
+
+          const cidade = document.getElementById('cidade').value.trim();
+          if (!cidade) {
+            errorCidade.textContent = 'Por favor, informe a cidade.';
+            document.getElementById('cidade').focus();
+            return;
+          }
+
           const referencia = document.getElementById('referencia').value.trim();
           if (!referencia) {
             errorReferencia.textContent = 'Por favor, informe um ponto de referência.';
             document.getElementById('referencia').focus();
             return;
           }
-          errorReferencia.textContent = '';
         }
 
         // Montar dados do formulário
@@ -533,6 +561,7 @@
         message += `================================%0A%0A`;
         
         message += `*Nome:* ${formData.nome}%0A`;
+        message += `*WhatsApp:* ${formData.whatsapp}%0A`;
         message += `*Tipo de Entrega:* ${formData.tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A%0A`;
 
         if (formData.tipoEntrega === 'entrega') {
@@ -555,6 +584,9 @@
         message += `*Itens do Pedido:*%0A`;
         formData.itens.forEach(item => {
           message += `➤ *${item.nome}*%0A`;
+          if (item.opcao) {
+            message += `   *Opção:* ${item.opcao}%0A`;
+          }
           message += `   *Quantidade:* ${item.quantidade}%0A`;
           message += `   *Valor unitário:* ${formatPrice(item.preco)}%0A%0A`;
         });
@@ -590,4 +622,4 @@
     });
   </script>
 </body>
-        </html>
+</html>
