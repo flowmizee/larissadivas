@@ -129,258 +129,171 @@
   </div>
 
   <script>
-    // Configuração do dashboard
+    // URL do seu Web App do Google Apps Script
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwTg9fJLlwPeHcguEPNKs5-goUipOhD1e2-90rhoUXbrHZHtKj9lROUImIHHLTfHNcV/exec';
+
+    // Configuração inicial
     document.addEventListener('DOMContentLoaded', function() {
-      // Configuração do date picker
+      // Configura o date picker
       flatpickr("#date-range", {
         mode: "range",
         dateFormat: "d/m/Y",
         defaultDate: [new Date().setDate(new Date().getDate()-7), new Date()],
-        onChange: function() {
-          loadDashboardData();
-        }
+        onChange: loadDashboardData
       });
 
-      // Configuração do filtro de status
-      document.getElementById('status-filter').addEventListener('change', function() {
-        loadDashboardData();
-      });
+      // Configura o filtro de status
+      document.getElementById('status-filter').addEventListener('change', loadDashboardData);
 
       // Carrega os dados iniciais
       loadDashboardData();
     });
 
-    // Configuração da sua planilha do Google Sheets
-    const SHEET_BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb';
-    const GID_PEDIDOS = '1411128451';
-    const GID_RESUMO = '2133154168';
-    
-    // Função para construir a URL da API do Google Visualization
-    function buildGVizURL(gid, query) {
-      return `${SHEET_BASE_URL}/gviz/tq?gid=${gid}&tqx=out:json&tq=${encodeURIComponent(query)}`;
-    }
-    
-    // Função para parsear a resposta do Google Visualization
-    function parseGVizResponse(responseText) {
-      try {
-        // Remove o prefixo e sufixo que o Google adiciona
-        const jsonStart = responseText.indexOf('{');
-        const jsonEnd = responseText.lastIndexOf('}') + 1;
-        const jsonText = responseText.substring(jsonStart, jsonEnd);
-        
-        // Parseia o JSON
-        const data = JSON.parse(jsonText);
-        
-        // Verifica se a estrutura está correta
-        if (!data || !data.table || !data.table.rows) {
-          throw new Error('Estrutura de dados inválida');
-        }
-        
-        return data.table.rows;
-      } catch (error) {
-        console.error('Erro ao parsear resposta:', error);
-        throw new Error('Falha ao processar os dados da planilha');
-      }
-    }
-    
     // Funções auxiliares
     function formatMoney(value) {
-      if (typeof value === 'string' && value.startsWith('R$')) {
-        return value;
-      }
-      const num = typeof value === 'number' ? value : parseFloat(value) || 0;
-      return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    function renderVariation(value) {
-      if (value === undefined || value === null || isNaN(value)) {
-        return '<span>—</span>';
-      }
-      const isPositive = value >= 0;
-      const icon = isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
-      const colorClass = isPositive ? 'positive' : 'negative';
-      return `<span class="${colorClass}"><i class="fas ${icon}"></i> ${Math.abs(value).toFixed(1)}%</span>`;
+      return new Intl.NumberFormat('pt-BR', { 
+        style: 'currency', 
+        currency: 'BRL' 
+      }).format(value || 0);
     }
 
     function formatDate(dateString) {
       if (!dateString) return '—';
-      if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) return dateString;
       try {
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return dateString;
-        return date.toLocaleDateString('pt-BR');
+        return new Date(dateString).toLocaleDateString('pt-BR');
       } catch {
         return dateString;
       }
     }
 
+    function renderVariation(value) {
+      if (value === undefined || value === null) return '<span>—</span>';
+      const isPositive = value >= 0;
+      return `
+        <span class="${isPositive ? 'positive' : 'negative'}">
+          <i class="fas fa-arrow-${isPositive ? 'up' : 'down'}"></i> ${Math.abs(value)}%
+        </span>
+      `;
+    }
+
     function getStatusBadge(status) {
       status = (status || '').toLowerCase();
-      if (status.includes('concluído') || status.includes('complete')) {
-        return '<span class="status-badge status-completed">Concluído</span>';
-      } else if (status.includes('pendente') || status.includes('pending')) {
-        return '<span class="status-badge status-pending">Pendente</span>';
-      } else if (status.includes('cancelado') || status.includes('canceled')) {
-        return '<span class="status-badge status-canceled">Cancelado</span>';
-      }
-      return '<span class="status-badge">'+status+'</span>';
+      const classes = {
+        'concluído': 'status-completed',
+        'complete': 'status-completed',
+        'pendente': 'status-pending',
+        'pending': 'status-pending',
+        'cancelado': 'status-canceled',
+        'canceled': 'status-canceled'
+      };
+      return `<span class="status-badge ${classes[status] || ''}">${status || '—'}</span>`;
     }
 
-    // Funções para buscar dados
-    async function fetchResumo() {
-      try {
-        const response = await fetch(buildGVizURL(GID_RESUMO, 'SELECT A,B,C,D,E,F,G OFFSET 1 LIMIT 1'));
-        if (!response.ok) throw new Error('Falha na requisição');
-        const text = await response.text();
-        const rows = parseGVizResponse(text);
-        
-        if (!rows || rows.length === 0) {
-          throw new Error('Nenhum dado encontrado na planilha de resumo');
-        }
-        
-        const cells = rows[0].c;
-        return {
-          totalVendas: cells[0]?.v || 0,
-          numeroPedidos: cells[1]?.v || 0,
-          totalProdutos: cells[2]?.v || 0,
-          produtoMaisVendido: cells[3]?.v || '—',
-          variacaoVendas: cells[4]?.v || null,
-          variacaoPedidos: cells[5]?.v || null,
-          variacaoMensal: cells[6]?.v || null
-        };
-      } catch (error) {
-        console.error('Erro ao buscar resumo:', error);
-        return {
-          totalVendas: 0,
-          numeroPedidos: 0,
-          totalProdutos: 0,
-          produtoMaisVendido: '—',
-          variacaoVendas: null,
-          variacaoPedidos: null,
-          variacaoMensal: null
-        };
-      }
+    function showLoading(show) {
+      document.getElementById('loading-indicator').style.display = show ? 'inline-block' : 'none';
     }
 
-    async function fetchTopClientes() {
+    // Função principal para carregar dados
+    async function loadDashboardData() {
       try {
-        const response = await fetch(buildGVizURL(GID_RESUMO, 'SELECT A,B,C,D OFFSET 4 LIMIT 3'));
-        if (!response.ok) throw new Error('Falha na requisição');
-        const text = await response.text();
-        const rows = parseGVizResponse(text);
+        showLoading(true);
         
-        return rows.map(row => ({
-          nome: row.c[0]?.v || '—',
-          totalGasto: row.c[1]?.v || 0,
-          ultimoPedido: row.c[2]?.v || '—',
-          whatsapp: row.c[3]?.v ? row.c[3].v.toString().replace(/\D/g, '') : ''
-        }));
-      } catch (error) {
-        console.error('Erro ao buscar clientes:', error);
-        return [];
-      }
-    }
-
-    async function fetchUltimosPedidos() {
-      try {
-        const statusFilter = document.getElementById('status-filter').value;
-        let query = 'SELECT A,B,C,D,E ORDER BY C DESC LIMIT 5';
-        
-        if (statusFilter !== 'all') {
-          const statusMap = {
-            'completed': 'concluído',
-            'pending': 'pendente',
-            'canceled': 'cancelado'
-          };
-          const statusValue = statusMap[statusFilter] || statusFilter;
-          query = `SELECT A,B,C,D,E WHERE LOWER(E) CONTAINS '${statusValue}' ORDER BY C DESC LIMIT 5`;
-        }
-        
-        const response = await fetch(buildGVizURL(GID_PEDIDOS, query));
-        if (!response.ok) throw new Error('Falha na requisição');
-        const text = await response.text();
-        const rows = parseGVizResponse(text);
-        
-        return rows.map(row => ({
-          id: row.c[0]?.v || '—',
-          cliente: row.c[1]?.v || '—',
-          data: row.c[2]?.v || '—',
-          valor: row.c[3]?.v || 0,
-          status: row.c[4]?.v || '—'
-        }));
-      } catch (error) {
-        console.error('Erro ao buscar últimos pedidos:', error);
-        return [];
-      }
-    }
-
-    async function fetchHistoricoDiario() {
-      try {
+        // Obtém os parâmetros dos filtros
         const dateRange = document.getElementById('date-range')._flatpickr.selectedDates;
-        let dateFilter = '';
+        const statusFilter = document.getElementById('status-filter').value;
+        
+        // Prepara os parâmetros para a API
+        const params = new URLSearchParams();
         
         if (dateRange.length === 2) {
-          const startDate = dateRange[0].toISOString().split('T')[0];
-          const endDate = dateRange[1].toISOString().split('T')[0];
-          dateFilter = `WHERE F >= DATE '${startDate}' AND F <= DATE '${endDate}'`;
+          params.append('startDate', dateRange[0].toISOString().split('T')[0]);
+          params.append('endDate', dateRange[1].toISOString().split('T')[0]);
         }
         
-        const response = await fetch(buildGVizURL(
-          GID_PEDIDOS, 
-          `SELECT F,SUM(B),SUM(C) ${dateFilter} GROUP BY F ORDER BY F DESC LIMIT 7`
-        ));
+        if (statusFilter !== 'all') {
+          params.append('status', statusFilter);
+        }
         
-        if (!response.ok) throw new Error('Falha na requisição');
-        const text = await response.text();
-        const rows = parseGVizResponse(text);
+        // Faz a requisição para seu Web App
+        const response = await fetch(`${API_URL}?${params.toString()}`);
         
-        return rows.map(row => ({
-          data: row.c[0]?.v ? row.c[0].v.split(' ')[0] : '—',
-          pedidos: row.c[1]?.v || 0,
-          vendas: parseFloat(row.c[2]?.v) || 0
-        })).reverse();
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Atualiza a interface
+        updateDashboard(data);
       } catch (error) {
-        console.error('Erro ao buscar histórico diário:', error);
-        return [];
+        console.error("Erro ao carregar dados:", error);
+        showError();
+      } finally {
+        showLoading(false);
       }
     }
 
-    async function fetchHistoricoMensal() {
-      try {
-        const response = await fetch(buildGVizURL(
-          GID_PEDIDOS, 
-          'SELECT LEFT(F,7),SUM(C) WHERE F IS NOT NULL GROUP BY LEFT(F,7) ORDER BY LEFT(F,7) DESC LIMIT 6'
-        ));
-        
-        if (!response.ok) throw new Error('Falha na requisição');
-        const text = await response.text();
-        const rows = parseGVizResponse(text);
-        
-        return rows.map(row => ({
-          mes: row.c[0]?.v || '—',
-          vendas: parseFloat(row.c[1]?.v) || 0
-        })).reverse();
-      } catch (error) {
-        console.error('Erro ao buscar histórico mensal:', error);
-        return [];
+    function showError() {
+      const tbody = document.getElementById('ultimos-pedidos');
+      tbody.innerHTML = `
+        <tr><td colspan="6" style="text-align:center;color:#e74c3c;">
+          Erro ao carregar dados. Tente recarregar a página.
+        </td></tr>
+      `;
+    }
+
+    // Atualiza os elementos do dashboard
+    function updateDashboard(data) {
+      // Atualiza os cards
+      document.getElementById('vendas-hoje').textContent = formatMoney(data.vendasHoje || 0);
+      document.getElementById('pedidos-hoje').textContent = data.pedidosHoje || 0;
+      document.getElementById('mais-vendido').textContent = data.produtoMaisVendido || '—';
+      document.getElementById('receita-mes').textContent = formatMoney(data.receitaMensal || 0);
+      
+      // Atualiza as variações
+      document.getElementById('change-hoje').innerHTML = renderVariation(data.variacaoVendas);
+      document.getElementById('change-pedidos').innerHTML = renderVariation(data.variacaoPedidos);
+      document.getElementById('change-mes').innerHTML = renderVariation(data.variacaoMensal);
+      
+      // Atualiza a tabela de pedidos
+      const tbody = document.getElementById('ultimos-pedidos');
+      tbody.innerHTML = '';
+      
+      if (data.ultimosPedidos && data.ultimosPedidos.length > 0) {
+        data.ultimosPedidos.forEach(pedido => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${pedido.id || '—'}</td>
+            <td>${pedido.cliente || '—'}</td>
+            <td>${formatDate(pedido.data)}</td>
+            <td>${formatMoney(pedido.valor)}</td>
+            <td>${getStatusBadge(pedido.status)}</td>
+            <td><button class="btn-details"><i class="fas fa-eye"></i></button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum pedido encontrado</td></tr>';
       }
+      
+      // Atualiza os gráficos
+      updateCharts(data.historicoVendas);
     }
 
     // Atualiza os gráficos
-    function updateCharts(dailyData, monthlyData) {
+    function updateCharts(historico) {
       // Gráfico de vendas diárias
-      const ctxD = document.getElementById('dailySalesChart').getContext('2d');
+      const ctxDaily = document.getElementById('dailySalesChart').getContext('2d');
       if (window.dailyChart) window.dailyChart.destroy();
       
-      window.dailyChart = new Chart(ctxD, {
+      window.dailyChart = new Chart(ctxDaily, {
         type: 'bar',
         data: {
-          labels: dailyData.map(d => formatDate(d.data)),
+          labels: historico?.diario?.map(item => formatDate(item.data)) || [],
           datasets: [{
-            label: 'Vendas (R$)',
-            data: dailyData.map(d => d.vendas),
-            backgroundColor: '#4361ee',
-            borderWidth: 1
+            label: 'Vendas Diárias',
+            data: historico?.diario?.map(item => item.total) || [],
+            backgroundColor: '#4361ee'
           }]
         },
         options: {
@@ -399,20 +312,18 @@
       });
       
       // Gráfico de vendas mensais
-      const ctxM = document.getElementById('monthlySalesChart').getContext('2d');
+      const ctxMonthly = document.getElementById('monthlySalesChart').getContext('2d');
       if (window.monthlyChart) window.monthlyChart.destroy();
       
-      window.monthlyChart = new Chart(ctxM, {
+      window.monthlyChart = new Chart(ctxMonthly, {
         type: 'line',
         data: {
-          labels: monthlyData.map(m => m.mes),
+          labels: historico?.mensal?.map(item => item.mes) || [],
           datasets: [{
-            label: 'Vendas (R$)',
-            data: monthlyData.map(m => m.vendas),
-            fill: false,
+            label: 'Vendas Mensais',
+            data: historico?.mensal?.map(item => item.total) || [],
             borderColor: '#f72585',
-            tension: 0.3,
-            borderWidth: 2
+            tension: 0.3
           }]
         },
         options: {
@@ -429,63 +340,6 @@
           }
         }
       });
-    }
-
-    // Carrega os dados do dashboard
-    async function loadDashboardData() {
-      try {
-        document.getElementById('loading-indicator').style.display = 'inline-block';
-        
-        const [resumo, topClientes, ultimosPedidos, historicoDiario, historicoMensal] = await Promise.all([
-          fetchResumo(),
-          fetchTopClientes(),
-          fetchUltimosPedidos(),
-          fetchHistoricoDiario(),
-          fetchHistoricoMensal()
-        ]);
-        
-        // Atualiza os cards
-        document.getElementById('vendas-hoje').textContent = formatMoney(resumo.totalVendas);
-        document.getElementById('pedidos-hoje').textContent = resumo.numeroPedidos;
-        document.getElementById('mais-vendido').textContent = resumo.produtoMaisVendido;
-        document.getElementById('receita-mes').textContent = formatMoney(resumo.totalVendas);
-        
-        // Atualiza as variações
-        document.getElementById('change-hoje').innerHTML = renderVariation(resumo.variacaoVendas);
-        document.getElementById('change-pedidos').innerHTML = renderVariation(resumo.variacaoPedidos);
-        document.getElementById('change-mes').innerHTML = renderVariation(resumo.variacaoMensal);
-        
-        // Atualiza a tabela de pedidos
-        const tb = document.getElementById('ultimos-pedidos');
-        tb.innerHTML = '';
-        
-        if (ultimosPedidos.length === 0) {
-          tb.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum pedido encontrado</td></tr>';
-        } else {
-          ultimosPedidos.forEach(pedido => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${pedido.id}</td>
-              <td>${pedido.cliente}</td>
-              <td>${formatDate(pedido.data)}</td>
-              <td>${formatMoney(pedido.valor)}</td>
-              <td>${getStatusBadge(pedido.status)}</td>
-              <td><button class="btn-details"><i class="fas fa-eye"></i></button></td>
-            `;
-            tb.appendChild(tr);
-          });
-        }
-        
-        // Atualiza os gráficos
-        updateCharts(historicoDiario, historicoMensal);
-        
-      } catch (error) {
-        console.error('Erro ao carregar dashboard:', error);
-        document.getElementById('ultimos-pedidos').innerHTML = 
-          '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Erro ao carregar dados</td></tr>';
-      } finally {
-        document.getElementById('loading-indicator').style.display = 'none';
-      }
     }
   </script>
 </body>
