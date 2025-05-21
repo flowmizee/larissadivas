@@ -41,6 +41,10 @@
     table { width:100%; border-collapse:collapse; }
     th, td { padding:12px 15px; text-align:left; border-bottom:1px solid #eee; }
     th { font-weight:600; color:#555; } tr:hover { background:#f9f9f9; }
+    .status-badge { padding:4px 8px; border-radius:12px; font-size:0.8rem; font-weight:500; }
+    .status-completed { background:#e6f7ee; color:#2ecc71; }
+    .status-pending { background:#fff8e6; color:#f39c12; }
+    .status-canceled { background:#fee; color:#e74c3c; }
     .loading { display:inline-block; width:20px; height:20px; border:3px solid rgba(0,0,0,.1); border-radius:50%; border-top-color:var(--primary); animation:spin 1s ease-in-out infinite; margin-left:10px; }
     @keyframes spin { to { transform:rotate(360deg); } }
     @media(max-width:992px){ .dashboard{grid-template-columns:1fr;} .sidebar{display:none;} .charts-container{grid-template-columns:1fr;} }
@@ -68,8 +72,13 @@
             <input type="text" id="date-range" class="date-picker" placeholder="Selecione o período">
           </div>
           <div class="filter-group">
-            <label for="client-filter">Cliente</label>
-            <select id="client-filter"><option value="all">Todos</option></select>
+            <label for="status-filter">Status</label>
+            <select id="status-filter">
+              <option value="all">Todos</option>
+              <option value="completed">Concluído</option>
+              <option value="pending">Pendente</option>
+              <option value="canceled">Cancelado</option>
+            </select>
           </div>
         </div>
       </div>
@@ -99,30 +108,56 @@
         <div class="chart-card"><h3 class="chart-title">Vendas Mensais (Últimos 6 meses)</h3><canvas id="monthlySalesChart"></canvas></div>
       </div>
       <div class="clients-table">
-        <h3 class="chart-title">Top Clientes</h3>
+        <h3 class="chart-title">Últimos Pedidos</h3>
         <table>
-          <thead><tr><th>Cliente</th><th>Total Gasto</th><th>Último Pedido</th><th>Contato</th></tr></thead>
-          <tbody id="top-clientes"></tbody>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Data</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="ultimos-pedidos">
+            <tr><td colspan="6" style="text-align:center;">Carregando dados...</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
   </div>
+
   <script>
-    // Configuração do date picker
-    flatpickr("#date-range", {
-      mode: "range",
-      dateFormat: "d/m/Y",
-      defaultDate: [new Date().setDate(new Date().getDate()-7), new Date()]
+    // Configuração do dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      // Configuração do date picker
+      flatpickr("#date-range", {
+        mode: "range",
+        dateFormat: "d/m/Y",
+        defaultDate: [new Date().setDate(new Date().getDate()-7), new Date()],
+        onChange: function() {
+          loadDashboardData();
+        }
+      });
+
+      // Configuração do filtro de status
+      document.getElementById('status-filter').addEventListener('change', function() {
+        loadDashboardData();
+      });
+
+      // Carrega os dados iniciais
+      loadDashboardData();
     });
 
     // Configuração da sua planilha do Google Sheets
-    const SHEET_ID = '2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb';
+    const SHEET_BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb';
     const GID_PEDIDOS = '1411128451';
     const GID_RESUMO = '2133154168';
     
     // Função para construir a URL da API do Google Visualization
     function buildGVizURL(gid, query) {
-      return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${gid}&tqx=out:json&tq=${encodeURIComponent(query)}`;
+      return `${SHEET_BASE_URL}/gviz/tq?gid=${gid}&tqx=out:json&tq=${encodeURIComponent(query)}`;
     }
     
     // Função para parsear a resposta do Google Visualization
@@ -148,73 +183,54 @@
       }
     }
     
-    // Função para formatar valores monetários
+    // Funções auxiliares
     function formatMoney(value) {
       if (typeof value === 'string' && value.startsWith('R$')) {
-        return value; // Já está formatado
+        return value;
       }
-      
       const num = typeof value === 'number' ? value : parseFloat(value) || 0;
       return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
-    
-    // Função para mostrar variação com ícone
+
     function renderVariation(value) {
       if (value === undefined || value === null || isNaN(value)) {
         return '<span>—</span>';
       }
-      
       const isPositive = value >= 0;
       const icon = isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
       const colorClass = isPositive ? 'positive' : 'negative';
-      
-      return `
-        <span class="${colorClass}">
-          <i class="fas ${icon}"></i> ${Math.abs(value).toFixed(1)}%
-        </span>
-      `;
+      return `<span class="${colorClass}"><i class="fas ${icon}"></i> ${Math.abs(value).toFixed(1)}%</span>`;
     }
-    
-    // Função para formatar data
+
     function formatDate(dateString) {
       if (!dateString) return '—';
-      
-      // Se já estiver no formato dd/mm/yyyy
-      if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
-        return dateString;
-      }
-      
+      if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) return dateString;
       try {
         const date = new Date(dateString);
         if (isNaN(date.getTime())) return dateString;
-        
         return date.toLocaleDateString('pt-BR');
       } catch {
         return dateString;
       }
     }
-    
-    // Função para formatar telefone
-    function formatPhone(phone) {
-      if (!phone) return '—';
-      
-      const cleaned = phone.toString().replace(/\D/g, '');
-      
-      if (cleaned.length === 11) {
-        return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-      } else if (cleaned.length === 10) {
-        return cleaned.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+
+    function getStatusBadge(status) {
+      status = (status || '').toLowerCase();
+      if (status.includes('concluído') || status.includes('complete')) {
+        return '<span class="status-badge status-completed">Concluído</span>';
+      } else if (status.includes('pendente') || status.includes('pending')) {
+        return '<span class="status-badge status-pending">Pendente</span>';
+      } else if (status.includes('cancelado') || status.includes('canceled')) {
+        return '<span class="status-badge status-canceled">Cancelado</span>';
       }
-      
-      return phone;
+      return '<span class="status-badge">'+status+'</span>';
     }
-    
-    // Função para buscar dados do resumo
+
+    // Funções para buscar dados
     async function fetchResumo() {
       try {
-        const response = await fetch(buildGVizURL(GID_RESUMO, 'SELECT A,B,C,D OFFSET 1 LIMIT 1'));
+        const response = await fetch(buildGVizURL(GID_RESUMO, 'SELECT A,B,C,D,E,F,G OFFSET 1 LIMIT 1'));
         if (!response.ok) throw new Error('Falha na requisição');
-        
         const text = await response.text();
         const rows = parseGVizResponse(text);
         
@@ -223,7 +239,6 @@
         }
         
         const cells = rows[0].c;
-        
         return {
           totalVendas: cells[0]?.v || 0,
           numeroPedidos: cells[1]?.v || 0,
@@ -246,24 +261,17 @@
         };
       }
     }
-    
-    // Função para buscar top clientes
+
     async function fetchTopClientes() {
       try {
         const response = await fetch(buildGVizURL(GID_RESUMO, 'SELECT A,B,C,D OFFSET 4 LIMIT 3'));
         if (!response.ok) throw new Error('Falha na requisição');
-        
         const text = await response.text();
         const rows = parseGVizResponse(text);
         
-        if (!rows || rows.length === 0) {
-          console.warn('Nenhum cliente encontrado na planilha');
-          return [];
-        }
-        
         return rows.map(row => ({
           nome: row.c[0]?.v || '—',
-          totalGasto: row.c[1]?.v || '—',
+          totalGasto: row.c[1]?.v || 0,
           ultimoPedido: row.c[2]?.v || '—',
           whatsapp: row.c[3]?.v ? row.c[3].v.toString().replace(/\D/g, '') : ''
         }));
@@ -272,56 +280,92 @@
         return [];
       }
     }
-    
-    // Função para buscar histórico diário
-    async function fetchHistoricoDiario() {
+
+    async function fetchUltimosPedidos() {
       try {
-        const response = await fetch(buildGVizURL(GID_PEDIDOS, 'SELECT F,SUM(B),SUM(C) WHERE F IS NOT NULL GROUP BY F ORDER BY F DESC LIMIT 7'));
-        if (!response.ok) throw new Error('Falha na requisição');
+        const statusFilter = document.getElementById('status-filter').value;
+        let query = 'SELECT A,B,C,D,E ORDER BY C DESC LIMIT 5';
         
+        if (statusFilter !== 'all') {
+          const statusMap = {
+            'completed': 'concluído',
+            'pending': 'pendente',
+            'canceled': 'cancelado'
+          };
+          const statusValue = statusMap[statusFilter] || statusFilter;
+          query = `SELECT A,B,C,D,E WHERE LOWER(E) CONTAINS '${statusValue}' ORDER BY C DESC LIMIT 5`;
+        }
+        
+        const response = await fetch(buildGVizURL(GID_PEDIDOS, query));
+        if (!response.ok) throw new Error('Falha na requisição');
         const text = await response.text();
         const rows = parseGVizResponse(text);
         
-        if (!rows || rows.length === 0) {
-          console.warn('Nenhum dado de histórico diário encontrado');
-          return [];
+        return rows.map(row => ({
+          id: row.c[0]?.v || '—',
+          cliente: row.c[1]?.v || '—',
+          data: row.c[2]?.v || '—',
+          valor: row.c[3]?.v || 0,
+          status: row.c[4]?.v || '—'
+        }));
+      } catch (error) {
+        console.error('Erro ao buscar últimos pedidos:', error);
+        return [];
+      }
+    }
+
+    async function fetchHistoricoDiario() {
+      try {
+        const dateRange = document.getElementById('date-range')._flatpickr.selectedDates;
+        let dateFilter = '';
+        
+        if (dateRange.length === 2) {
+          const startDate = dateRange[0].toISOString().split('T')[0];
+          const endDate = dateRange[1].toISOString().split('T')[0];
+          dateFilter = `WHERE F >= DATE '${startDate}' AND F <= DATE '${endDate}'`;
         }
+        
+        const response = await fetch(buildGVizURL(
+          GID_PEDIDOS, 
+          `SELECT F,SUM(B),SUM(C) ${dateFilter} GROUP BY F ORDER BY F DESC LIMIT 7`
+        ));
+        
+        if (!response.ok) throw new Error('Falha na requisição');
+        const text = await response.text();
+        const rows = parseGVizResponse(text);
         
         return rows.map(row => ({
           data: row.c[0]?.v ? row.c[0].v.split(' ')[0] : '—',
           pedidos: row.c[1]?.v || 0,
           vendas: parseFloat(row.c[2]?.v) || 0
-        })).reverse(); // Inverte para ordem cronológica
+        })).reverse();
       } catch (error) {
         console.error('Erro ao buscar histórico diário:', error);
         return [];
       }
     }
-    
-    // Função para buscar histórico mensal
+
     async function fetchHistoricoMensal() {
       try {
-        const response = await fetch(buildGVizURL(GID_PEDIDOS, 'SELECT LEFT(F,7),SUM(C) WHERE F IS NOT NULL GROUP BY LEFT(F,7) ORDER BY LEFT(F,7) DESC LIMIT 6'));
-        if (!response.ok) throw new Error('Falha na requisição');
+        const response = await fetch(buildGVizURL(
+          GID_PEDIDOS, 
+          'SELECT LEFT(F,7),SUM(C) WHERE F IS NOT NULL GROUP BY LEFT(F,7) ORDER BY LEFT(F,7) DESC LIMIT 6'
+        ));
         
+        if (!response.ok) throw new Error('Falha na requisição');
         const text = await response.text();
         const rows = parseGVizResponse(text);
-        
-        if (!rows || rows.length === 0) {
-          console.warn('Nenhum dado de histórico mensal encontrado');
-          return [];
-        }
         
         return rows.map(row => ({
           mes: row.c[0]?.v || '—',
           vendas: parseFloat(row.c[1]?.v) || 0
-        })).reverse(); // Inverte para ordem cronológica
+        })).reverse();
       } catch (error) {
         console.error('Erro ao buscar histórico mensal:', error);
         return [];
       }
     }
-    
+
     // Atualiza os gráficos
     function updateCharts(dailyData, monthlyData) {
       // Gráfico de vendas diárias
@@ -386,17 +430,16 @@
         }
       });
     }
-    
+
     // Carrega os dados do dashboard
     async function loadDashboardData() {
       try {
-        // Mostra indicador de carregamento
         document.getElementById('loading-indicator').style.display = 'inline-block';
         
-        // Busca todos os dados em paralelo
-        const [resumo, topClientes, historicoDiario, historicoMensal] = await Promise.all([
+        const [resumo, topClientes, ultimosPedidos, historicoDiario, historicoMensal] = await Promise.all([
           fetchResumo(),
           fetchTopClientes(),
+          fetchUltimosPedidos(),
           fetchHistoricoDiario(),
           fetchHistoricoMensal()
         ]);
@@ -412,42 +455,38 @@
         document.getElementById('change-pedidos').innerHTML = renderVariation(resumo.variacaoPedidos);
         document.getElementById('change-mes').innerHTML = renderVariation(resumo.variacaoMensal);
         
-        // Atualiza a tabela de clientes
-        const tb = document.getElementById('top-clientes');
+        // Atualiza a tabela de pedidos
+        const tb = document.getElementById('ultimos-pedidos');
         tb.innerHTML = '';
         
-        topClientes.forEach(cliente => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${cliente.nome}</td>
-            <td>${typeof cliente.totalGasto === 'number' ? formatMoney(cliente.totalGasto) : cliente.totalGasto}</td>
-            <td>${formatDate(cliente.ultimoPedido)}</td>
-            <td>${
-              cliente.whatsapp 
-                ? `<a href="https://wa.me/${cliente.whatsapp}" target="_blank"><i class="fab fa-whatsapp"></i> ${formatPhone(cliente.whatsapp)}</a>`
-                : '—'
-            }</td>
-          `;
-          tb.appendChild(tr);
-        });
+        if (ultimosPedidos.length === 0) {
+          tb.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum pedido encontrado</td></tr>';
+        } else {
+          ultimosPedidos.forEach(pedido => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${pedido.id}</td>
+              <td>${pedido.cliente}</td>
+              <td>${formatDate(pedido.data)}</td>
+              <td>${formatMoney(pedido.valor)}</td>
+              <td>${getStatusBadge(pedido.status)}</td>
+              <td><button class="btn-details"><i class="fas fa-eye"></i></button></td>
+            `;
+            tb.appendChild(tr);
+          });
+        }
         
         // Atualiza os gráficos
         updateCharts(historicoDiario, historicoMensal);
         
       } catch (error) {
         console.error('Erro ao carregar dashboard:', error);
-        alert('Erro ao carregar dados. Verifique o console para mais detalhes.');
+        document.getElementById('ultimos-pedidos').innerHTML = 
+          '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Erro ao carregar dados</td></tr>';
       } finally {
-        // Esconde indicador de carregamento
         document.getElementById('loading-indicator').style.display = 'none';
       }
     }
-    
-    // Carrega o dashboard quando a página estiver pronta
-    document.addEventListener('DOMContentLoaded', loadDashboardData);
-    
-    // Atualiza ao mudar o período
-    document.getElementById('date-range').addEventListener('change', loadDashboardData);
   </script>
 </body>
 </html>
