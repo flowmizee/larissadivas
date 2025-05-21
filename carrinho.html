@@ -560,10 +560,11 @@
         message += `         *COMPROVANTE DE PEDIDO*%0A`;
         message += `================================%0A%0A`;
         
+        // Depois
         message += `*Nome:* ${formData.nome}%0A`;
-        message += `*WhatsApp:* ${formData.whatsapp}%0A`;
         message += `*Tipo de Entrega:* ${formData.tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A%0A`;
 
+        
         if (formData.tipoEntrega === 'entrega') {
           message += `*Estado:* ${formData.estado}%0A`;
           message += `*Cidade:* ${formData.cidade}%0A`;
