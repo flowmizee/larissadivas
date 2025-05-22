@@ -1,15 +1,24 @@
-<!DOCTYPE html><html lang="pt-br"><head>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Produto</title>
   <link rel="icon" type="image/png" href="divas.png">
   <style>
-  html, body {
-  margin: 0;
-  padding: 0;
-}
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background-color: #fff; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background-color: #fff; 
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
     .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
     .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; position: relative; }
@@ -37,8 +46,21 @@
     }
     .category { cursor: pointer; white-space: nowrap; padding: 8px 0; }
     
+    /* Main content wrapper */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
     /* GRID DE PRODUTOS igual ao Web App */
-    .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 16px; }
+    .produtos-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 24px; 
+      padding: 16px; 
+      min-height: 300px;
+    }
     .produto { cursor: pointer; }
     .produto img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; }
     .produto .nome { font-size: 14px; font-weight: bold; margin-bottom: 8px; text-transform: capitalize; }
@@ -47,7 +69,10 @@
     .produto .extra { color: #007bff; }
     
     /* Estilos do produto único (mantidos) */ 
-    .produto-container { padding: 16px; } 
+    .produto-container { 
+      padding: 16px; 
+      min-height: 300px;
+    } 
     .breadcrumb-list { font-size: 14px; color: #666; margin-bottom: 16px; } 
     .breadcrumb-list a { color: #007bff; text-decoration: none; } 
     .carousel { position: relative; width: 100%; max-width: 480px; margin: 0 auto 16px; } 
@@ -149,42 +174,29 @@
       padding: 8px 0; 
     }
     
-    /* remove gap entre produtos e footer */
-    .produtos-wrapper { margin-bottom: 0; }
-
-    /* zera margem superior do footer */
+    /* RODAPÉ ROSA */
     .site-footer { 
-      background-color: #ff69b4;  /* rosa igual ao botão */
+      background-color: #ff69b4;
       color: #fff;
       padding: 16px;
-      margin-top: 0;
+      margin-top: auto;
     }
-
-    /* itens do footer, um embaixo do outro */
     .site-footer .footer-item {
       margin-bottom: 12px;
       font-size: 14px;
     }
-
-    /* aumenta o espaçamento APENAS depois do ícone */
     .site-footer .footer-item.instagram {
       margin-bottom: 32px;
     }
-
-    /* tamanho do ícone do Instagram */
     .site-footer .footer-item.instagram img {
       width: 20px;
       height: auto;
       display: block;
     }
-
-    /* links sem decoração, mantendo cor branca */
     .site-footer .footer-item a {
       color: inherit;
       text-decoration: none;
     }
-
-    /* remove margem da última linha, se quiser */
     .site-footer .footer-item:last-child {
       margin-bottom: 0;
     }
@@ -202,15 +214,15 @@
   
   <div class="nav-wrapper">
     <header class="header">
-  <div class="menu-icon">&#9776;</div>
-  <a href="index.html" class="logo">
-    <img src="logo.webp" alt="Logo">
-  </a>
-  <a href="carrinho.html" class="bag-icon" id="cart-icon">
-    &#128717;
-    <span class="cart-count" id="cart-count">0</span>
-  </a>
-</header>
+      <div class="menu-icon">&#9776;</div>
+      <a href="index.html" class="logo">
+        <img src="logo.webp" alt="Logo">
+      </a>
+      <a href="carrinho.html" class="bag-icon" id="cart-icon">
+        &#128717;
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </header>
     <div class="search-container">
       <input class="search-input" type="text" placeholder="O que você está procurando?" />
       <button class="search-button"><img src="lupa.webp" alt="Buscar" /></button>
@@ -229,22 +241,24 @@
     </div>
   </div>
   
-  <!-- Breadcrumb para lista de produtos -->
-  <div id="breadcrumb">
-    <span class="path">Início</span>
-    <span class="separator">&gt;</span>
-    <span class="crumbName"></span>
-    <div class="header-row">
-      <span class="title"></span>
-      <span class="count"></span>
+  <div class="main-content">
+    <!-- Breadcrumb para lista de produtos -->
+    <div id="breadcrumb">
+      <span class="path">Início</span>
+      <span class="separator">&gt;</span>
+      <span class="crumbName"></span>
+      <div class="header-row">
+        <span class="title"></span>
+        <span class="count"></span>
+      </div>
     </div>
+    
+    <!-- Aqui aparece o produto único -->
+    <div class="produto-container" id="produto"></div>
+    
+    <!-- Aqui aparece o grid de resultados (oculto até filtrar/buscar) -->
+    <div id="produtos" class="produtos-grid" style="display:none;"></div>
   </div>
-  
-  <!-- Aqui aparece o produto único -->
-  <div class="produto-container" id="produto"></div>
-  
-  <!-- Aqui aparece o grid de resultados (oculto até filtrar/buscar) -->
-  <div id="produtos" class="produtos-grid" style="display:none;"></div>
   
   <!-- RODAPÉ ROSA -->
   <footer class="site-footer">
@@ -446,31 +460,31 @@ document.addEventListener('DOMContentLoaded', renderCartCount);
         };
     
         document.querySelector('.buy-btn').onclick = () => {
-  // 1. Captura dados do produto
-  const nome = nomeProduto || document.querySelector('.produto-nome').textContent;
-  const precoText = document.querySelector('.produto-preco').textContent.replace('R$ ', '');
-  const quantidade = parseInt(document.getElementById('quantity').textContent, 10);
-  const opcaoEl = document.querySelector('.option-swatch.selected');
-  const opcao = opcaoEl ? opcaoEl.textContent : null;
+          // 1. Captura dados do produto
+          const nome = nomeProduto || document.querySelector('.produto-nome').textContent;
+          const precoText = document.querySelector('.produto-preco').textContent.replace('R$ ', '');
+          const quantidade = parseInt(document.getElementById('quantity').textContent, 10);
+          const opcaoEl = document.querySelector('.option-swatch.selected');
+          const opcao = opcaoEl ? opcaoEl.textContent : null;
 
-  // 2. Adiciona/atualiza item no carrinho
-  const items = getCartItems();
-  const existente = items.find(i => i.nome === nome && i.opcao === opcao);
-  if (existente) {
-    existente.quantidade += quantidade;
-  } else {
-   items.push({ 
-  nome, 
-  preco: precoText, 
-  quantidade, 
-  opcao,
-  imagens: images // Adiciona as imagens do produto ao item do carrinho
-});
-  }
-  setCartItems(items);
+          // 2. Adiciona/atualiza item no carrinho
+          const items = getCartItems();
+          const existente = items.find(i => i.nome === nome && i.opcao === opcao);
+          if (existente) {
+            existente.quantidade += quantidade;
+          } else {
+            items.push({ 
+              nome, 
+              preco: precoText, 
+              quantidade, 
+              opcao,
+              imagens: images // Adiciona as imagens do produto ao item do carrinho
+            });
+          }
+          setCartItems(items);
 
-  // **Não redirecionar aqui**; só atualiza o carrinho
-};
+          // **Não redirecionar aqui**; só atualiza o carrinho
+        };
         
         break;
       }
@@ -497,6 +511,12 @@ document.addEventListener('DOMContentLoaded', renderCartCount);
       const g = document.getElementById('produtos');
       g.style.display = 'grid';
       g.innerHTML = '';
+      
+      if (list.length === 0) {
+        g.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">Nenhum produto encontrado</div>';
+        return;
+      }
+      
       list.forEach(p => {
         const d = document.createElement('div');
         d.className = 'produto';
@@ -614,4 +634,4 @@ document.addEventListener('DOMContentLoaded', renderCartCount);
     });
   </script>
 </body>
-</html> 
+</html>
