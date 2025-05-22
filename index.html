@@ -9,9 +9,16 @@
     html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background-color: #fff; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background-color: #fff; 
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
     .nav-wrapper { position: sticky; top: 0; background: #fff; z-index: 1000; }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
     .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; position: relative; }
@@ -101,7 +108,17 @@
       100% { transform: translateX(calc(-50% - 8px)); }
     }
 
-    .produtos-wrapper { background-color: #f2f2f2; padding: 16px; }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .produtos-wrapper { 
+      background-color: #f2f2f2; 
+      padding: 16px; 
+      flex: 1;
+      min-height: 300px;
+    }
     .launch-title { font-size: 24px; font-weight: bold; margin-bottom: 16px; cursor: pointer; }
     .produtos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
     .produto { cursor: pointer; }
@@ -160,14 +177,11 @@
     }
 
     /* FOOTER */
-    .produtos-wrapper {
-      margin-bottom: 0;
-    }
     .site-footer {
       background-color: #ff69b4;
       color: #fff;
       padding: 16px;
-      margin-top: 0;
+      margin-top: auto;
     }
     .site-footer .footer-item {
       margin-bottom: 12px;
@@ -229,41 +243,43 @@
     </div>
   </div>
 
-  <div class="photo-scroll-wrapper">
-    <div class="photo-scroll">
-      <div class="photo-item" data-category="COLARES"><div class="photo-img"><img src="colares.webp" alt="Colares"></div><div class="label">Colares</div></div>
-      <div class="photo-item" data-category="BRINCOS"><div class="photo-img"><img src="brincos.webp" alt="Brincos"></div><div class="label">Brincos</div></div>
-      <div class="photo-item" data-category="ANÉIS"><div class="photo-img"><img src="aneis.webp" alt="Anéis"></div><div class="label">Anéis</div></div>
-      <div class="photo-item" data-category="PULSEIRAS"><div class="photo-img"><img src="pulseiras.webp" alt="Pulseiras"></div><div class="label">Pulseiras</div></div>
-      <div class="photo-item" data-category="CONJUNTOS"><div class="photo-img"><img src="conjuntos.webp" alt="Conjuntos"></div><div class="label">Conjuntos</div></div>
-      <div class="photo-item" data-category="BRACELETES"><div class="photo-img"><img src="braceletes.webp" alt="Braceletes"></div><div class="label">Braceletes</div></div>
-      <div class="photo-item" data-category="PERFUMES"><div class="photo-img"><img src="perfumes.webp" alt="Perfumes"></div><div class="label">Perfumes</div></div>
-      <div class="photo-item" data-category="BOLSAS"><div class="photo-img"><img src="bolsas.webp" alt="Bolsas"></div><div class="label">Bolsas</div></div>
-      <div class="photo-item" data-category="ÓCULOS"><div class="photo-img"><img src="oculos.webp" alt="Óculos"></div><div class="label">Óculos</div></div>
+  <div class="main-content">
+    <div class="photo-scroll-wrapper">
+      <div class="photo-scroll">
+        <div class="photo-item" data-category="COLARES"><div class="photo-img"><img src="colares.webp" alt="Colares"></div><div class="label">Colares</div></div>
+        <div class="photo-item" data-category="BRINCOS"><div class="photo-img"><img src="brincos.webp" alt="Brincos"></div><div class="label">Brincos</div></div>
+        <div class="photo-item" data-category="ANÉIS"><div class="photo-img"><img src="aneis.webp" alt="Anéis"></div><div class="label">Anéis</div></div>
+        <div class="photo-item" data-category="PULSEIRAS"><div class="photo-img"><img src="pulseiras.webp" alt="Pulseiras"></div><div class="label">Pulseiras</div></div>
+        <div class="photo-item" data-category="CONJUNTOS"><div class="photo-img"><img src="conjuntos.webp" alt="Conjuntos"></div><div class="label">Conjuntos</div></div>
+        <div class="photo-item" data-category="BRACELETES"><div class="photo-img"><img src="braceletes.webp" alt="Braceletes"></div><div class="label">Braceletes</div></div>
+        <div class="photo-item" data-category="PERFUMES"><div class="photo-img"><img src="perfumes.webp" alt="Perfumes"></div><div class="label">Perfumes</div></div>
+        <div class="photo-item" data-category="BOLSAS"><div class="photo-img"><img src="bolsas.webp" alt="Bolsas"></div><div class="label">Bolsas</div></div>
+        <div class="photo-item" data-category="ÓCULOS"><div class="photo-img"><img src="oculos.webp" alt="Óculos"></div><div class="label">Óculos</div></div>
+      </div>
     </div>
-  </div>
 
-  <div id="breadcrumb">
-    <span class="path">Início</span>
-    <span class="separator">&gt;</span>
-    <span class="crumbName"></span>
-    <div class="header-row">
-      <span class="title"></span>
-      <span class="count"></span>
+    <div id="breadcrumb">
+      <span class="path">Início</span>
+      <span class="separator">&gt;</span>
+      <span class="crumbName"></span>
+      <div class="header-row">
+        <span class="title"></span>
+        <span class="count"></span>
+      </div>
     </div>
-  </div>
 
-  <div class="image-scroll-wrapper">
-    <div class="image-scroll"></div>
-  </div>
+    <div class="image-scroll-wrapper">
+      <div class="image-scroll"></div>
+    </div>
 
-  <div class="banner-scroll-wrapper">
-    <div id="banner-scroll" class="banner-scroll"></div>
-  </div>
+    <div class="banner-scroll-wrapper">
+      <div id="banner-scroll" class="banner-scroll"></div>
+    </div>
 
-  <div class="produtos-wrapper">
-    <div class="launch-title">Lançamentos</div>
-    <div id="produtos" class="produtos-grid"></div>
+    <div class="produtos-wrapper">
+      <div class="launch-title">Lançamentos</div>
+      <div id="produtos" class="produtos-grid"></div>
+    </div>
   </div>
 
   <footer class="site-footer">
