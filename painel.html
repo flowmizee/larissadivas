@@ -10,87 +10,28 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
-    }
-    .card {
-      transition: transform 0.2s, box-shadow 0.2s;
-      background: white;
-      border-radius: 12px;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-    }
-    .apexcharts-tooltip {
-      background: #fff !important;
-      color: #1e293b;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-      border-radius: 8px !important;
-    }
-    .whatsapp-link {
-      color: #25D366;
-      font-weight: 500;
-    }
-    .whatsapp-link:hover {
-      text-decoration: underline;
-    }
-    .filter-input {
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 8px 12px;
-      transition: all 0.2s;
-    }
-    .filter-input:focus {
-      outline: none;
-      border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-    .btn-primary {
-      background-color: #6366f1;
-      color: white;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .btn-primary:hover {
-      background-color: #4f46e5;
-      transform: translateY(-1px);
-    }
-    .btn-secondary {
-      background-color: #f1f5f9;
-      color: #64748b;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .btn-secondary:hover {
-      background-color: #e2e8f0;
-    }
-    @media (max-width: 768px) {
-      .responsive-grid {
-        grid-template-columns: 1fr !important;
-      }
-      .chart-container {
-        height: 300px !important;
-      }
-    }
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .card { transition: transform .2s, box-shadow .2s; background: white; border-radius: 12px; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,.1); }
+    .apexcharts-tooltip { background: #fff !important; color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06); border-radius: 8px !important; }
+    .filter-input { border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; transition: .2s; }
+    .filter-input:focus { outline:none; border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.1); }
+    .btn-primary { background:#6366f1; color:#fff; border-radius:8px; padding:8px 16px; font-weight:500; transition:.2s; }
+    .btn-primary:hover { background:#4f46e5; transform:translateY(-1px); }
+    .btn-secondary { background:#f1f5f9; color:#64748b; border-radius:8px; padding:8px 16px; font-weight:500; transition:.2s; }
+    .btn-secondary:hover { background:#e2e8f0; }
+    @media (max-width:768px) { .responsive-grid { grid-template-columns:1fr!important; } .chart-container { height:300px!important; } }
   </style>
 </head>
 <body>
   <div class="min-h-screen pb-10">
-    <!-- Header -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
+      <div class="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
         <div>
           <h1 class="text-2xl font-bold text-white">Dashboard de Vendas</h1>
           <p class="text-indigo-100 mt-1">Análise completa de pedidos e clientes</p>
         </div>
         <button id="exportPdfBtn" class="btn-secondary flex items-center gap-2">
-          <!-- ícone PDF -->
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
           </svg>
@@ -98,26 +39,23 @@
         </button>
       </div>
     </div>
-
-    <!-- Conteúdo Principal -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <!-- Filtros -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
       <div class="card shadow p-6 mb-6">
         <h2 class="text-lg font-semibold text-gray-800 mb-4">Filtrar por período</h2>
         <div class="flex flex-wrap gap-4 items-end">
           <div class="flex-1 min-w-[200px]">
-            <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Data inicial</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data inicial</label>
             <input type="date" id="startDate" class="filter-input w-full"/>
           </div>
           <div class="flex-1 min-w-[200px]">
-            <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">Data final</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data final</label>
             <input type="date" id="endDate" class="filter-input w-full"/>
           </div>
           <div class="flex gap-2">
             <button id="filterBtn" class="btn-primary flex items-center gap-2">
-              <!-- ícone filtro -->
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
               </svg>
               Filtrar
             </button>
@@ -126,111 +64,37 @@
         </div>
       </div>
 
-      <!-- Cards de Métricas -->
+      <!-- Métricas -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 responsive-grid">
-        <!-- Total de Vendas -->
         <div class="card shadow p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Vendas</h3>
-              <p id="totalSales" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
-            </div>
-            <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
-              <!-- ícone -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Vendas</h3>
+          <p id="totalSales" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
         </div>
-        <!-- Total de Pedidos -->
         <div class="card shadow p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Pedidos</h3>
-              <p id="totalOrders" class="text-3xl font-semibold text-gray-800">0</p>
-            </div>
-            <div class="p-3 rounded-full bg-green-100 text-green-600">
-              <!-- ícone -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-          </div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Pedidos</h3>
+          <p id="totalOrders" class="text-3xl font-semibold text-gray-800">0</p>
         </div>
-        <!-- Produtos Vendidos -->
         <div class="card shadow p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Produtos Vendidos</h3>
-              <p id="totalProducts" class="text-3xl font-semibold text-gray-800">0</p>
-            </div>
-            <div class="p-3 rounded-full bg-amber-100 text-amber-600">
-              <!-- ícone -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-          </div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Produtos Vendidos</h3>
+          <p id="totalProducts" class="text-3xl font-semibold text-gray-800">0</p>
         </div>
-        <!-- Ticket Médio -->
         <div class="card shadow p-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Ticket Médio</h3>
-              <p id="averageTicket" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
-            </div>
-            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-              <!-- ícone -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z" />
-              </svg>
-            </div>
-          </div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Ticket Médio</h3>
+          <p id="averageTicket" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
         </div>
       </div>
 
-      <!-- Produtos + Top Clientes -->
+      <!-- Top Produtos & Clientes -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 responsive-grid">
-        <!-- Mais Vendidos -->
         <div class="card shadow p-6">
           <h2 class="text-lg font-semibold text-gray-800 mb-4">Produtos Mais Vendidos</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-3">Por quantidade</h3>
-              <div id="topProductsQuantity" class="space-y-4">
-                <p class="text-gray-400 text-center py-4">Carregando dados...</p>
-              </div>
-            </div>
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-3">Por valor total</h3>
-              <div id="topProductsValue" class="space-y-4">
-                <p class="text-gray-400 text-center py-4">Carregando dados...</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Top Clientes -->
-        <div class="card shadow p-6">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800">Top Clientes</h2>
-            <span class="text-sm text-gray-500">Por valor total</span>
-          </div>
-          <div id="topClients" class="space-y-4">
+          <div id="topProductsQuantity" class="space-y-4">
             <p class="text-gray-400 text-center py-4">Carregando dados...</p>
           </div>
         </div>
-      </div>
-
-      <!-- Gráficos -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 responsive-grid">
         <div class="card shadow p-6">
           <h2 class="text-lg font-semibold text-gray-800 mb-4">Distribuição por Produto</h2>
           <div id="pieChart" class="chart-container" style="height:350px;"></div>
-        </div>
-        <div class="card shadow p-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-4">Evolução das Vendas</h2>
-          <div id="lineChart" class="chart-container" style="height:350px;"></div>
         </div>
       </div>
 
@@ -244,11 +108,11 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produto</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantidade</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
               </tr>
             </thead>
             <tbody id="ordersTable" class="bg-white divide-y divide-gray-200">
@@ -261,273 +125,144 @@
   </div>
 
   <script>
-    // ======== UTILITÁRIOS ========
     function safeParseFloat(str) {
       if (!str) return 0;
-      // remove tudo que não seja dígito, vírgula, ponto ou sinal de menos
-      const cleaned = str.replace(/[^\d,.-]/g, '').replace(',', '.');
-      const n = parseFloat(cleaned);
+      const n = parseFloat(str.replace(/[^\d,.-]/g,'').replace(',','.'));
       return isNaN(n) ? 0 : n;
     }
     function safeParseInt(str) {
       if (!str) return 0;
-      const cleaned = str.replace(/\D/g, '');
-      const n = parseInt(cleaned, 10);
+      const n = parseInt(str.replace(/\D/g,''),10);
       return isNaN(n) ? 0 : n;
     }
-    function formatBRL(value) {
-      return new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' }).format(value);
+    function formatBRL(v) {
+      return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
     }
-    function formatDate(dateString) {
-      if (!dateString) return 'N/A';
-      const date = new Date(dateString);
-      if (isNaN(date)) {
-        const parts = dateString.split(' ')[0].split('/');
-        if (parts.length === 3) {
-          const d = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T${dateString.split(' ')[1]||'00:00'}`);
-          if (!isNaN(d)) return d.toLocaleDateString('pt-BR');
-        }
-        return dateString;
-      }
-      return date.toLocaleDateString('pt-BR');
-    }
-    function formatWhatsAppNumber(number) {
-      if (!number) return null;
-      let digits = number.replace(/\D/g,'');
-      if (digits.startsWith('0')) digits = digits.slice(1);
-      return digits;
+    function formatDate(s) {
+      if (!s) return 'N/A';
+      const parts = s.includes('/') ? s.split(' ')[0].split('/') : null;
+      const iso = parts
+        ? `${parts[2]}-${parts[1]}-${parts[0]}T${(s.split(' ')[1]||'00:00')}`
+        : s;
+      const d = new Date(iso);
+      return isNaN(d) ? s : d.toLocaleDateString('pt-BR');
     }
 
-    // ======== VARIÁVEIS GLOBAIS ========
     let ordersData = [];
 
-    // ======== CARREGAR DADOS ========
     async function loadData() {
+      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?gid=1411128451&single=true&output=csv';
       try {
-        const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?gid=1411128451&single=true&output=csv');
-        const csv = await res.text();
-        const lines = csv.split('\n').filter(l=>l.trim());
+        const res = await fetch(url);
+        const text = await res.text();
+        const lines = text.split('\n').filter(l=>l.trim());
         const headers = lines.shift().split(',').map(h=>h.trim());
         ordersData = lines.map(line => {
-          const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
-          return headers.reduce((o,h,i)=>{
-            o[h] = cols[i]||'';
-            return o;
-          }, {});
+          const cols = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
+                           .map(c=>c.replace(/^"|"$/g,'').trim());
+          return headers.reduce((o,h,i)=>(o[h]=cols[i]||'',o),{});
         });
         processData(ordersData);
-      } catch(err) {
-        console.error(err);
-        document.getElementById('ordersTable').innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Erro ao carregar dados.</td></tr>`;
+      } catch {
+        document.getElementById('ordersTable').innerHTML = 
+          '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Erro ao carregar dados</td></tr>';
       }
     }
 
-    // ======== PROCESSAR & EXIBIR ========
     function processData(data) {
-      // contagem de pedidos
-      document.getElementById('ordersCount').textContent = `${data.length} pedido${data.length!==1?'s':''}`;
-
       // totais
-      const totalSales = data.reduce((s, o) => s + safeParseFloat(o['Preço Total']), 0);
+      const totalSales = data.reduce((sum,o)=>sum+safeParseFloat(o['Preço Total']),0);
       const totalOrders = data.length;
-      const totalProducts = data.reduce((s, o) => s + safeParseInt(o['Quantidade']), 0);
-      const avgTicket = totalOrders>0 ? totalSales/totalOrders : 0;
+      const totalProducts = data.reduce((sum,o)=>sum+safeParseInt(o['Quantidade']),0);
 
       document.getElementById('totalSales').textContent = formatBRL(totalSales);
       document.getElementById('totalOrders').textContent = totalOrders.toLocaleString('pt-BR');
       document.getElementById('totalProducts').textContent = totalProducts.toLocaleString('pt-BR');
-      document.getElementById('averageTicket').textContent = formatBRL(avgTicket);
+      document.getElementById('averageTicket').textContent = 
+        formatBRL(totalOrders? totalSales/totalOrders : 0);
 
-      // produtos agregados
-      const byQty = {}, byVal = {};
+      // top produtos e pizza
+      const byQty = {};
       data.forEach(o=>{
-        const name = o['Produto'], qty = safeParseInt(o['Quantidade']), val = safeParseFloat(o['Preço Total']);
+        const raw = o['Produtos'] || o['Produto'];
+        const name = raw ? raw.replace(/\s*\d+x$/,'').trim() : '';
+        const qty = safeParseInt(o['Quantidade']);
         if (!name) return;
         byQty[name] = (byQty[name]||0) + qty;
-        byVal[name] = (byVal[name]||0) + val;
       });
-      renderTopList('topProductsQuantity', byQty, (v)=>v, false);
-      renderTopList('topProductsValue', byVal, formatBRL, true);
 
-      // clientes
-      const clients = {};
-      data.forEach(o=>{
-        const name = o['Nome do Cliente']||'Não identificado';
-        const num = o['Número do Cliente']||'';
-        const key = `${name}|${num}`;
-        clients[key] = (clients[key]||0) + safeParseFloat(o['Preço Total']);
-      });
-      renderClients('topClients', clients);
+      renderTopProducts(byQty);
+      renderPieChart(byQty);
 
-      // charts
-      renderPie('pieChart', byVal);
-      renderLine('lineChart', data);
+      // últimos pedidos tabela
+      document.getElementById('ordersCount').textContent = 
+        `${totalOrders} pedido${totalOrders!==1?'s':''}`;
+      renderRecent(data);
 
-      // tabela últimos 10
-      const last10 = data.slice().reverse().slice(0,10);
-      const tbody = document.getElementById('ordersTable');
-      if (last10.length) {
-        tbody.innerHTML = last10.map(o=>{
-          const wa = formatWhatsAppNumber(o['Número do Cliente']);
-          return `
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 text-sm text-gray-500">${formatDate(o['Data/Hora'])}</td>
-              <td class="px-6 py-4">
-                <div class="text-sm text-gray-900">${o['Nome do Cliente']||'N/A'}</div>
-                ${wa?`<a href="https://wa.me/55${wa}" target="_blank" class="whatsapp-link text-xs flex items-center gap-1">📱 ${o['Número do Cliente']}</a>`:''}
-              </td>
-              <td class="px-6 py-4 text-sm text-gray-500">${o['Produto']||'N/A'}</td>
-              <td class="px-6 py-4 text-sm text-gray-500">${o['Quantidade']||'0'}</td>
-              <td class="px-6 py-4 text-sm font-medium text-gray-900">${formatBRL(safeParseFloat(o['Preço Total']))}</td>
-            </tr>`;
-        }).join('');
-      } else {
-        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum pedido encontrado</td></tr>`;
-      }
+      // filtros
     }
 
-    // ======== AUXILIARES DE RENDER ========
-    function renderTopList(containerId, mapData, fmt, showNumber) {
-      const list = Object.entries(mapData).sort((a,b)=>b[1]-a[1]).slice(0,5);
-      const cont = document.getElementById(containerId);
-      if (list.length) {
-        cont.innerHTML = list.map(([name,val],i)=>`
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <span class="text-gray-500 font-medium w-6">${i+1}</span>
-              <span class="ml-2 font-medium text-gray-800 truncate max-w-[120px]">${name}</span>
-            </div>
-            <span class="text-gray-700">${fmt(val)}</span>
-          </div>
-        `).join('');
-      } else {
-        cont.innerHTML = '<p class="text-gray-400 text-center py-4">Nenhum dado disponível</p>';
-      }
+    function renderTopProducts(map) {
+      const arr = Object.entries(map)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,5);
+      const cont = document.getElementById('topProductsQuantity');
+      cont.innerHTML = arr.length
+        ? arr.map(([k,v],i)=>`
+            <div class="flex justify-between">
+              <span class="text-gray-800">${i+1}. ${k}</span>
+              <span>${v}x</span>
+            </div>`).join('')
+        : '<p class="py-4 text-center text-gray-400">Sem dados</p>';
     }
 
-    function renderClients(containerId, mapData) {
-      const list = Object.entries(mapData).sort((a,b)=>b[1]-a[1]).slice(0,5);
-      const cont = document.getElementById(containerId);
-      if (list.length) {
-        cont.innerHTML = list.map(([key,val],i)=>{
-          const [name,num] = key.split('|');
-          const wa = formatWhatsAppNumber(num);
-          return `
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
-                  <span class="text-indigo-600 font-medium">${i+1}</span>
-                </div>
-                <div>
-                  <p class="font-medium text-gray-800">${name}</p>
-                  ${wa?`<a href="https://wa.me/55${wa}" target="_blank" class="whatsapp-link text-xs flex items-center gap-1">📱 ${num}</a>`:``}
-                </div>
-              </div>
-              <span class="font-medium text-gray-700">${formatBRL(val)}</span>
-            </div>`;
-        }).join('');
-      } else {
-        cont.innerHTML = '<p class="text-gray-400 text-center py-4">Nenhum cliente encontrado</p>';
-      }
-    }
-
-    function renderPie(elId, mapData) {
-      const data = Object.entries(mapData).sort((a,b)=>b[1]-a[1]).slice(0,5);
-      const opts = {
-        series: data.map(d=>d[1]),
+    function renderPieChart(map) {
+      const data = Object.entries(map)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,5);
+      new ApexCharts(document.querySelector('#pieChart'), {
         chart:{type:'pie',height:350},
-        labels: data.map(d=>d[0]),
-        colors: ['#6366F1','#8B5CF6','#EC4899','#F43F5E','#F59E0B','#10B981','#14B8A6','#0EA5E9','#3B82F6','#64748B'],
-        legend:{position:'bottom',fontFamily:'Inter, sans-serif',labels:{colors:'#6b7280'}},
-        tooltip:{y:{formatter: v=>formatBRL(v)}}
-      };
-      if (window._pie) window._pie.destroy();
-      window._pie = new ApexCharts(document.querySelector(`#${elId}`), opts);
-      window._pie.render();
+        series: data.map(e=>e[1]),
+        labels: data.map(e=>e[0]),
+        legend:{position:'bottom'},
+        tooltip:{y:{formatter:v=>`${v}x`}}
+      }).render();
     }
 
-    function renderLine(elId, data) {
-      const salesByDate = {};
-      data.forEach(o=>{
-        let d = o['Data/Hora'];
-        if (!d) return;
-        let dt = d.includes('/') ?
-          new Date(d.split(' ')[0].split('/').reverse().join('-') + 'T' + (d.split(' ')[1]||'00:00')) :
-          new Date(d);
-        if (isNaN(dt)) return;
-        const day = dt.toISOString().split('T')[0];
-        salesByDate[day] = (salesByDate[day]||0) + safeParseFloat(o['Preço Total']);
-      });
-      const dates = Object.keys(salesByDate).sort();
-      const series = [{name:'Vendas', data:dates.map(d=>({x:d, y:salesByDate[d]}))}];
-      const opts = {
-        series,
-        chart:{type:'line',height:350,zoom:{enabled:false},toolbar:{show:false}},
-        stroke:{curve:'smooth',width:3},
-        xaxis:{type:'datetime',labels:{formatter:v=>new Date(v).toLocaleDateString('pt-BR'),style:{fontFamily:'Inter, sans-serif'}}},
-        yaxis:{labels:{formatter:v=>formatBRL(v),style:{fontFamily:'Inter, sans-serif'}}},
-        tooltip:{
-          x:{formatter:v=>new Date(v).toLocaleDateString('pt-BR')},
-          y:{formatter:v=>formatBRL(v)},
-          style:{fontFamily:'Inter, sans-serif'}
-        },
-        grid:{borderColor:'#f1f5f9'},
-        colors:['#6366F1']
-      };
-      if (window._line) window._line.destroy();
-      window._line = new ApexCharts(document.querySelector(`#${elId}`), opts);
-      window._line.render();
+    function renderRecent(data) {
+      const rows = data.slice(-10).reverse().map(o=>`
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 text-sm text-gray-500">${formatDate(o['Data/Hora'])}</td>
+          <td class="px-6 py-4">${o['Nome do Cliente']||'N/A'}</td>
+          <td class="px-6 py-4">${(o['Produtos']||o['Produto'])||'N/A'}</td>
+          <td class="px-6 py-4">${o['Quantidade']||'0'}</td>
+          <td class="px-6 py-4">${formatBRL(safeParseFloat(o['Preço Total']))}</td>
+        </tr>`).join('');
+      document.getElementById('ordersTable').innerHTML = rows ||
+        '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum pedido</td></tr>';
     }
 
-    // ======== FILTROS & PDF ========
-    function filterByDate(start, end) {
-      const s = start?new Date(start):null;
-      const e = end?new Date(end):null;
-      if (s) s.setHours(0,0,0,0);
-      if (e) e.setHours(23,59,59,999);
-      return ordersData.filter(o=>{
-        let d = o['Data/Hora'];
-        if (!d) return false;
-        let dt = d.includes('/') ?
-          new Date(d.split(' ')[0].split('/').reverse().join('-') + 'T' + (d.split(' ')[1]||'00:00')) :
-          new Date(d);
-        if (isNaN(dt)) return false;
-        if (s && dt < s) return false;
-        if (e && dt > e) return false;
-        return true;
-      });
-    }
-
-    async function exportToPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({orientation:'portrait',unit:'mm'});
-      const today = new Date().toLocaleDateString('pt-BR');
-      doc.setFontSize(20).text('Relatório de Vendas',105,20,{align:'center'});
-      doc.setFontSize(12).text(`Data do relatório: ${today}`,105,28,{align:'center'});
-      // resumo
-      doc.setFontSize(14).text('Resumo Geral',20,40);
-      doc.setFontSize(12);
-      doc.text(`Total de Vendas: ${document.getElementById('totalSales').textContent}`,20,48);
-      doc.text(`Total de Pedidos: ${document.getElementById('totalOrders').textContent}`,20,56);
-      doc.text(`Produtos Vendidos: ${document.getElementById('totalProducts').textContent}`,20,64);
-      doc.text(`Ticket Médio: ${document.getElementById('averageTicket').textContent}`,20,72);
-      // ... (o restante do PDF segue a mesma lógica de extração de DOM e html2canvas)
-      // salvar
-      doc.save(`relatorio_vendas_${today.replace(/\//g,'-')}.pdf`);
-    }
-
-    // ======== EVENTOS ========
     document.getElementById('filterBtn').addEventListener('click', () => {
-      const s = document.getElementById('startDate').value;
-      const e = document.getElementById('endDate').value;
-      processData(filterByDate(s,e));
+      const sd = document.getElementById('startDate').value;
+      const ed = document.getElementById('endDate').value;
+      const s = sd? new Date(sd): null;
+      const e = ed? new Date(ed+'T23:59:59'): null;
+      const filtered = ordersData.filter(o=>{
+        const d = new Date((o['Data/Hora'].includes('/') 
+          ? o['Data/Hora'].split(' ')[0].split('/').reverse().join('-')+'T'+(o['Data/Hora'].split(' ')[1]||'')
+          : o['Data/Hora']));
+        return !isNaN(d) && (!s||d>=s) && (!e||d<=e);
+      });
+      processData(filtered);
     });
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      document.getElementById('startDate').value = '';
-      document.getElementById('endDate').value = '';
-      processData(ordersData);
+    document.getElementById('resetBtn').addEventListener('click', () => processData(ordersData));
+    document.getElementById('exportPdfBtn').addEventListener('click', async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text('Relatório de Vendas',20,20);
+      doc.save('relatorio_vendas.pdf');
     });
-    document.getElementById('exportPdfBtn').addEventListener('click', exportToPDF);
+
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
 </body>
