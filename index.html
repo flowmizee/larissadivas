@@ -20,14 +20,14 @@
       min-height: 100vh;
     }
     .nav-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #fff;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* opcional, pra dar leve sombra */
-}
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; }
     .menu-icon, .bag-icon { font-size: 28px; cursor: pointer; position: relative; }
     .bag-icon .cart-count {
@@ -362,6 +362,44 @@
       window._scrollTimeout = setTimeout(() => catsEl.classList.add('hidden'), 500);
     });
 
+    // Função para normalizar texto (remover acentos, converter para minúsculas e remover espaços extras)
+    function normalizeText(text) {
+      return text
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .toLowerCase()
+        .trim();
+    }
+
+    // Mapeamento de categorias para termos de busca - agora mais específico
+    const categoryMap = {
+      'BRINCOS': ['brinco', 'brincos'],
+      'ANÉIS': ['anel', 'anéis', 'aneis'],
+      'BRACELETES': ['bracelete', 'braceletes'],
+      'COLARES': ['colar', 'colares'],
+      'CONJUNTOS': ['conjunto', 'conjuntos', 'kit', 'kits'],
+      'PULSEIRAS': ['pulseira', 'pulseiras'],
+      'PERFUMES': ['perfume', 'perfumes'],
+      'BOLSAS': ['bolsa', 'bolsas'],
+      'CINTOS': ['cinto', 'cintos'],
+      'ÓCULOS': ['óculos', 'oculos']
+    };
+
+    // Função para verificar se o texto contém algum dos termos de busca
+    function containsAnyTerm(text, terms) {
+      const normalizedText = normalizeText(text);
+      return terms.some(term => normalizedText.includes(term));
+    }
+
+    // Função para encontrar produtos por categoria (busca apenas pelo nome)
+    function filterByCategory(category) {
+      const searchTerms = categoryMap[category] || [normalizeText(category)];
+      
+      return allProdutos.filter(p => {
+        const nome = p.nome || '';
+        return containsAnyTerm(nome, searchTerms);
+      });
+    }
+
     fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSjVHrLe1BOGqHZC9O2o1FxjWZluP8UCK6ZdcJSxcQRKIv1uJkO2NMKsrDdaTBg1fTS-XCwTq4RZzIb/pub?output=csv')
       .then(res => res.text())
       .then(csv => {
@@ -375,14 +413,11 @@
 
           const productTag = cells[14]?.trim();
           
-          // Se a tag for "0", não adiciona o produto em nenhuma lista
           if (productTag === '0') return;
           
-          // Verifica se o produto tem pelo menos um nome e uma imagem
           const productName = cells[2]?.trim();
           const productImages = [cells[3],cells[4],cells[5]].map(u=>u?.trim()).filter(u=>u);
           
-          // Se não tiver nome ou imagens, não adiciona
           if (!productName || productImages.length === 0) return;
           
           const product = {
@@ -397,20 +432,16 @@
             tag: productTag
           };
 
-          // Adiciona à lista de todos os produtos (exceto os com tag "0" e sem nome/imagem)
           allProdutos.push(product);
           
-          // Adiciona à lista de lançamentos se a tag for "Lançamento"
           if (productTag === 'Lançamento') {
             launchProdutos.push(product);
           }
         });
 
-        // Limpa o container antes de adicionar banners
         bannerContainer.innerHTML = '';
 
         if (allBanners.length === 1) {
-          // Apenas 1 banner - mostra estático
           bannerContainer.classList.add('single-banner');
           const img = document.createElement('img');
           img.src = allBanners[0];
@@ -419,10 +450,7 @@
           img.style.objectFit = 'cover';
           bannerContainer.appendChild(img);
         } else if (allBanners.length > 1) {
-          // 2+ banners - cria o efeito de scroll infinito
           bannerContainer.classList.add('scrolling');
-          
-          // Duplica os banners para criar o efeito contínuo
           const duplicatedBanners = [...allBanners, ...allBanners];
           
           duplicatedBanners.forEach(url => {
@@ -432,7 +460,6 @@
           });
         }
 
-        // Mostra apenas os produtos de lançamento na página inicial
         renderProdutos(launchProdutos);
       });
 
@@ -440,7 +467,6 @@
       const cont = document.getElementById('produtos');
       cont.innerHTML = '';
       
-      // Filtra novamente para garantir que não há produtos sem nome ou imagem
       const validProducts = list.filter(p => p.nome && p.imagens && p.imagens.length > 0);
       
       if (validProducts.length === 0) {
@@ -479,26 +505,10 @@
       crumbNameEl.textContent = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
       headerTitleEl.textContent = name.toUpperCase();
       
-      // Filtra novamente para contar apenas produtos válidos
       const validProducts = list.filter(p => p.nome && p.imagens && p.imagens.length > 0);
       headerCountEl.textContent = `${validProducts.length} produto${validProducts.length !== 1 ? 's' : ''}`;
       
       breadcrumbEl.style.display = 'block';
-    }
-
-    function singularize(term) {
-      if (term.endsWith('es')) return term.slice(0, -2);
-      if (term.endsWith('s')) return term.slice(0, -1);
-      return term;
-    }
-
-    function filterByTerm(term) {
-      const lower = term.toLowerCase();
-      const singular = singularize(lower);
-      return allProdutos.filter(p => {
-        const nome = p.nome.toLowerCase();
-        return nome.includes(lower) || nome.includes(singular);
-      });
     }
 
     function resetToHomePage() {
@@ -519,7 +529,7 @@
     document.querySelectorAll('.category').forEach(el => {
       el.addEventListener('click', () => {
         const name = el.textContent.trim();
-        const filtered = filterByTerm(name);
+        const filtered = filterByCategory(name);
         document.querySelector('.photo-scroll-wrapper').style.display = 'none';
         document.querySelector('.image-scroll-wrapper').style.display = 'none';
         document.querySelector('.banner-scroll-wrapper').style.display = 'none';
@@ -532,7 +542,7 @@
     document.querySelectorAll('.photo-item').forEach(el => {
       el.addEventListener('click', () => {
         const category = el.getAttribute('data-category');
-        const filtered = filterByTerm(category);
+        const filtered = filterByCategory(category);
         document.querySelector('.photo-scroll-wrapper').style.display = 'none';
         document.querySelector('.image-scroll-wrapper').style.display = 'none';
         document.querySelector('.banner-scroll-wrapper').style.display = 'none';
@@ -563,7 +573,13 @@
         document.querySelector('.photo-scroll-wrapper').style.display = '';
         return;
       }
-      const filtered = filterByTerm(term);
+      
+      const normalizedTerm = normalizeText(term);
+      const filtered = allProdutos.filter(p => {
+        const nome = normalizeText(p.nome || '');
+        return nome.includes(normalizedTerm);
+      });
+      
       document.querySelector('.photo-scroll-wrapper').style.display = 'none';
       document.querySelector('.image-scroll-wrapper').style.display = 'none';
       document.querySelector('.banner-scroll-wrapper').style.display = 'none';
@@ -574,7 +590,12 @@
 
     searchButton.addEventListener('click', () => {
       const term = searchInput.value.trim();
-      const filtered = term ? filterByTerm(term) : launchProdutos;
+      const normalizedTerm = normalizeText(term);
+      const filtered = term ? allProdutos.filter(p => {
+        const nome = normalizeText(p.nome || '');
+        return nome.includes(normalizedTerm);
+      }) : launchProdutos;
+      
       document.querySelector('.photo-scroll-wrapper').style.display = term ? 'none' : '';
       document.querySelector('.image-scroll-wrapper').style.display = term ? 'none' : '';
       document.querySelector('.banner-scroll-wrapper').style.display = term ? 'none' : '';
@@ -599,4 +620,4 @@
     });
   </script>
 </body>
-</html
+</html>
