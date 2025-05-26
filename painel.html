@@ -21,16 +21,15 @@
     .btn-secondary { background:#f1f5f9; color:#64748b; border-radius:8px; padding:8px 16px; font-weight:500; transition:.2s; }
     .btn-secondary:hover { background:#e2e8f0; }
     @media (max-width:768px) { .responsive-grid { grid-template-columns:1fr!important; } .chart-container { height:300px!important; } }
-  .whatsapp-link {
-  color: #25D366;
-  font-weight: 500;
-  transition: color .2s;
-}
-.whatsapp-link:hover {
-  text-decoration: underline;
-  /* se quiser escurecer um pouco ao passar o mouse */
-  color: #1eb851;
-}
+    .whatsapp-link {
+      color: #25D366;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .whatsapp-link:hover {
+      text-decoration: underline;
+      color: #1eb851;
+    }
   </style>
 </head>
 <body>
@@ -75,88 +74,88 @@
           </div>
         </div>
       </div>
-    <!-- Métricas -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 responsive-grid">
-  <!-- Total de Vendas -->
-  <div class="card shadow p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Vendas</h3>
-        <p id="totalSales" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
+      <!-- Métricas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 responsive-grid">
+        <!-- Total de Vendas -->
+        <div class="card shadow p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Vendas</h3>
+              <p id="totalSales" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
+            </div>
+            <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                   viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2
+                         3 .895 3 2-1.343 2-3 2m0-8
+                         c1.11 0 2.08.402 2.599 1M12 8V7
+                         m0 1v8m0 0v1m0-1
+                         c-1.11 0-2.08-.402-2.599-1
+                         M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Total de Pedidos -->
+        <div class="card shadow p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Pedidos</h3>
+              <p id="totalOrders" class="text-3xl font-semibold text-gray-800">0</p>
+            </div>
+            <div class="p-3 rounded-full bg-green-100 text-green-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                   viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10
+                         a2 2 0 002-2V7a2 2 0 00-2-2h-2
+                         M9 5a2 2 0 002 2h2a2 2 0 002-2
+                         M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Produtos Vendidos -->
+        <div class="card shadow p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Produtos Vendidos</h3>
+              <p id="totalProducts" class="text-3xl font-semibold text-gray-800">0</p>
+            </div>
+            <div class="p-3 rounded-full bg-amber-100 text-amber-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                   viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M20 7l-8-4-8 4m16 0l-8 4
+                         m8-4v10l-8 4m0-10L4 7m8 4v10
+                         M4 7v10l8 4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Ticket Médio -->
+        <div class="card shadow p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Ticket Médio</h3>
+              <p id="averageTicket" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
+            </div>
+            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                   viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 14l6-6m-5.5.5h.01
+                         m4.99 5h.01M19 21V5a2 2 0 00-2-2
+                         H7a2 2 0 00-2 2v16l3.5-2 3.5 2
+                         3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0
+                         .5.5 0 011 0zm5 5a.5.5 0 11-1 0
+                         .5.5 0 011 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2
-                   3 .895 3 2-1.343 2-3 2m0-8
-                   c1.11 0 2.08.402 2.599 1M12 8V7
-                   m0 1v8m0 0v1m0-1
-                   c-1.11 0-2.08-.402-2.599-1
-                   M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-  <!-- Total de Pedidos -->
-  <div class="card shadow p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Total de Pedidos</h3>
-        <p id="totalOrders" class="text-3xl font-semibold text-gray-800">0</p>
-      </div>
-      <div class="p-3 rounded-full bg-green-100 text-green-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10
-                   a2 2 0 002-2V7a2 2 0 00-2-2h-2
-                   M9 5a2 2 0 002 2h2a2 2 0 002-2
-                   M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-  <!-- Produtos Vendidos -->
-  <div class="card shadow p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Produtos Vendidos</h3>
-        <p id="totalProducts" class="text-3xl font-semibold text-gray-800">0</p>
-      </div>
-      <div class="p-3 rounded-full bg-amber-100 text-amber-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4
-                   m8-4v10l-8 4m0-10L4 7m8 4v10
-                   M4 7v10l8 4"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-  <!-- Ticket Médio -->
-  <div class="card shadow p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="text-sm font-medium text-gray-500 mb-1">Ticket Médio</h3>
-        <p id="averageTicket" class="text-3xl font-semibold text-gray-800">R$ 0,00</p>
-      </div>
-      <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 14l6-6m-5.5.5h.01
-                   m4.99 5h.01M19 21V5a2 2 0 00-2-2
-                   H7a2 2 0 00-2 2v16l3.5-2 3.5 2
-                   3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0
-                   .5.5 0 011 0zm5 5a.5.5 0 11-1 0
-                   .5.5 0 011 0z"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-</div>
 
       <!-- Top 5 Produtos Mais Vendidos (por receita) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 responsive-grid">
@@ -171,24 +170,23 @@
           <div id="pieChart" class="chart-container" style="height:350px;"></div>
         </div>
       </div>
-<!-- Top Clientes e Evolução das Vendas -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 responsive-grid">
-  <!-- Top Clientes por valor total -->
-  <div class="card shadow p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold text-gray-800">Top Clientes</h2>
-      <span class="text-sm text-gray-500">Por valor total</span>
-    </div>
-    <div id="topClients" class="space-y-4">
-      <p class="text-gray-400 text-center py-4">Carregando dados...</p>
-    </div>
-  </div>
-  <!-- Evolução das Vendas -->
-  <div class="card shadow p-6">
-    <h2 class="text-lg font-semibold text-gray-800 mb-4">Evolução das Vendas</h2>
-    <div id="lineChart" class="chart-container" style="height:350px;"></div>
-  </div>
-</div>
+
+      <!-- Top Clientes e Evolução das Vendas -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 responsive-grid">
+        <div class="card shadow p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Top Clientes</h2>
+            <span class="text-sm text-gray-500">Por valor total</span>
+          </div>
+          <div id="topClients" class="space-y-4">
+            <p class="text-gray-400 text-center py-4">Carregando dados...</p>
+          </div>
+        </div>
+        <div class="card shadow p-6">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">Evolução das Vendas</h2>
+          <div id="lineChart" class="chart-container" style="height:350px;"></div>
+        </div>
+      </div>
 
       <!-- Tabela de Pedidos -->
       <div class="card shadow overflow-hidden">
@@ -263,7 +261,6 @@
     }
 
     function processData(data) {
-      // totais gerais
       const totalSales = data.reduce((sum,o) => sum + safeParseFloat(o['Preço Total']), 0);
       const totalOrders = data.length;
       const totalProducts = data.reduce((sum,o) => sum + safeParseInt(o['Quantidade']), 0);
@@ -274,92 +271,31 @@
       document.getElementById('averageTicket').textContent =
         formatBRL(totalOrders ? totalSales/totalOrders : 0);
 
-      // agrupa por produto na coluna "Produtos", parseando "xN - R$ V"
       const byRevenue = {};
       data.forEach(o => {
         const raw = o['Produtos'] || o['Produto'] || '';
         const m = raw.match(/^(.+?)\s*x(\d+)\s*-\s*R\$\s*([\d.,]+)$/);
         if (!m) return;
-        const name = m[1].trim();           // só o nome
-        const qty  = parseInt(m[2], 10);    // quantidade vendida
-        const priceUnit = parseFloat(m[3].replace(',','.')); // valor unitário
-        const revenue = qty * priceUnit;    // receita total daquele item na linha
+        const name = m[1].trim();
+        const qty  = parseInt(m[2], 10);
+        const priceUnit = parseFloat(m[3].replace(',','.'));
+        const revenue = qty * priceUnit;
         byRevenue[name] = (byRevenue[name]||0) + revenue;
       });
 
       renderTopProducts(byRevenue);
       renderPieChart(byRevenue);
-// prepara dados de clientes
-const clients = {};
-data.forEach(o => {
-  const name = o['Nome do Cliente'] || 'Não identificado';
-  const num  = o['Número do Cliente'] || '';
-  const key  = `${name}|${num}`;
-  clients[key] = (clients[key]||0) + safeParseFloat(o['Preço Total']);
-});
-// renderiza Top Clientes e Evolução das Vendas
-renderClients('topClients', clients);
-renderLine('lineChart', data);
 
-// === Renderiza lista de clientes top ===
-function renderClients(containerId, mapData) {
-  const list = Object.entries(mapData)
-    .sort((a,b) => b[1] - a[1])
-    .slice(0,5);
-  const cont = document.getElementById(containerId);
-  if (list.length) {
-    cont.innerHTML = list.map(([key,val],i) => {
-      const [name, num] = key.split('|');
-      const wa = num.replace(/\D/g,'').replace(/^0/,'');
-      return `
-        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-          <div class="flex items-center">
-            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
-              <span class="text-indigo-600 font-medium">${i+1}</span>
-            </div>
-            <div>
-              <p class="font-medium text-gray-800">${name}</p>
-              ${wa ? `<a href="https://wa.me/55${wa}" target="_blank" class="whatsapp-link text-xs flex items-center gap-1">
-                📱 ${num}
-              </a>` : ''}
-            </div>
-          </div>
-          <span class="font-medium text-gray-700">${formatBRL(val)}</span>
-        </div>`;
-    }).join('');
-  } else {
-    cont.innerHTML = '<p class="text-gray-400 text-center py-4">Nenhum cliente encontrado</p>';
-  }
-}
+      const clients = {};
+      data.forEach(o => {
+        const name = o['Nome do Cliente'] || 'Não identificado';
+        const num  = o['Número do Cliente'] || '';
+        const key  = `${name}|${num}`;
+        clients[key] = (clients[key]||0) + safeParseFloat(o['Preço Total']);
+      });
 
-// === Renderiza gráfico de evolução ===
-function renderLine(elId, data) {
-  const byDate = {};
-  data.forEach(o => {
-    if (!o['Data/Hora']) return;
-    let dt = o['Data/Hora'].includes('/')
-      ? new Date(o['Data/Hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + (o['Data/Hora'].split(' ')[1]||'00:00'))
-      : new Date(o['Data/Hora']);
-    if (isNaN(dt)) return;
-    const day = dt.toISOString().split('T')[0];
-    byDate[day] = (byDate[day]||0) + safeParseFloat(o['Preço Total']);
-  });
-  const dates = Object.keys(byDate).sort();
-  const series = [{ name: 'Vendas', data: dates.map(d => ({ x: d, y: byDate[d] })) }];
-  const opts = {
-    series,
-    chart: { type: 'line', height: 350, zoom: { enabled: false }, toolbar: { show: false } },
-    stroke: { curve: 'smooth', width: 3 },
-    xaxis: { type: 'datetime', labels: { formatter: v => new Date(v).toLocaleDateString('pt-BR') } },
-    yaxis: { labels: { formatter: v => formatBRL(v) } },
-    tooltip: { x: { formatter: v => new Date(v).toLocaleDateString('pt-BR') }, y: { formatter: v => formatBRL(v) } },
-    grid: { borderColor: '#f1f5f9' }
-  };
-  const el = document.getElementById(elId);
-  if (window._line) window._line.destroy();
-  window._line = new ApexCharts(el, opts);
-  window._line.render();
-}
+      renderClients('topClients', clients);
+      renderLine('lineChart', data);
 
       document.getElementById('ordersCount').textContent =
         `${totalOrders} pedido${totalOrders!==1?'s':''}`;
@@ -392,6 +328,64 @@ function renderLine(elId, data) {
       }).render();
     }
 
+    function renderClients(containerId, mapData) {
+      const list = Object.entries(mapData)
+        .sort((a,b) => b[1] - a[1])
+        .slice(0,5);
+      const cont = document.getElementById(containerId);
+      if (list.length) {
+        cont.innerHTML = list.map(([key,val],i) => {
+          const [name, num] = key.split('|');
+          const wa = num.replace(/\D/g,'').replace(/^0/,'');
+          return `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                  <span class="text-indigo-600 font-medium">${i+1}</span>
+                </div>
+                <div>
+                  <p class="font-medium text-gray-800">${name}</p>
+                  ${wa ? `<a href="https://wa.me/55${wa}" target="_blank" class="whatsapp-link text-xs flex items-center gap-1">
+                    📱 ${num}
+                  </a>` : ''}
+                </div>
+              </div>
+              <span class="font-medium text-gray-700">${formatBRL(val)}</span>
+            </div>`;
+        }).join('');
+      } else {
+        cont.innerHTML = '<p class="text-gray-400 text-center py-4">Nenhum cliente encontrado</p>';
+      }
+    }
+
+    function renderLine(elId, data) {
+      const byDate = {};
+      data.forEach(o => {
+        if (!o['Data/Hora']) return;
+        let dt = o['Data/Hora'].includes('/')
+          ? new Date(o['Data/Hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + (o['Data/Hora'].split(' ')[1]||'00:00'))
+          : new Date(o['Data/Hora']);
+        if (isNaN(dt)) return;
+        const day = dt.toISOString().split('T')[0];
+        byDate[day] = (byDate[day]||0) + safeParseFloat(o['Preço Total']);
+      });
+      const dates = Object.keys(byDate).sort();
+      const series = [{ name: 'Vendas', data: dates.map(d => ({ x: d, y: byDate[d] })) }];
+      const opts = {
+        series,
+        chart: { type: 'line', height: 350, zoom: { enabled: false }, toolbar: { show: false } },
+        stroke: { curve: 'smooth', width: 3 },
+        xaxis: { type: 'datetime', labels: { formatter: v => new Date(v).toLocaleDateString('pt-BR') } },
+        yaxis: { labels: { formatter: v => formatBRL(v) } },
+        tooltip: { x: { formatter: v => new Date(v).toLocaleDateString('pt-BR') }, y: { formatter: v => formatBRL(v) } },
+        grid: { borderColor: '#f1f5f9' }
+      };
+      const el = document.getElementById(elId);
+      if (window._line) window._line.destroy();
+      window._line = new ApexCharts(el, opts);
+      window._line.render();
+    }
+
     function renderRecent(data) {
       const rows = data.slice(-10).reverse().map(o => `
         <tr class="hover:bg-gray-50">
@@ -422,38 +416,25 @@ function renderLine(elId, data) {
     });
 
     document.getElementById('resetBtn').addEventListener('click', () => processData(ordersData));
-    // Substitua todo o listener antigo pelo código abaixo:
-document.getElementById('exportPdfBtn').addEventListener('click', async () => {
-  const btn = document.getElementById('exportPdfBtn');
-  btn.style.visibility = 'hidden';
 
-  const container = document.querySelector('.max-w-7xl');
-  const canvas = await html2canvas(container, { scale: 2 });
+    document.getElementById('exportPdfBtn').addEventListener('click', async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'px', format: 'a4' });
+      doc.setFontSize(18);
+      doc.text('Relatório de Vendas', 40, 40);
 
-  btn.style.visibility = 'visible';
+      // captura o gráfico de evolução e adiciona ao PDF
+      const chartEl = document.querySelector('#lineChart');
+      const canvas = await html2canvas(chartEl, { scale: 2 });
+      const imgData = canvas.toDataURL('image/png');
+      const imgProps = doc.getImageProperties(imgData);
+      const pdfWidth = doc.internal.pageSize.getWidth() - 80;
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      doc.addImage(imgData, 'PNG', 40, 80, pdfWidth, pdfHeight);
 
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({
-    orientation: 'portrait',
-    unit: 'pt',
-    format: 'a4'
-  });
+      doc.save('relatorio_vendas.pdf');
+    });
 
-  const pdfWidth  = pdf.internal.pageSize.getWidth()  - 40;
-  const pdfHeight = pdf.internal.pageSize.getHeight() - 40;
-  const imgProps  = pdf.getImageProperties(imgData);
-  const ratio     = imgProps.width / imgProps.height;
-  let imgWidth  = pdfWidth;
-  let imgHeight = pdfWidth / ratio;
-  if (imgHeight > pdfHeight) {
-    imgHeight = pdfHeight;
-    imgWidth  = pdfHeight * ratio;
-  }
-
-  pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
-  pdf.save('relatorio_vendas.pdf');
-});
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
 </body>
