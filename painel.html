@@ -418,23 +418,42 @@
     document.getElementById('resetBtn').addEventListener('click', () => processData(ordersData));
 
     document.getElementById('exportPdfBtn').addEventListener('click', async () => {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ unit: 'px', format: 'a4' });
-      doc.setFontSize(18);
-      doc.text('Relatório de Vendas', 40, 40);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'px', format: 'a4' });
+  doc.setFontSize(18);
+  doc.text('Relatório de Vendas', 40, 40);
 
-      // captura o gráfico de evolução e adiciona ao PDF
-      const chartEl = document.querySelector('#lineChart');
-      const canvas = await html2canvas(chartEl, { scale: 2 });
-      const imgData = canvas.toDataURL('image/png');
-      const imgProps = doc.getImageProperties(imgData);
-      const pdfWidth = doc.internal.pageSize.getWidth() - 80;
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      doc.addImage(imgData, 'PNG', 40, 80, pdfWidth, pdfHeight);
+  // Insere métricas principais
+  doc.setFontSize(12);
+  const sales = document.getElementById('totalSales').textContent;
+  const orders = document.getElementById('totalOrders').textContent;
+  const products = document.getElementById('totalProducts').textContent;
+  const ticket = document.getElementById('averageTicket').textContent;
+  doc.text(`Total de Vendas: ${sales}`, 40, 80);
+  doc.text(`Total de Pedidos: ${orders}`, 40, 100);
+  doc.text(`Produtos Vendidos: ${products}`, 40, 120);
+  doc.text(`Ticket Médio: ${ticket}`, 40, 140);
 
-      doc.save('relatorio_vendas.pdf');
-    });
+  // Função auxiliar para capturar e inserir gráficos
+  async function addChart(selector, x, y, width) {
+    const el = document.querySelector(selector);
+    const canvas = await html2canvas(el, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const props = doc.getImageProperties(imgData);
+    const h = (props.height * width) / props.width;
+    doc.addImage(imgData, 'PNG', x, y, width, h);
+    return h;
+  }
 
+  // Captura e adiciona distribution pie chart
+  let offsetY = 160;
+  offsetY += await addChart('#pieChart', 40, offsetY, doc.internal.pageSize.getWidth() - 80) + 20;
+
+  // Captura e adiciona line chart de evolução
+  await addChart('#lineChart', 40, offsetY, doc.internal.pageSize.getWidth() - 80);
+
+  doc.save('relatorio_vendas.pdf');
+});
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
 </body>
