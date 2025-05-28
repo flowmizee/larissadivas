@@ -450,8 +450,6 @@
   offsetY += await addChart('#pieChart', 40, offsetY, doc.internal.pageSize.getWidth() - 80) + 20;
 
   // Captura e adiciona line chart de evolução
-  await addChart('#lineChart', 40, offsetY, doc.internal.pageSize.getWidth() - 80);
-
   doc.save('relatorio_vendas.pdf');
 });
     document.addEventListener('DOMContentLoaded', loadData);
