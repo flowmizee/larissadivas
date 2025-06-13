@@ -362,15 +362,13 @@
       window._scrollTimeout = setTimeout(() => catsEl.classList.add('hidden'), 500);
     });
 
-    // Função para normalizar texto (remover acentos, converter para minúsculas e remover espaços extras)
     function normalizeText(text) {
       return text
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
         .trim();
     }
 
-    // Mapeamento de categorias para termos de busca - agora mais específico
     const categoryMap = {
       'BRINCOS': ['brinco', 'brincos'],
       'ANÉIS': ['anel', 'anéis', 'aneis'],
@@ -384,13 +382,11 @@
       'ÓCULOS': ['óculos', 'oculos']
     };
 
-    // Função para verificar se o texto contém algum dos termos de busca
     function containsAnyTerm(text, terms) {
       const normalizedText = normalizeText(text);
       return terms.some(term => normalizedText.includes(term));
     }
 
-    // Função para encontrar produtos por categoria (busca apenas pelo nome)
     function filterByCategory(category) {
       const searchTerms = categoryMap[category] || [normalizeText(category)];
       
@@ -406,11 +402,25 @@
         const lines = csv.split('\n').slice(1);
         const bannerContainer = document.getElementById('banner-scroll');
 
-        lines.forEach(line => {
-          const cells = line.split(',');
-          if (cells[0]?.trim()) allBanners.push(cells[0].trim());
-          if (cells[1]?.trim()) allBanners.push(cells[1].trim());
+        // Limpa banners antigos
+        allBanners = [];
+        
+        // Processa apenas a primeira linha para banners
+        if (lines.length > 0) {
+          const firstLine = lines[0].split(',');
+          if (firstLine[0]?.trim() && firstLine[0].trim() !== 'Banner 1') {
+            allBanners.push(firstLine[0].trim());
+          }
+          if (firstLine[1]?.trim() && firstLine[1].trim() !== 'Banner 2') {
+            allBanners.push(firstLine[1].trim());
+          }
+        }
 
+        // Processa produtos (todas as linhas exceto cabeçalho)
+        lines.forEach((line, index) => {
+          if (index === 0) return; // Pula cabeçalho
+          
+          const cells = line.split(',');
           const productTag = cells[14]?.trim();
           
           if (productTag === '0') return;
@@ -441,6 +451,7 @@
 
         bannerContainer.innerHTML = '';
 
+        // Renderiza banners corretamente
         if (allBanners.length === 1) {
           bannerContainer.classList.add('single-banner');
           const img = document.createElement('img');
@@ -449,11 +460,18 @@
           img.style.height = '500px';
           img.style.objectFit = 'cover';
           bannerContainer.appendChild(img);
-        } else if (allBanners.length > 1) {
+        } else if (allBanners.length === 2) {
           bannerContainer.classList.add('scrolling');
-          const duplicatedBanners = [...allBanners, ...allBanners];
           
-          duplicatedBanners.forEach(url => {
+          // Adiciona apenas os 2 banners (sem duplicar)
+          allBanners.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            bannerContainer.appendChild(img);
+          });
+          
+          // Adiciona cópias para criar o efeito de loop contínuo
+          allBanners.forEach(url => {
             const img = document.createElement('img');
             img.src = url;
             bannerContainer.appendChild(img);
@@ -461,6 +479,9 @@
         }
 
         renderProdutos(launchProdutos);
+      })
+      .catch(error => {
+        console.error('Erro ao carregar dados:', error);
       });
 
     function renderProdutos(list) {
